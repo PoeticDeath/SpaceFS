@@ -79,6 +79,11 @@ class SpaceFS():
                 continue
             old=i[0]
             rold=i[0]-2
+            if len(i)==1:
+                lst+=str(i[0])
+            else:
+                if i[0]+1!=i[1]:
+                    lst+=str(i[0])+','
             for o in i[1:]:
                 if old==o-1:
                     if rold+2!=o:
@@ -97,6 +102,8 @@ class SpaceFS():
                     old=o
             if rold+1==old==o:
                 lst+=str(o)
+            if lst[-1]==',':
+                lst=lst[:-1]
             lst+='.'
         self.disk.seek(8)
         elst=encode(lst)
