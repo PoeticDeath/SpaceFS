@@ -50,7 +50,7 @@ class SpaceFS():
                         tmplstpart+=[int(u[0])]
                 except ValueError:
                         pass
-            tmplst+=[sorted(tmplstpart)]
+            tmplst+=[tmplstpart]
         return tmplst
     def findnewblock(self):
         table=self.table
