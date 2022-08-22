@@ -143,6 +143,7 @@ class SpaceFS():
         self.disk.flush()
         lst=self.readtable()
         lst.pop(self.filenames.index(filename))
+        self.table=''
         for i in lst:
             for o in i:
                 self.table+=str(o)
