@@ -42,7 +42,7 @@ class SpaceFS():
         for i in tmp:
             tmplstpart=[]
             for u in i:
-                u=u.replace('-',',').split(',')
+                u=u.split('-')
                 try:
                     for o in range(int(u[0]), int(u[1])+1):
                         tmplstpart+=[o]
