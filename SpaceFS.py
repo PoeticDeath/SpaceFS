@@ -309,8 +309,10 @@ class SpaceFS():
         lst=self.readtable()[self.filenames.index(filename)]
         if size==None:
             s=(len(lst)-1)*self.sectorsize
-            tlst=lst[-1].split(';')
-            return s+self.sectorsize-int(tlst[2])-int(tlst[1])
+            if len(lst)!=0:
+                tlst=lst[-1].split(';')
+                return s+self.sectorsize-int(tlst[2])-int(tlst[1])
+            return s
         lst=lst[:(size+self.sectorsize-1)//self.sectorsize]
         if len(lst)==0:
             if size%self.sectorsize!=0:
