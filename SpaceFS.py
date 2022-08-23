@@ -10,7 +10,7 @@ for char in charmap:
 def decode(locbytes):
     locbytes=bin(int.from_bytes(locbytes,'big'))[2:]
     locbytes=locbytes.zfill((len(locbytes)+3)//4*4)
-    if locbytes == '0000':
+    if locbytes=='0000':
         locbytes=''
     return ''.join(dmap.get(c,c) for c in [locbytes[i:i+4] for i in range(0,len(locbytes),4)])
 def encode(locstr):
@@ -49,7 +49,7 @@ class SpaceFS():
                         tmplstpart+=[int(u[0])]
                     except ValueError:
                         tmplstpart+=[u[0]]
-                    for o in range(int(u[0].split(';')[0])+1, int(u[1].split(';')[0])):
+                    for o in range(int(u[0].split(';')[0])+1,int(u[1].split(';')[0])):
                         tmplstpart+=[o]
                     try:
                         tmplstpart+=[int(u[1])]
@@ -304,6 +304,21 @@ class SpaceFS():
                 data+=self.disk.read(int(i.split(';')[2])-int(i.split(';')[1]))
         self.disk.seek(0)
         return data[:amount]
+    def trunfile(self,filename,size):
+        table=self.table.split('.')
+        lst=self.readtable()[self.filenames.index(filename)][:(size+self.sectorsize-1)//self.sectorsize]
+        if len(lst)==0:
+            if size%self.sectorsize!=0:
+                lst[-1]=str(lst[-1])+';0;'+str(size%self.sectorsize)
+        else:
+            if size%self.sectorsize!=0:
+                lst[-1]=','+str(lst[-1])+';0;'+str(size%self.sectorsize)
+        nlst=''
+        for i in lst:
+            nlst+=str(i)
+        table[self.filenames.index(filename)]=nlst
+        self.table='.'.join(table)
+        self.simptable()
     def writefile(self,filename,start,data):
         if filename not in self.filenames:
             raise FileNotFoundError
