@@ -83,7 +83,13 @@ class FuseTran(Operations):
     def symlink(self,name,target):
         pass
     def rename(self,old,new):
-        self.s.renamefile(old,new)
+        if old not in self.s.filenames:
+            for i in self.s.filenames:
+                if i.startswith(old+'/'):
+                    self.s.renamefile(i,i.replace(old,new))
+            self.tmpfolders=[]
+        else:
+            self.s.renamefile(old,new)
     def link(self,target,name):
         pass
     def utimens(self,path,times=None):

@@ -316,7 +316,7 @@ class SpaceFS():
         lst=lst[:(size+self.sectorsize-1)//self.sectorsize]
         if len(lst)==0:
             if size%self.sectorsize!=0:
-                lst[-1]=str(lst[-1]).split(';')[0]+';0;'+str(size%self.sectorsize)
+                lst=[str(self.findnewblock(False))+';0;'+str(size%self.sectorsize)]
         else:
             if size%self.sectorsize!=0:
                 lst[-1]=','+str(lst[-1]).split(';')[0]+';0;'+str(size%self.sectorsize)
@@ -365,19 +365,21 @@ class SpaceFS():
             for i in self.part:
                 for o in [self.part[i][p:p+2] for p in range(0,len(self.part[i]),2)]:
                     if len(o)==2:
-                        n=self.readtable()[self.filenames.index(filename)][-1].split(';')
-                        if (int(n[0])==i)&(int(n[2])==o[0]):
-                            if o[1]-o[0]>=c:
-                                f=[i,int(n[1]),int(n[1])+c]
+                        for p in self.filenames:
+                            n=self.readtable()[self.filenames.index(p)][-1].split(';')
+                            if (int(n[0])==i)&(int(n[2])==o[0]):
+                                if o[1]-o[0]>=c:
+                                    f=[i,o[0],o[0]+c]
+                                    break
+                            if type(f)==list:
                                 break
-                        if o[1]-o[0]>=c:
-                            f=[i,o[0],o[0]+c]
-                            break
                 if type(f)!=list:
                     break
             if type(f)!=list:
                 f=[f,0,c]
             tlst=self.table.split('.')
+            if len(lst)==minblocks:
+                tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
             if len(lst)==0:
                 tlst[self.filenames.index(filename)]+=str(f[0])+';'+str(f[1])+';'+str(f[2])
             else:
