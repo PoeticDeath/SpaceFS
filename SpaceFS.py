@@ -389,10 +389,7 @@ class SpaceFS():
             self.disk.seek(self.readtable()[self.filenames.index(filename)][d]*self.sectorsize+self.sectorsize+int(tmp[1]))
             self.disk.write(odata)
         st=start-(start//self.sectorsize*self.sectorsize)
-        fdata=[data[:self.sectorsize-st]]
-        data=[data[i:i+self.sectorsize] for i in range(self.sectorsize-st,len(data),self.sectorsize)]
-        if st>0:
-            data=fdata+data
+        data=[data[:self.sectorsize-st]]+[data[i:i+self.sectorsize] for i in range(self.sectorsize-st,len(data),self.sectorsize)]
         for i in enumerate(lst[start//self.sectorsize:end]):
             u=0
             if type(i[1])==str:
