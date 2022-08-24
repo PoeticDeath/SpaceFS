@@ -331,9 +331,11 @@ class SpaceFS():
             raise FileNotFoundError
         end=(start+len(data))//self.sectorsize+1
         lst=self.readtable()[self.filenames.index(filename)]
-        minblocks=(start+len(data))//self.sectorsize+1
+        minblocks=(start+len(data))//self.sectorsize
         m=0
         c=(start+len(data))%self.sectorsize
+        if c!=0:
+            minblocks+=1
         odata=None
         while minblocks-m>len(lst):
             tlst=self.table.split('.')
