@@ -355,7 +355,7 @@ class SpaceFS():
             if c!=0:
                 m=1
         try:
-            n=s.readtable()[self.filenames.index(filename)][-1].split(';')
+            n=self.readtable()[self.filenames.index(filename)][-1].split(';')
             if int(n[2])-int(n[1])!=c:
                 m=1
         except AttributeError:
