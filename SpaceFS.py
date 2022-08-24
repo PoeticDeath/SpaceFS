@@ -311,7 +311,7 @@ class SpaceFS():
             if len(lst)!=0:
                 s=(len(lst)-1)*self.sectorsize
                 tlst=lst[-1].split(';')
-                return s+self.sectorsize-int(tlst[2])-int(tlst[1])
+                return s+int(tlst[2])-int(tlst[1])
             return 0
         lst=lst[:(size+self.sectorsize-1)//self.sectorsize]
         if len(lst)==0:
