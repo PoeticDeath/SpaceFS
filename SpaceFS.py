@@ -111,7 +111,7 @@ class SpaceFS():
                     continue
                 break
             for i in self.part:
-                self.part[i]=[list(range(s.part[i][o],s.part[i][o+1])) for o in range(0,len(s.part[i]),2)]
+                self.part[i]=[list(range(self.part[i][o],self.part[i][o+1])) for o in range(0,len(self.part[i]),2)]
                 tmp=[]
                 for o in self.part[i]:
                     tmp+=o
@@ -316,10 +316,10 @@ class SpaceFS():
         lst=lst[:(size+self.sectorsize-1)//self.sectorsize]
         if len(lst)==0:
             if size%self.sectorsize!=0:
-                lst[-1]=str(lst[-1])+';0;'+str(size%self.sectorsize)
+                lst[-1]=str(lst[-1]).split(';')[0]+';0;'+str(size%self.sectorsize)
         else:
             if size%self.sectorsize!=0:
-                lst[-1]=','+str(lst[-1])+';0;'+str(size%self.sectorsize)
+                lst[-1]=','+str(lst[-1]).split(';')[0]+';0;'+str(size%self.sectorsize)
         nlst=''
         for i in lst:
             nlst+=str(i)
