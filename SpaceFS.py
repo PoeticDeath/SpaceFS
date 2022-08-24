@@ -27,7 +27,7 @@ class SpaceFS():
             self.disksize=shutil.disk_usage(self.diskname)[0]
         self.disk=open(self.diskname,'rb+')
         self.filecount=int.from_bytes(self.disk.read(4),'big')
-        self.sectorsize=int.from_bytes(self.disk.read(4),'big')
+        self.sectorsize=2**(int.from_bytes(self.disk.read(4),'big')+9)
         self.sectorcount=self.disksize//self.sectorsize
         self.filenames=[self.disk.read(256).replace(b'\x00',b'').decode() for i in range(0,self.filecount) if self.disk.seek(-256*i-256,2)]
         self.disk.seek(8)
