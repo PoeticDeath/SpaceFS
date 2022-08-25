@@ -31,7 +31,7 @@ class FuseTran(Operations):
             s=0
             mode=16877
             if path!='/':
-                if path not in self.tmpfolders:
+                if path+'/' not in self.tmpfolders:
                     if path not in ['/'.join(i.split('/')[:-1]) for i in self.s.filenames]:
                         full_path = self._full_path(path)
                         st = os.lstat(full_path)
@@ -49,13 +49,14 @@ class FuseTran(Operations):
                 if path.count('/')+1==i.count('/'):
                     c=i[1:].split('/')[-2]
                     dirents+=[c]
-                    if '/'+c not in self.tmpfolders:
-                        self.tmpfolders+=['/'+c]
+                    if i+'/' not in self.tmpfolders:
+                        self.tmpfolders+=[i+'/']
         for i in self.tmpfolders:
-            if i.split('/')[-1] not in dirents:
-                if i.startswith(path):
-                    if path.count('/')==i.count('/'):
-                        dirents+=[i.split('/')[-1]]
+            if i!=path:
+                if path.count('/')==i.count('/')-1:
+                    if i.startswith(path):
+                        if i.split('/')[-2] not in dirents:
+                            dirents+=[i.split('/')[-2]]
         for r in dirents:
             yield r
     def readlink(self,path):
@@ -63,12 +64,12 @@ class FuseTran(Operations):
     def mknod(self,path,mode,dev):
         return 0
     def rmdir(self,path):
-        if path in self.tmpfolders:
-            self.tmpfolders.pop(self.tmpfolders.index(path))
+        if path+'/' in self.tmpfolders:
+            self.tmpfolders.pop(self.tmpfolders.index(path+'/'))
         return 0
     def mkdir(self,path,mode):
-        if path not in self.tmpfolders:
-            self.tmpfolders+=[path]
+        if path+'/' not in self.tmpfolders:
+            self.tmpfolders+=[path+'/']
         return 0
     def statfs(self,path):
         c={}
@@ -87,7 +88,11 @@ class FuseTran(Operations):
             for i in self.s.filenames:
                 if i.startswith(old+'/'):
                     self.s.renamefile(i,i.replace(old,new))
-            self.tmpfolders=[]
+            try:
+                self.tmpfolders.pop(self.tmpfolders.index(old+'/'))
+            except ValueError:
+                pass
+            self.tmpfolders+=[new+'/']
         else:
             self.s.renamefile(old,new)
     def link(self,target,name):
