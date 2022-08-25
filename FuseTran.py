@@ -44,13 +44,18 @@ class FuseTran(Operations):
         for i in self.s.filenames:
             if i.startswith(path):
                 if path.count('/')==i.count('/'):
-                    c=i[1:].split('/')[-1]
-                    dirents+=[c]
+                    dirents+=[i[1:].split('/')[-1]]
                 if path.count('/')+1==i.count('/'):
-                    c=i[1:].split('/')[-2]
-                    dirents+=[c]
+                    dirents+=[i[1:].split('/')[-2]]
                     if i+'/' not in self.tmpfolders:
                         self.tmpfolders+=[i+'/']
+                if path.count('/')+1<=i.count('/'):
+                    c=i.split('/')[path.count('/')]
+                    if c not in dirents:
+                        d='/'.join(i.split('/')[:path.count('/')+1])+'/'
+                        dirents+=[c]
+                        if d not in self.tmpfolders:
+                            self.tmpfolders+=[d]
         for i in self.tmpfolders:
             if i!=path:
                 if path.count('/')==i.count('/')-1:
