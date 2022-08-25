@@ -293,14 +293,14 @@ class SpaceFS():
             self.disk.seek(i*self.sectorsize+self.sectorsize+(start%self.sectorsize))
             data+=self.disk.read(self.sectorsize-(start%self.sectorsize))
         else:
-            self.disk.seek(int(i.split(';')[0])*self.sectorsize+self.sectorsize+(start%self.sectorsize))
+            self.disk.seek(int(i.split(';')[0])*self.sectorsize+self.sectorsize+(start%self.sectorsize)+int(i.split(';')[1]))
             data+=self.disk.read(int(i.split(';')[2])-int(i.split(';')[1]))
         for i in lst[1:]:
             if type(i)==int:
                 self.disk.seek(i*self.sectorsize+self.sectorsize)
                 data+=self.disk.read(self.sectorsize)
             else:
-                self.disk.seek(int(i.split(';')[0])*self.sectorsize+self.sectorsize)
+                self.disk.seek(int(i.split(';')[0])*self.sectorsize+self.sectorsize+int(i.split(';')[1]))
                 data+=self.disk.read(int(i.split(';')[2])-int(i.split(';')[1]))
         self.disk.seek(0)
         return data[:amount]
