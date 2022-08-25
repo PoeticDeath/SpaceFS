@@ -319,7 +319,11 @@ class SpaceFS():
                 lst=[str(self.findnewblock(False))+';0;'+str(size%self.sectorsize)]
         else:
             if size%self.sectorsize!=0:
-                lst[-1]=','+str(lst[-1]).split(';')[0]+';0;'+str(size%self.sectorsize)
+                try:
+                    tlst=lst[-1].split(';')[1]
+                    lst[-1]=','+str(lst[-1]).split(';')[0]+';'+tlst+';'+str(int(tlst)+size%self.sectorsize)
+                except AttributeError:
+                    lst[-1]=','+str(lst[-1])+';0;'+str(size%self.sectorsize)
         nlst=''
         for i in lst:
             nlst+=str(i)
@@ -335,7 +339,7 @@ class SpaceFS():
         m=0
         c=(start+len(data))%self.sectorsize
         if c!=0:
-            minblocks+=1
+            m+=1
         odata=None
         while minblocks-m>len(lst):
             tlst=self.table.split('.')
@@ -362,21 +366,29 @@ class SpaceFS():
                 m=1
         except AttributeError:
             pass
+        except IndexError:
+            pass
         if m==1:
             f=self.findnewblock(True)
-            for i in self.part:
-                for o in [self.part[i][p:p+2] for p in range(0,len(self.part[i]),2)]:
-                    if len(o)==2:
-                        for p in self.filenames:
-                            n=self.readtable()[self.filenames.index(p)][-1].split(';')
-                            if (int(n[0])==i)&(int(n[2])==o[0]):
-                                if o[1]-o[0]>=c:
-                                    f=[i,o[0],o[0]+c]
-                                    break
-                            if type(f)==list:
-                                break
-                if type(f)!=list:
-                    break
+            try:
+                for i in self.part:
+                    for o in [self.part[i][p:p+2] for p in range(0,len(self.part[i]),2)]:
+                        if len(o)==2:
+                            for p in self.filenames:
+                                try:
+                                    n=self.readtable()[self.filenames.index(p)][-1].split(';')
+                                    if (int(n[0])==i)&(int(n[2])==o[0]):
+                                        if o[1]-o[0]>=c:
+                                            f=[i,o[0],o[0]+c]
+                                            break
+                                    if type(f)==list:
+                                        break
+                                except IndexError:
+                                    pass
+                    if type(f)!=list:
+                        break
+            except AttributeError:
+                pass
             if type(f)!=list:
                 f=[f,0,c]
             tlst=self.table.split('.')
