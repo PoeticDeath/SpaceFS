@@ -121,7 +121,7 @@ class FuseTran(Operations):
     def truncate(self,path,length,fh=None):
         self.s.trunfile(path,length)
     def flush(self,path,fh):
-        pass
+        self.s.simptable()
     def release(self,path,fh):
         pass
     def fsync(self,path,fdatasync,fh):

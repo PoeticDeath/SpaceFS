@@ -406,7 +406,6 @@ class SpaceFS():
                 tlst[self.filenames.index(filename)]+=','+str(f[0])+';'+str(f[1])+';'+str(f[2])
             self.table='.'.join(tlst)
             lst=self.readtable()[self.filenames.index(filename)]
-        self.simptable()
         if odata!=None:
             self.disk.seek(self.readtable()[self.filenames.index(filename)][d]*self.sectorsize+self.sectorsize+int(tmp[1]))
             self.disk.write(odata)
