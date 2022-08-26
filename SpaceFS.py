@@ -37,6 +37,8 @@ class SpaceFS():
             self.table[-1]=''
         self.table='.'.join(self.table)
         self.disk.seek(0)
+        self.lst=None
+        self.lstindex=0
     def readtable(self):
         tmp=[i.split(',') for i in self.table.split('.')[:-1]]
         tmplst=[]
@@ -337,14 +339,18 @@ class SpaceFS():
         if filename not in self.filenames:
             raise FileNotFoundError
         end=(start+len(data))//self.sectorsize+1
-        lst=self.readtable()[self.filenames.index(filename)]
+        if (self.lst!=None)&(self.lstindex==self.filenames.index(filename)):
+            pass
+        else:
+            self.lst=self.readtable()[self.filenames.index(filename)]
+            self.lstindex=self.filenames.index(filename)
         minblocks=(start+len(data))//self.sectorsize
         m=0
         c=(start+len(data))%self.sectorsize
         if c!=0:
             m+=1
         odata=None
-        while minblocks-m>len(lst):
+        while minblocks-m>len(self.lst):
             tlst=self.table.split('.')
             try:
                 if ';' in tlst[self.filenames.index(filename)][-1]:
@@ -355,16 +361,17 @@ class SpaceFS():
                     tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
             except IndexError:
                 pass
-            if len(lst)==0:
-                tlst[self.filenames.index(filename)]+=str(self.findnewblock(False))
+            block=self.findnewblock(False)
+            if len(self.lst)==0:
+                tlst[self.filenames.index(filename)]+=str(block)
             else:
-                tlst[self.filenames.index(filename)]+=','+str(self.findnewblock(False))
+                tlst[self.filenames.index(filename)]+=','+str(block)
             self.table='.'.join(tlst)
-            lst=self.readtable()[self.filenames.index(filename)]
+            self.lst+=[block]
             if c!=0:
                 m=1
         try:
-            n=self.readtable()[self.filenames.index(filename)][-1].split(';')
+            n=self.lst[-1].split(';')
             if int(n[2])-int(n[1])!=c:
                 m=1
         except AttributeError:
@@ -395,20 +402,23 @@ class SpaceFS():
             if type(f)!=list:
                 f=[f,0,c]
             tlst=self.table.split('.')
-            if len(lst)==minblocks:
+            if len(self.lst)==minblocks:
                 tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
-            if len(lst)==0:
-                tlst[self.filenames.index(filename)]+=str(f[0])+';'+str(f[1])+';'+str(f[2])
+                self.lst=self.lst[:-1]
+            e=str(f[0])+';'+str(f[1])+';'+str(f[2])
+            if len(self.lst)==0:
+                tlst[self.filenames.index(filename)]+=e
+                self.lst=[e]
             else:
-                tlst[self.filenames.index(filename)]+=','+str(f[0])+';'+str(f[1])+';'+str(f[2])
+                tlst[self.filenames.index(filename)]+=','+e
+                self.lst+=[e]
             self.table='.'.join(tlst)
-            lst=self.readtable()[self.filenames.index(filename)]
         if odata!=None:
             self.disk.seek(self.readtable()[self.filenames.index(filename)][d]*self.sectorsize+self.sectorsize+int(tmp[1]))
             self.disk.write(odata)
         st=start-(start//self.sectorsize*self.sectorsize)
         data=[data[:self.sectorsize-st]]+[data[i:i+self.sectorsize] for i in range(self.sectorsize-st,len(data),self.sectorsize)]
-        for i in enumerate(lst[start//self.sectorsize:end]):
+        for i in enumerate(self.lst[start//self.sectorsize:end]):
             u=0
             if type(i[1])==str:
                 u=int(i[1].split(';')[1])
