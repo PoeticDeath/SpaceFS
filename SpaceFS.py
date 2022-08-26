@@ -39,6 +39,7 @@ class SpaceFS():
         self.disk.seek(0)
         self.lst=None
         self.lstindex=0
+        self.missinglst=[]
     def readtable(self):
         tmp=[i.split(',') for i in self.table.split('.')[:-1]]
         tmplst=[]
@@ -135,19 +136,24 @@ class SpaceFS():
                 if len(tmp)%2!=0:
                     tmp+=[self.sectorsize]
                 self.part[i]=tmp
-        lst=[]
-        for i in table:
-            if '-' in i:
-                p=i.split('-')
-                lst+=list(range(int(p[0].split(';')[0]),int(p[1].split(';')[0])))
-            else:
-                if int(i.split(';')[0]) not in lst:
-                    lst+=[int(i.split(';')[0])]
-        lst=sorted(lst)
-        for i in range(lst[0],lst[-1]):
-            if i not in lst:
-                return i
-        return max(lst)+1
+        if self.missinglst==[]:
+            lst=[]
+            for i in table:
+                if '-' in i:
+                    p=i.split('-')
+                    lst+=list(range(int(p[0].split(';')[0]),int(p[1].split(';')[0])))
+                else:
+                    if int(i.split(';')[0]) not in lst:
+                        lst+=[int(i.split(';')[0])]
+            lst=sorted(lst)
+            for i in range(lst[0],lst[-1]+1000):
+                if i not in lst:
+                    self.missinglst+=[i]
+            if len(self.missinglst)!=0:
+                return self.missinglst.pop(0)
+            return max(lst)+1
+        else:
+            return self.missinglst.pop(0)
     def simptable(self):
         tmplst=self.readtable()
         lst=''
