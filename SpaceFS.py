@@ -50,8 +50,7 @@ class SpaceFS():
                         tmplstpart+=[int(u[0])]
                     except ValueError:
                         tmplstpart+=[u[0]]
-                    for o in range(int(u[0].split(';')[0])+1,int(u[1].split(';')[0])):
-                        tmplstpart+=[o]
+                    tmplstpart+=list(range(int(u[0].split(';')[0])+1,int(u[1].split(';')[0])))
                     try:
                         tmplstpart+=[int(u[1])]
                     except ValueError:
