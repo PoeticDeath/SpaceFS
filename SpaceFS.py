@@ -1,24 +1,25 @@
 import os
 import shutil
-charmap=[('0001','0'),('0010','1'),('0011','2'),('0100','3'),('0101','4'),('0110','5'),('0111','6'),('1000','7'),('1001','8'),('1010','9'),('1011','-'),('1100',','),('1101','.'),('1110',';')]
-dmap={}
-for char in charmap:
-        dmap[char[0]]=char[1]
+charmap='0123456789-,.; '
 emap={}
-for char in charmap:
-        emap[char[1]]=char[0]
+dmap={}
+p=0
+for i in charmap:
+    for o in charmap:
+        emap[i+o]=p
+        dmap[p]=i+o
+        p+=1
 def decode(locbytes):
-    locbytes=bin(int.from_bytes(locbytes,'big'))[2:]
-    locbytes=locbytes.zfill((len(locbytes)+3)//4*4)
-    if locbytes=='0000':
-        locbytes=''
-    return ''.join(dmap.get(c,c) for c in [locbytes[i:i+4] for i in range(0,len(locbytes),4)])
+    locstr=''
+    for i in locbytes:
+        locstr+=dmap[i]
+    return locstr.replace(' ','')
 def encode(locstr):
-    try:
-        c=int(''.join(emap.get(c,c) for c in locstr),2)
-    except ValueError:
-        c=0
-    return c.to_bytes((c.bit_length()+7)//8,'big')
+    locbytes=b''
+    locstr+=' '*(len(locstr)%2)
+    for i in [locstr[o:o+2] for o in range(0,len(locstr),2)]:
+        locbytes+=emap[i].to_bytes(1,'big')
+    return locbytes
 class SpaceFS():
     def __init__(self):
         self.diskname='SpaceFS.bin'
@@ -288,6 +289,8 @@ class SpaceFS():
             raise FileNotFoundError
         lst=self.readtable()[self.filenames.index(filename)][start//self.sectorsize:(start+amount)//self.sectorsize+1]
         data=b''
+        if start+amount>self.trunfile(filename):
+            return
         i=lst[0]
         if type(i)==int:
             self.disk.seek(i*self.sectorsize+self.sectorsize+(start%self.sectorsize))
