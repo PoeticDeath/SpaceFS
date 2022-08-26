@@ -128,6 +128,6 @@ class FuseTran(Operations):
         pass
 def main():
     mount='/home/akerr/SpaceFS'
-    FUSE(FuseTran(mount),mount,nothreads=True,foreground=True,allow_other=True,big_writes=True)
+    FUSE(FuseTran(mount),mount,nothreads=True,foreground=True,allow_other=True,big_writes=True,intr=True)
 if __name__=='__main__':
     main()
