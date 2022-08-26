@@ -138,9 +138,7 @@ class SpaceFS():
         for i in table:
             if '-' in i:
                 p=i.split('-')
-                for o in range(int(p[0].split(';')[0]),int(p[1].split(';')[0])+1):
-                    if int(o) not in lst:
-                        lst+=[int(o)]
+                lst+=list(range(p[0].split(';')[0],p[1].split(';')[0]))
             else:
                 if int(i.split(';')[0]) not in lst:
                     lst+=[int(i.split(';')[0])]
