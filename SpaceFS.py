@@ -114,8 +114,24 @@ class SpaceFS():
             for i in self.part:
                 lst=[]
                 for o in [self.part[i][p:p+2] for p in range(0,len(self.part[i]),2)]:
-                    lst+=set(range(0,self.sectorsize)).difference(set(range(o[0],o[1])))
-                self.part[i]=lst
+                    lst+=set(range(0,self.sectorsize+1)).difference(set(range(o[0],o[1])))
+                old=-1
+                t=True
+                self.part[i]=[]
+                for o in lst+[self.sectorsize+2]:
+                    if o-1==old:
+                        t=True
+                        old=o
+                    else:
+                        if t:
+                            self.part[i]+=[old,o]
+                        t=False
+                        old=o
+                for o in [-1,self.sectorsize+2]:
+                    try:
+                        self.part[i].remove(o)
+                    except ValueError:
+                        pass
         if self.missinglst==[]:
             table=self.table
             table=[i for i in table.replace(',','.').split('.') if i]
