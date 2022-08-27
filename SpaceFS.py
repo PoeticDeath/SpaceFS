@@ -402,7 +402,7 @@ class SpaceFS():
                 self.disk.seek(-(int(f[0])+self.sectorsize),2)
                 self.disk.write(odata[:int(f[2])-int(f[1])])
             except AttributeError:
-                self.disk.seek(-(int((self.readtable()[self.filenames.index(filename)][d*self.sectorsize+int(tmp[1])]))+self.sectorsize),2)
+                self.disk.seek(-(int(self.readtable()[self.filenames.index(filename)][d*self.sectorsize+int(tmp[1])])+self.sectorsize),2)
                 self.disk.write(odata)
         st=start-(start//self.sectorsize*self.sectorsize)
         end=(start+len(data))//self.sectorsize+1
