@@ -114,7 +114,8 @@ class SpaceFS():
                     continue
                 break
             for i in self.part:
-                self.part[i].pop(0)
+                if self.part[i][0]==0:
+                    self.part[i].pop(0)
                 if len(self.part[i])%2!=0:
                     self.part[i]+=[self.sectorsize]
         if self.missinglst==[]:
@@ -323,11 +324,12 @@ class SpaceFS():
         table[self.filenames.index(filename)]=nlst
         self.table='.'.join(table)
         self.simptable()
+        self.missinglst=[]
     def writefile(self,filename,start,data):
         if filename not in self.filenames:
             raise FileNotFoundError
         end=(start+len(data))//self.sectorsize+1
-        if (self.lst!=None)&(self.lstindex==self.filenames.index(filename)):
+        if (self.lst!=[])&(self.lstindex==self.filenames.index(filename)):
             pass
         else:
             self.lst=self.readtable()[self.filenames.index(filename)]
@@ -394,6 +396,11 @@ class SpaceFS():
                 tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
                 self.lst=self.lst[:-1]
             e=str(f[0])+';'+str(f[1])+';'+str(f[2])
+            if (self.lst!=[])&(self.lstindex==self.filenames.index(filename)):
+                pass
+            else:
+                self.lst=self.readtable()[self.filenames.index(filename)]
+                self.lstindex=self.filenames.index(filename)
             if len(self.lst)==0:
                 tlst[self.filenames.index(filename)]+=e
                 self.lst=[e]
