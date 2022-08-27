@@ -272,17 +272,17 @@ class SpaceFS():
             return
         i=lst[0]
         if type(i)==int:
-            self.disk.seek(-(i*self.sectorsize+(start%self.sectorsize)),2)
+            self.disk.seek(-(i*self.sectorsize+(start%self.sectorsize)+self.sectorsize),2)
             data+=self.disk.read(self.sectorsize-(start%self.sectorsize))
         else:
-            self.disk.seek(-(int(i.split(';')[0])*self.sectorsize+(start%self.sectorsize)+int(i.split(';')[1])),2)
+            self.disk.seek(-(int(i.split(';')[0])*self.sectorsize+(start%self.sectorsize)+int(i.split(';')[1])+self.sectorsize),2)
             data+=self.disk.read(int(i.split(';')[2])-int(i.split(';')[1]))
         for i in lst[1:]:
             if type(i)==int:
-                self.disk.seek(-(i*self.sectorsize),2)
+                self.disk.seek(-(i*self.sectorsize+self.sectorsize),2)
                 data+=self.disk.read(self.sectorsize)
             else:
-                self.disk.seek(-(int(i.split(';')[0])*self.sectorsize+int(i.split(';')[1])),2)
+                self.disk.seek(-(int(i.split(';')[0])*self.sectorsize+int(i.split(';')[1])+self.sectorsize),2)
                 data+=self.disk.read(int(i.split(';')[2])-int(i.split(';')[1]))
         self.disk.seek(0)
         return data[:amount]
@@ -344,7 +344,7 @@ class SpaceFS():
         tmp=tlst[self.filenames.index(filename)]
         if ';' in tmp:
             tmp=tmp.split(';')
-            self.disk.seek(-(int(tmp[0])*self.sectorsize),2)
+            self.disk.seek(-(int(tmp[0])*self.sectorsize+self.sectorsize),2)
             odata=self.disk.read(self.sectorsize)[int(tmp[1]):int(tmp[2])]
             d=self.lst[self.filenames.index(filename)].index(self.readtable()[self.filenames.index(filename)][-1])
             self.lst.pop()
@@ -399,10 +399,10 @@ class SpaceFS():
         if odata!=None:
             try:
                 f=self.readtable()[self.filenames.index(filename)][d*self.sectorsize+int(tmp[1])].split(';')
-                self.disk.seek(-int(f[0]),2)
+                self.disk.seek(-(int(f[0])+self.sectorsize),2)
                 self.disk.write(odata[:int(f[2])-int(f[1])])
             except AttributeError:
-                self.disk.seek(-int(self.readtable()[self.filenames.index(filename)][d*self.sectorsize+int(tmp[1])]),2)
+                self.disk.seek(-(int((self.readtable()[self.filenames.index(filename)][d*self.sectorsize+int(tmp[1])]))+self.sectorsize),2)
                 self.disk.write(odata)
         st=start-(start//self.sectorsize*self.sectorsize)
         end=(start+len(data))//self.sectorsize+1
@@ -413,14 +413,14 @@ class SpaceFS():
                 u=int(i[1].split(';')[1])
             if i[0]==0:
                 try:
-                    self.disk.seek(-(int(i[1].split(';')[0])*self.sectorsize+st+u),2)
+                    self.disk.seek(-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize+st+u),2)
                 except AttributeError:
-                    self.disk.seek(-(i[1]*self.sectorsize+st+u),2)
+                    self.disk.seek(-(i[1]*self.sectorsize+self.sectorsize+st+u),2)
             else:
                 try:
-                    self.disk.seek(-(int(i[1].split(';')[0])*self.sectorsize+u),2)
+                    self.disk.seek(-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize+u),2)
                 except AttributeError:
-                    self.disk.seek(-(i[1]*self.sectorsize+u),2)
+                    self.disk.seek(-(i[1]*self.sectorsize+self.sectorsize+u),2)
             self.disk.write(data[i[0]])
         self.disk.flush()
         self.disk.seek(0)
