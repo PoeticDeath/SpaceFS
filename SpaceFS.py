@@ -373,19 +373,13 @@ class SpaceFS():
             try:
                 for i in self.part:
                     for o in [self.part[i][p:p+2] for p in range(0,len(self.part[i]),2)]:
-                        if len(o)==2:
-                            for p in self.filenames:
-                                try:
-                                    n=self.readtable()[self.filenames.index(p)][-1].split(';')
-                                    if (int(n[0])==i)&(int(n[2])==o[0]):
-                                        if o[1]-o[0]>=c:
-                                            f=[i,o[0],o[0]+c]
-                                            break
-                                    if type(f)==list:
-                                        break
-                                except IndexError:
-                                    pass
-                    if type(f)!=list:
+                        if len(o)==1:
+                            o+=[o[0]+1]
+                        if o[1]-o[0]>=c:
+                            f=[i,o[0],o[0]+c]
+                        if type(f)==list:
+                            break
+                    if type(f)==list:
                         break
             except AttributeError:
                 pass
