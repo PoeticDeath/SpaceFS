@@ -92,7 +92,7 @@ class SpaceFS():
                         del self.part[i]
             except IndexError:
                 pass
-    def findnewblock(self,part):
+    def findnewblock(self,part=False,pop=False):
         if part:
             table=self.table
             table=[i for i in table.replace(',','.').split('.') if i]
@@ -148,11 +148,9 @@ class SpaceFS():
                     if int(i.split(';')[0]) not in lst:
                         lst+=[int(i.split(';')[0])]
             self.missinglst+=set(range(0,max(lst)+10000)).difference(set(lst))
-            if len(self.missinglst)!=0:
-                return self.missinglst.pop(0)
-            return max(lst)+1
-        else:
+        if pop:
             return self.missinglst.pop(0)
+        return self.missinglst[0]
     def simptable(self):
         tmplst=self.readtable()
         lst=''
@@ -324,7 +322,7 @@ class SpaceFS():
         lst=lst[:(size+self.sectorsize-1)//self.sectorsize]
         if len(lst)==0:
             if size%self.sectorsize!=0:
-                lst=[str(self.findnewblock(False))+';0;'+str(size%self.sectorsize)]
+                lst=[str(self.findnewblock(pop=True))+';0;'+str(size%self.sectorsize)]
         else:
             if size%self.sectorsize!=0:
                 try:
@@ -376,7 +374,7 @@ class SpaceFS():
                 self.table='.'.join(tlst)
         while minblocks-m>len(self.lst):
             tlst=self.table.split('.')
-            block=self.findnewblock(False)
+            block=self.findnewblock(part=False,pop=True)
             if len(self.lst)==0:
                 tlst[self.filenames.index(filename)]=str(block)
             else:
@@ -387,8 +385,12 @@ class SpaceFS():
                 m=1
         if m==1:
             if self.trunfile(filename)<start+len(data):
-                f=self.findnewblock(True)
+                f=self.findnewblock(part=True,pop=False)
                 if c==0:
+                    try:
+                        self.missinglst.pop(self.missinglst.index(f))
+                    except ValueError:
+                        pass
                     f=[f,0,self.sectorsize]
                 else:
                     try:
@@ -405,6 +407,10 @@ class SpaceFS():
                     except AttributeError:
                         pass
                 if type(f)!=list:
+                    try:
+                        self.missinglst.pop(self.missinglst.index(f))
+                    except ValueError:
+                        pass
                     f=[f,0,c]
                 tlst=self.table.split('.')
                 if len(self.lst)==minblocks:

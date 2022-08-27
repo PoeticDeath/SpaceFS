@@ -78,7 +78,7 @@ class FuseTran(Operations):
         return 0
     def statfs(self,path):
         c={}
-        c['f_bavail']=c['f_bfree']=c['f_favail']=c['f_ffree']=self.s.sectorcount-self.s.findnewblock(False)-self.s.tablesectorcount
+        c['f_bavail']=c['f_bfree']=c['f_favail']=c['f_ffree']=self.s.sectorcount-self.s.findnewblock()-self.s.tablesectorcount
         c['f_bsize']=c['f_flag']=c['f_frsize']=self.s.sectorsize
         c['f_blocks']=self.s.sectorcount
         c['f_files']=16777216
