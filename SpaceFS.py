@@ -392,7 +392,7 @@ class SpaceFS():
                 else:
                     e=str(f[0])+';'+str(f[1])+';'+str(f[2])
                 if len(self.lst)==0:
-                    tlst[self.filenames.index(filename)]+=str(e)
+                    tlst[self.filenames.index(filename)]=str(e)
                 else:
                     tlst[self.filenames.index(filename)]+=','+str(e)
                 self.lst+=[e]
