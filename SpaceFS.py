@@ -236,6 +236,8 @@ class SpaceFS():
             self.table[-1]=''
         self.table='.'.join(self.table)
         self.disk.seek(0)
+        self.lst=[]
+        self.lstindex=-1
     def createfile(self,filename):
         if filename in self.filenames:
             raise FileExistsError
