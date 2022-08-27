@@ -381,10 +381,9 @@ class SpaceFS():
             e=str(f[0])+';'+str(f[1])+';'+str(f[2])
             if len(self.lst)==0:
                 tlst[self.filenames.index(filename)]+=e
-                self.lst=[e]
             else:
                 tlst[self.filenames.index(filename)]+=','+e
-                self.lst+=[e]
+            self.lst+=[e]
             self.table='.'.join(tlst)
         if odata!=None:
             self.disk.seek(-(self.readtable()[self.filenames.index(filename)][d]*self.sectorsize+int(tmp[1])),2)
