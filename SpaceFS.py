@@ -341,14 +341,13 @@ class SpaceFS():
         odata=None
         tlst=self.table.split('.')
         try:
-            if ';' in tlst[self.filenames.index(filename)][-1]:
-                tmp=tlst[self.filenames.index(filenames)][-1].split(';')
-                self.disk.seek(-(int(tmp[0])*self.sectorsize),2)
-                odata=self.disk.read(self.sectorsize)[int(tmp[1]):int(tmp[2])]
-                tlst[self.filenames.index(filename)].pop()
-                self.lst.pop()
-                d=tlst[self.filenames.index(filename)].index(tlst[self.filenames.index(filename)][-1])
-                tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
+            tmp=tlst[self.filenames.index(filename)].split(';')
+            self.disk.seek(-(int(tmp[0])*self.sectorsize),2)
+            odata=self.disk.read(self.sectorsize)[int(tmp[1]):int(tmp[2])]
+            d=self.lst[self.filenames.index(filename)].index(self.readtable()[self.filenames.index(filename)][-1])
+            self.lst.pop()
+            tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
+            self.table='.'.join(tlst)
         except IndexError:
             pass
         while minblocks-m>len(self.lst):
@@ -398,8 +397,13 @@ class SpaceFS():
                 self.lst+=[e]
                 self.table='.'.join(tlst)
         if odata!=None:
-            self.disk.seek(-(self.readtable()[self.filenames.index(filename)][d]*self.sectorsize+int(tmp[1])),2)
-            self.disk.write(odata)
+            try:
+                f=self.readtable()[self.filenames.index(filename)][d*self.sectorsize+int(tmp[1])].split(';')
+                self.disk.seek(-int(f[0]),2)
+                self.disk.write(odata[:int(f[2])-int(f[1])])
+            except AttributeError:
+                self.disk.seek(-int(self.readtable()[self.filenames.index(filename)][d*self.sectorsize+int(tmp[1])]),2)
+                self.disk.write(odata)
         st=start-(start//self.sectorsize*self.sectorsize)
         data=[data[:self.sectorsize-st]]+[data[i:i+self.sectorsize] for i in range(self.sectorsize-st,len(data),self.sectorsize)]
         for i in enumerate(self.lst[start//self.sectorsize:end]):
