@@ -288,9 +288,10 @@ class SpaceFS():
             raise FileNotFoundError
         lst=self.readtable()[self.filenames.index(filename)][start//self.sectorsize:(start+amount)//self.sectorsize+1]
         data=b''
-        if (start+amount)//self.sectorsize-1>self.trunfile(filename)//self.sectorsize:
+        try:
+            i=lst[0]
+        except IndexError:
             return
-        i=lst[0]
         if type(i)==int:
             self.disk.seek(-(i*self.sectorsize+(start%self.sectorsize)+self.sectorsize),2)
             data+=self.disk.read(self.sectorsize-(start%self.sectorsize))
