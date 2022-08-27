@@ -248,11 +248,15 @@ class SpaceFS():
             raise FileNotFoundError
         lst=self.readtable()
         lst.pop(self.filenames.index(filename))
-        self.table=''
+        self.table='.'
         for i in lst:
             for o in i:
-                self.table+=str(o)
+                if self.table[-1]=='.':
+                    self.table+=str(o)
+                else:
+                    self.table+=','+str(o)
             self.table+='.'
+        self.table=self.table[1:]
         self.filenames.pop(self.filenames.index(filename))
         self.simptable()
         self.missinglst=[]
