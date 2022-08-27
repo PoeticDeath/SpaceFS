@@ -114,6 +114,8 @@ class SpaceFS():
             for i in self.part:
                 lst=[]
                 for o in [self.part[i][p:p+2] for p in range(0,len(self.part[i]),2)]:
+                    if len(o)==1:
+                        o+=[o[0]+1]
                     lst+=set(range(0,self.sectorsize+1)).difference(set(range(o[0],o[1])))
                 old=-1
                 t=True
