@@ -318,7 +318,7 @@ class SpaceFS():
     def writefile(self,filename,start,data):
         if filename not in self.filenames:
             raise FileNotFoundError
-        end=(start+len(data))//self.sectorsize
+        end=(start+len(data))//self.sectorsize+1
         if (self.lst!=[])&(self.lstindex==self.filenames.index(filename)):
             pass
         else:
