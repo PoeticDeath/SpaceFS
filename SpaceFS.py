@@ -38,7 +38,7 @@ class SpaceFS():
         self.table='.'.join(self.table)
         self.disk.seek(0)
         self.lst=[]
-        self.lstindex=0
+        self.lstindex=-1
         self.missinglst=[]
     def readtable(self):
         tmp=[i.split(',') for i in self.table.split('.')[:-1]]
@@ -327,28 +327,7 @@ class SpaceFS():
         m=0
         c=(start+len(data))%self.sectorsize
         if c!=0:
-            m+=1
-        odata=None
-        while minblocks-m>len(self.lst):
-            tlst=self.table.split('.')
-            try:
-                if ';' in tlst[self.filenames.index(filename)][-1]:
-                    tmp=tlst[self.filenames.index(filenames)][-1].split(';')
-                    self.disk.seek(-(int(tmp[0])*self.sectorsize),2)
-                    odata=self.disk.read(self.sectorsize)[int(tmp[1]):int(tmp[2])]
-                    d=tlst[self.filenames.index(filename)].index(tlst[self.filenames.index(filename)][-1])
-                    tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
-            except IndexError:
-                pass
-            block=self.findnewblock(False)
-            if len(self.lst)==0:
-                tlst[self.filenames.index(filename)]+=str(block)
-            else:
-                tlst[self.filenames.index(filename)]+=','+str(block)
-            self.table='.'.join(tlst)
-            self.lst+=[block]
-            if c!=0:
-                m=1
+            m=1
         try:
             n=self.lst[-1].split(';')
             if int(n[2])-int(n[1])!=c:
@@ -359,6 +338,30 @@ class SpaceFS():
             pass
         except IndexError:
             pass
+        odata=None
+        tlst=self.table.split('.')
+        try:
+            if ';' in tlst[self.filenames.index(filename)][-1]:
+                tmp=tlst[self.filenames.index(filenames)][-1].split(';')
+                self.disk.seek(-(int(tmp[0])*self.sectorsize),2)
+                odata=self.disk.read(self.sectorsize)[int(tmp[1]):int(tmp[2])]
+                tlst[self.filenames.index(filename)].pop()
+                self.lst.pop()
+                d=tlst[self.filenames.index(filename)].index(tlst[self.filenames.index(filename)][-1])
+                tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
+        except IndexError:
+            pass
+        while minblocks-m>len(self.lst):
+            tlst=self.table.split('.')
+            block=self.findnewblock(False)
+            if len(self.lst)==0:
+                tlst[self.filenames.index(filename)]+=str(block)
+            else:
+                tlst[self.filenames.index(filename)]+=','+str(block)
+            self.table='.'.join(tlst)
+            self.lst+=[block]
+            if c!=0:
+                m=1
         if m==1:
             f=self.findnewblock(True)
             try:
