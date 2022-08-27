@@ -363,7 +363,7 @@ class SpaceFS():
             if c!=0:
                 m=1
         if m==1:
-            if self.trunfile(filename)>=start+len(data):
+            if self.trunfile(filename)<start+len(data):
                 f=self.findnewblock(True)
                 if c==0:
                     f=[f,0,self.sectorsize]
