@@ -340,16 +340,15 @@ class SpaceFS():
             pass
         odata=None
         tlst=self.table.split('.')
-        try:
-            tmp=tlst[self.filenames.index(filename)].split(';')
+        tmp=tlst[self.filenames.index(filename)]
+        if ';' in tmp:
+            tmp=tmp.split(';')
             self.disk.seek(-(int(tmp[0])*self.sectorsize),2)
             odata=self.disk.read(self.sectorsize)[int(tmp[1]):int(tmp[2])]
             d=self.lst[self.filenames.index(filename)].index(self.readtable()[self.filenames.index(filename)][-1])
             self.lst.pop()
             tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
             self.table='.'.join(tlst)
-        except IndexError:
-            pass
         while minblocks-m>len(self.lst):
             tlst=self.table.split('.')
             block=self.findnewblock(False)
