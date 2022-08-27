@@ -334,7 +334,7 @@ class SpaceFS():
             try:
                 if ';' in tlst[self.filenames.index(filename)][-1]:
                     tmp=tlst[self.filenames.index(filenames)][-1].split(';')
-                    self.disk.seek(int(tmp[0])*self.sectorsize+self.sectorsize)
+                    self.disk.seek(-(int(tmp[0])*self.sectorsize),2)
                     odata=self.disk.read(self.sectorsize)[int(tmp[1]):int(tmp[2])]
                     d=tlst[self.filenames.index(filename)].index(tlst[self.filenames.index(filename)][-1])
                     tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
