@@ -354,7 +354,7 @@ class SpaceFS():
             tlst=self.table.split('.')
             block=self.findnewblock(False)
             if len(self.lst)==0:
-                tlst[self.filenames.index(filename)]+=str(block)
+                tlst[self.filenames.index(filename)]=str(block)
             else:
                 tlst[self.filenames.index(filename)]+=','+str(block)
             self.table='.'.join(tlst)
