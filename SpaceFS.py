@@ -353,6 +353,8 @@ class SpaceFS():
             n=self.lst[-1].split(';')
             if int(n[2])-int(n[1])!=c:
                 m=1
+            else:
+                m=0
         except AttributeError:
             pass
         except IndexError:
