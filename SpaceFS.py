@@ -93,11 +93,9 @@ class SpaceFS():
             except IndexError:
                 pass
     def findnewblock(self,part):
-        table=self.table
-        table=[i for i in table.replace(',','.').split('.') if i]
-        if len(table)==0:
-            return 0
         if part:
+            table=self.table
+            table=[i for i in table.replace(',','.').split('.') if i]
             self.part={}
             parttable=[i for i in table if ';' in i]
             for i in parttable:
@@ -119,6 +117,10 @@ class SpaceFS():
                     lst+=set(range(0,self.sectorsize)).difference(set(range(o[0],o[1])))
                 self.part[i]=lst
         if self.missinglst==[]:
+            table=self.table
+            table=[i for i in table.replace(',','.').split('.') if i]
+            if len(table)==0:
+                return 0
             lst=[]
             for i in table:
                 if '-' in i:
