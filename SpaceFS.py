@@ -363,33 +363,40 @@ class SpaceFS():
             if c!=0:
                 m=1
         if m==1:
-            f=self.findnewblock(True)
-            try:
-                for i in self.part:
-                    for o in [self.part[i][p:p+2] for p in range(0,len(self.part[i]),2)]:
-                        if len(o)==1:
-                            o+=[o[0]+1]
-                        if o[1]-o[0]>=c:
-                            f=[i,o[0],o[0]+c]
-                        if type(f)==list:
-                            break
-                    if type(f)==list:
-                        break
-            except AttributeError:
-                pass
-            if type(f)!=list:
-                f=[f,0,c]
-            tlst=self.table.split('.')
-            if len(self.lst)==minblocks:
-                tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
-                self.lst=self.lst[:-1]
-            e=str(f[0])+';'+str(f[1])+';'+str(f[2])
-            if len(self.lst)==0:
-                tlst[self.filenames.index(filename)]+=e
-            else:
-                tlst[self.filenames.index(filename)]+=','+e
-            self.lst+=[e]
-            self.table='.'.join(tlst)
+            if self.trunfile(filename)>=start+len(data):
+                f=self.findnewblock(True)
+                if c==0:
+                    f=[f,0,self.sectorsize]
+                else:
+                    try:
+                        for i in self.part:
+                            for o in [self.part[i][p:p+2] for p in range(0,len(self.part[i]),2)]:
+                                if len(o)==1:
+                                    o+=[o[0]+1]
+                                if o[1]-o[0]>=c:
+                                    f=[i,o[0],o[0]+c]
+                                if type(f)==list:
+                                    break
+                            if type(f)==list:
+                                break
+                    except AttributeError:
+                        pass
+                if type(f)!=list:
+                    f=[f,0,c]
+                tlst=self.table.split('.')
+                if len(self.lst)==minblocks:
+                    tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
+                    self.lst=self.lst[:-1]
+                if (f[1]==0)&(f[2]==self.sectorsize):
+                    e=f[0]
+                else:
+                    e=str(f[0])+';'+str(f[1])+';'+str(f[2])
+                if len(self.lst)==0:
+                    tlst[self.filenames.index(filename)]+=str(e)
+                else:
+                    tlst[self.filenames.index(filename)]+=','+str(e)
+                self.lst+=[e]
+                self.table='.'.join(tlst)
         if odata!=None:
             self.disk.seek(-(self.readtable()[self.filenames.index(filename)][d]*self.sectorsize+int(tmp[1])),2)
             self.disk.write(odata)
