@@ -129,7 +129,7 @@ class SpaceFS():
                 else:
                     if int(i.split(';')[0]) not in lst:
                         lst+=[int(i.split(';')[0])]
-            self.missinglst+=set(range(lst[0],lst[-1]+10000)).difference(set(lst))
+            self.missinglst+=set(range(0,max(lst)+10000)).difference(set(lst))
             if len(self.missinglst)!=0:
                 return self.missinglst.pop(0)
             return max(lst)+1
