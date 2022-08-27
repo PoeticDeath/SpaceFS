@@ -114,10 +114,10 @@ class SpaceFS():
                     continue
                 break
             for i in self.part:
-                if self.part[i][0]==0:
-                    self.part[i].pop(0)
-                if len(self.part[i])%2!=0:
-                    self.part[i]+=[self.sectorsize]
+                lst=[]
+                for o in [self.part[i][p:p+2] for p in range(0,len(self.part[i]),2)]:
+                    lst+=set(range(0,self.sectorsize)).difference(set(range(o[0],o[1])))
+                self.part[i]=lst
         if self.missinglst==[]:
             lst=[]
             for i in table:
@@ -396,11 +396,6 @@ class SpaceFS():
                 tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
                 self.lst=self.lst[:-1]
             e=str(f[0])+';'+str(f[1])+';'+str(f[2])
-            if (self.lst!=[])&(self.lstindex==self.filenames.index(filename)):
-                pass
-            else:
-                self.lst=self.readtable()[self.filenames.index(filename)]
-                self.lstindex=self.filenames.index(filename)
             if len(self.lst)==0:
                 tlst[self.filenames.index(filename)]+=e
                 self.lst=[e]
