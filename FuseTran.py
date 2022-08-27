@@ -123,9 +123,9 @@ class FuseTran(Operations):
     def flush(self,path,fh):
         self.s.simptable()
     def release(self,path,fh):
-        pass
+        self.s.simptable()
     def fsync(self,path,fdatasync,fh):
-        pass
+        self.s.simptable()
 def main():
     mount='/home/akerr/SpaceFS'
     FUSE(FuseTran(mount),mount,nothreads=True,foreground=True,allow_other=True,big_writes=True,intr=True)
