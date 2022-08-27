@@ -79,19 +79,6 @@ class SpaceFS():
                 self.part[int(i[0])]=[int(i[1]),int(i[2])]
         except IndexError:
             pass
-    def multipart(self):
-        for i in self.part:
-            self.part[i]=sorted(self.part[i])
-            for o in self.part[i]:
-                if self.part[i].count(o)>1:
-                    while self.part[i].count(o)!=0:
-                        self.part[i].pop(self.part[i].index(o))
-            try:
-                if self.part[i][0]==0:
-                    if self.part[i][1]==self.sectorsize:
-                        del self.part[i]
-            except IndexError:
-                pass
     def findnewblock(self,part=False,pop=False):
         if part:
             table=self.table
@@ -105,35 +92,18 @@ class SpaceFS():
                         self.findnewpart(o)
                 else:
                     self.findnewpart(i)
-            while True:
-                try:
-                    self.multipart()
-                except RuntimeError:
-                    continue
-                break
             for i in self.part:
-                lst=[]
-                for o in [self.part[i][p:p+2] for p in range(0,len(self.part[i]),2)]:
-                    if len(o)==1:
-                        o+=[o[0]+1]
-                    lst+=set(range(0,self.sectorsize+1)).difference(set(range(o[0],o[1])))
-                old=-1
-                t=True
-                self.part[i]=[]
-                for o in lst+[self.sectorsize+2]:
-                    if o-1==old:
-                        t=True
-                        old=o
-                    else:
-                        if t:
-                            self.part[i]+=[old,o]
-                        t=False
-                        old=o
-                for o in [-1,self.sectorsize+2]:
-                    try:
+                tmp=set()
+                for o in self.part[i]:
+                    if self.part[i].count(o)>1:
+                        tmp.add(o)
+                for o in tmp:
+                    for p in range(0,self.part[i].count(o)):
                         self.part[i].remove(o)
-                    except ValueError:
-                        pass
+                if self.part[i][0]==0:
+                    self.part[i].pop(0)
+                if len(self.part[i])%2!=0:
+                    self.part[i]+=[self.sectorsize]
         if self.missinglst==[]:
             table=self.table
             table=[i for i in table.replace(',','.').split('.') if i]
