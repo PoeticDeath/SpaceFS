@@ -33,8 +33,8 @@ class FuseTran(Operations):
             if path!='/':
                 if path+'/' not in self.tmpfolders:
                     if path not in ['/'.join(i.split('/')[:-1]) for i in self.s.filenames]:
-                        full_path = self._full_path(path)
-                        st = os.lstat(full_path)
+                        full_path=self._full_path(path)
+                        st=os.lstat(full_path)
                         return dict((key,getattr(st,key)) for key in ('st_size','st_mode','st_gid','st_uid'))
         return {'st_size':s,'st_mode':mode,'st_gid':1000,'st_uid':1000}
     def readdir(self,path,fh):
