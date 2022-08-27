@@ -114,28 +114,9 @@ class SpaceFS():
                     continue
                 break
             for i in self.part:
-                self.part[i]=[list(range(self.part[i][o],self.part[i][o+1])) for o in range(0,len(self.part[i]),2)]
-                tmp=[]
-                for o in self.part[i]:
-                    tmp+=o
-                self.part[i]=[]
-                for o in range(0,self.sectorsize+1):
-                    if o not in tmp:
-                        self.part[i]+=[o]
-                tmp=[]
-                d=True
-                for o in range(min(self.part[i]),max(self.part[i])):
-                    if o not in self.part[i]:
-                        if not d:
-                            tmp+=[o]
-                        d=True
-                    else:
-                        if d:
-                            tmp+=[o]
-                        d=False
-                if len(tmp)%2!=0:
-                    tmp+=[self.sectorsize]
-                self.part[i]=tmp
+                self.part[i].pop(0)
+                if len(self.part[i])%2!=0:
+                    self.part[i]+=[self.sectorsize]
         if self.missinglst==[]:
             lst=[]
             for i in table:
@@ -282,6 +263,7 @@ class SpaceFS():
         self.filenames.pop(self.filenames.index(filename))
         self.writefilenames()
         self.disk.seek(0)
+        self.missinglst=[]
     def renamefile(self,oldfilename,newfilename):
         if oldfilename not in self.filenames:
             raise FileNotFoundError
