@@ -30,7 +30,7 @@ class SpaceFS():
         self.sectorsize=2**(int.from_bytes(self.disk.read(1),'big')+9)
         self.tablesectorcount=int.from_bytes(self.disk.read(4),'big')+1
         self.sectorcount=self.disksize//self.sectorsize
-        t=self.disk.read(self.sectorsize*self.tablesectorcount-5).split(b'\xff')
+        t=self.disk.read(self.sectorsize*self.tablesectorcount-5).split(b'\xfe')[0].split(b'\xff')
         self.table=decode(t[0]).split('.')
         self.filenames=[i.decode() for i in t[1:-1]]
         if self.table[-1]==len(self.table[-1])*'0':
@@ -221,6 +221,7 @@ class SpaceFS():
         filenames=b'\xff'
         for i in self.filenames:
             filenames+=i.encode()+b'\xff'
+        filenames+=b'\xfe'
         self.disk.seek(5)
         self.disk.write(elst+filenames)
         self.tablesectorcount=(len(elst+filenames)+self.sectorsize-1)//self.sectorsize-1
@@ -228,7 +229,7 @@ class SpaceFS():
         self.disk.write(self.tablesectorcount.to_bytes(4,'big'))
         self.tablesectorcount+=1
         self.disk.flush()
-        t=self.disk.read(self.sectorsize*self.tablesectorcount-5).split(b'\xff')
+        t=self.disk.read(self.sectorsize*self.tablesectorcount-5).split(b'\xfe')[0].split(b'\xff')
         self.table=decode(t[0]).split('.')
         self.filenames=[i.decode() for i in t[1:-1]]
         if self.table[-1]==len(self.table[-1])*'0':
