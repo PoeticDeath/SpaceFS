@@ -221,6 +221,7 @@ class SpaceFS():
         self.disk.seek(1)
         self.disk.write(self.tablesectorcount.to_bytes(4,'big'))
         self.tablesectorcount+=1
+        self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
         self.disk.flush()
         t=self.disk.read(self.sectorsize*self.tablesectorcount-5).split(b'\xfe')[0].split(b'\xff')
         self.table=decode(t[0]).split('.')
