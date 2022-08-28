@@ -1,11 +1,20 @@
 #!/usr/bin/env python3
 import os
 import errno
+from sys import argv
 from SpaceFS import SpaceFS
 from fuse import FUSE,FuseOSError,Operations,fuse_get_context
 class FuseTran(Operations):
-    def __init__(self,mount):
-        self.s=SpaceFS()
+    def __init__(self,mount,disk,bs=None):
+        self.s=SpaceFS(disk)
+        if bs!=None:
+            i=0
+            while bs>512:
+                i+=1
+                bs=bs>>1
+            self.s.disk.write(i.to_bytes(1,'big')+b'\x00'*4+b'\xff\xfe')
+            self.s.disk.flush()
+            self.s=SpaceFS(disk)
         self.mount=mount
         self.tmpfolders=[]
     # Helpers
@@ -128,6 +137,14 @@ class FuseTran(Operations):
         self.s.simptable()
 def main():
     mount='/home/akerr/SpaceFS'
-    FUSE(FuseTran(mount),mount,nothreads=True,foreground=True,allow_other=True,big_writes=True,intr=True)
+    try:
+        disk=str(argv[1])
+    except IndexError:
+        disk='SpaceFS.bin'
+    try:
+        bs=int(argv[2])
+    except IndexError:
+        bs=None
+    FUSE(FuseTran(mount,disk,bs),mount,nothreads=True,foreground=True,allow_other=True,big_writes=True,intr=True)
 if __name__=='__main__':
     main()

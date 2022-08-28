@@ -21,8 +21,8 @@ def encode(locstr):
         locbytes+=emap[i].to_bytes(1,'big')
     return locbytes
 class SpaceFS():
-    def __init__(self):
-        self.diskname='SpaceFS.bin'
+    def __init__(self,disk):
+        self.diskname=disk
         self.disksize=os.path.getsize(self.diskname)
         if self.disksize==0:
             self.disksize=shutil.disk_usage(self.diskname)[0]
