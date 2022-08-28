@@ -2,7 +2,9 @@
 import os
 import errno
 from sys import argv
+from time import sleep
 from SpaceFS import SpaceFS
+from threading import Thread
 from fuse import FUSE,FuseOSError,Operations,fuse_get_context
 class FuseTran(Operations):
     def __init__(self,mount,disk,bs=None):
@@ -17,6 +19,10 @@ class FuseTran(Operations):
             self.s=SpaceFS(disk)
         self.mount=mount
         self.tmpfolders=[]
+        Thread(target=self.autosimp,daemon=True).start()
+    def autosimp(self):
+        sleep(60)
+        self.s.simptable()
     # Helpers
     # =======
     def _full_path(self,partial):
