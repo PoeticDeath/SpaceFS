@@ -407,6 +407,8 @@ class SpaceFS():
                                             self.part[i].remove(o[1])
                                         else:
                                             self.part[i][self.part[i].index(o[0])]=o[0]+c
+                                    else:
+                                        self.part[i].remove(o[0])
                                 if type(f)==list:
                                     break
                             if type(f)==list:
