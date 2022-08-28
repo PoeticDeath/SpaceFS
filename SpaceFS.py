@@ -40,8 +40,13 @@ class SpaceFS():
         self.lst=[]
         self.lstindex=-1
         self.missinglst=[]
-        self.oldtable=self.table
+        self.oldsimptable=self.table
+        self.oldreadtable=[]
+        self.oldredtable=[]
     def readtable(self):
+        if self.oldreadtable==self.table:
+            return self.oldredtable
+        self.oldreadtable=self.table
         tmp=[i.split(',') for i in self.table.split('.')[:-1]]
         tmplst=[]
         for i in tmp:
@@ -70,6 +75,7 @@ class SpaceFS():
                 except ValueError:
                         pass
             tmplst+=[tmplstpart]
+        self.oldredtable=tmplst
         return tmplst
     def findnewpart(self,i):
         i=i.split(';')
@@ -131,9 +137,9 @@ class SpaceFS():
             return self.missinglst.pop(0)
         return self.missinglst[0]
     def simptable(self):
-        if self.oldtable==self.table:
+        if self.oldsimptable==self.table:
             return
-        self.oldtable=self.table
+        self.oldsimptable=self.table
         tmplst=self.readtable()
         lst=''
         for i in tmplst:
