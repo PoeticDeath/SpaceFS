@@ -265,7 +265,12 @@ class SpaceFS():
     def readfile(self,filename,start,amount):
         if filename not in self.filenames:
             raise FileNotFoundError
-        lst=self.readtable()[self.filenames.index(filename)][start//self.sectorsize:(start+amount)//self.sectorsize+1]
+        if (self.lst!=[])&(self.lstindex==self.filenames.index(filename)):
+            pass
+        else:
+            self.lst=self.readtable()[self.filenames.index(filename)]
+            self.lstindex=self.filenames.index(filename)
+        lst=self.lst[start//self.sectorsize:(start+amount)//self.sectorsize+1]
         data=b''
         try:
             i=lst[0]
