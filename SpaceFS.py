@@ -29,7 +29,7 @@ class SpaceFS():
         self.disk=open(self.diskname,'rb+')
         self.sectorsize=2**(int.from_bytes(self.disk.read(1),'big')+9)
         self.tablesectorcount=int.from_bytes(self.disk.read(4),'big')+1
-        self.sectorcount=self.disksize//self.sectorsize
+        self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
         t=self.disk.read(self.sectorsize*self.tablesectorcount-5).split(b'\xfe')[0].split(b'\xff')
         self.table=decode(t[0]).split('.')
         self.filenames=[i.decode() for i in t[1:-1]]
