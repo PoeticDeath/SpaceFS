@@ -40,6 +40,7 @@ class SpaceFS():
         self.lst=[]
         self.lstindex=-1
         self.missinglst=[]
+        self.oldtable=self.table
     def readtable(self):
         tmp=[i.split(',') for i in self.table.split('.')[:-1]]
         tmplst=[]
@@ -130,6 +131,9 @@ class SpaceFS():
             return self.missinglst.pop(0)
         return self.missinglst[0]
     def simptable(self):
+        if self.oldtable==self.table:
+            return
+        self.oldtable=self.table
         tmplst=self.readtable()
         lst=''
         for i in tmplst:
