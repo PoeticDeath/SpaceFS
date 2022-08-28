@@ -102,6 +102,8 @@ class SpaceFS():
                         self.part[i].remove(o)
                 if self.part[i][0]==0:
                     self.part[i].pop(0)
+                else:
+                    self.part[i]=[0]+self.part[i]
                 if len(self.part[i])%2!=0:
                     self.part[i]+=[self.sectorsize]
         if self.missinglst==[]:
