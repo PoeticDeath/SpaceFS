@@ -130,9 +130,9 @@ class FuseTran(Operations):
     def truncate(self,path,length,fh=None):
         self.s.trunfile(path,length)
     def flush(self,path,fh):
-        self.s.simptable()
+        pass
     def release(self,path,fh):
-        self.s.simptable()
+        pass
     def fsync(self,path,fdatasync,fh):
         self.s.simptable()
 def main():

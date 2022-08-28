@@ -139,7 +139,6 @@ class SpaceFS():
     def simptable(self):
         if self.oldsimptable==self.table:
             return
-        self.oldsimptable=self.table
         tmplst=self.readtable()
         lst=''
         for i in tmplst:
@@ -239,6 +238,7 @@ class SpaceFS():
         if self.table[-1]==len(self.table[-1])*'0':
             self.table[-1]=''
         self.table='.'.join(self.table)
+        self.oldsimptable=self.table
         self.disk.seek(0)
         self.lst=[]
         self.lstindex=-1
@@ -247,7 +247,6 @@ class SpaceFS():
             raise FileExistsError
         self.filenames+=[filename]
         self.table+='.'
-        self.simptable()
     def deletefile(self,filename):
         if filename not in self.filenames:
             raise FileNotFoundError
