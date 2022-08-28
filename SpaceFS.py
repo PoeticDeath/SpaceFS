@@ -89,6 +89,12 @@ class SpaceFS():
             pass
     def findnewblock(self,part=False,pop=False):
         if part:
+            t=True
+            for i in self.part:
+                if len(self.part[i])!=0:
+                    t=False
+            if t:
+                self.part={}
             if self.part=={}:
                 table=self.table
                 table=[i for i in table.replace(',','.').split('.') if i]
