@@ -92,8 +92,10 @@ class SpaceFS():
                         self.findnewpart(o)
                 else:
                     self.findnewpart(i)
+            t=[]
             for i in self.part:
                 tmp=set()
+                self.part[i]=sorted(self.part[i])
                 for o in self.part[i]:
                     if self.part[i].count(o)>1:
                         tmp.add(o)
@@ -106,6 +108,10 @@ class SpaceFS():
                     self.part[i]=[0]+self.part[i]
                 if len(self.part[i])%2!=0:
                     self.part[i]+=[self.sectorsize]
+                if self.part[i]==[self.sectorsize]*2:
+                    t+=[i]
+            for i in t:
+                self.part.pop(i)
         if self.missinglst==[]:
             table=self.table
             table=[i for i in table.replace(',','.').split('.') if i]
