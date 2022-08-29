@@ -326,7 +326,7 @@ class SpaceFS():
                     except KeyError:
                         self.part[int(part[0])]=[int(part[1]),int(part[2])]
                     lst=lst[:-1]
-            lst=lst[:(size+self.sectorsize-1)//self.sectorsize-1]
+            lst=lst[:(size+self.sectorsize-1)//self.sectorsize]
             self.flst[self.filenames.index(filename)]=lst
             nlst=','.join(lst)
             table=self.table.split('.')
