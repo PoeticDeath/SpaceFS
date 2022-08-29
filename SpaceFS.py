@@ -42,6 +42,7 @@ class SpaceFS():
         self.oldreadtable=[]
         self.oldredtable=[]
         self.part={}
+        self.findnewblock(part=True)
         self.flst=self.readtable()
         self.simptable()
     def readtable(self):
@@ -317,10 +318,15 @@ class SpaceFS():
                     return s+self.sectorsize
             return 0
         if size<self.trunfile(filename):
-            lst=lst[:(size+self.sectorsize-1)//self.sectorsize]
             if len(lst)>0:
                 if ';' in lst[-1]:
+                    part=lst[-1].split(';')
+                    try:
+                        self.part[int(part[0])]=sorted(self.part[int(part[0])]+[int(part[1]),int(part[2])])
+                    except KeyError:
+                        self.part[int(part[0])]=[int(part[1]),int(part[2])]
                     lst=lst[:-1]
+            lst=lst[:(size+self.sectorsize-1)//self.sectorsize-1]
             self.flst[self.filenames.index(filename)]=lst
             nlst=','.join(lst)
             table=self.table.split('.')
