@@ -253,6 +253,7 @@ class SpaceFS():
             raise FileExistsError
         self.filenames+=[filename]
         self.table+='.'
+        self.flst+=[[]]
     def deletefile(self,filename):
         if filename not in self.filenames:
             raise FileNotFoundError
