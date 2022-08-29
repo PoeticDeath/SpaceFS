@@ -359,7 +359,7 @@ class SpaceFS():
                 self.table='.'.join(tlst)
         while minblocks-m>len(lst):
             tlst=self.table.split('.')
-            block=self.findnewblock(part=False,pop=True)
+            block=self.findnewblock(pop=True)
             if len(lst)==0:
                 tlst[self.filenames.index(filename)]=str(block)
             else:
@@ -370,7 +370,7 @@ class SpaceFS():
                 m=1
         if m==1:
             if self.trunfile(filename)<start+len(data):
-                f=self.findnewblock(part=True,pop=False)
+                f=self.findnewblock(part=True)
                 if c==0:
                     try:
                         self.missinglst.pop(self.missinglst.index(f))
