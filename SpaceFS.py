@@ -322,8 +322,6 @@ class SpaceFS():
                     lst=lst[:-1]
             self.flst[self.filenames.index(filename)]=lst
             nlst=','.join(lst)
-            #for i in lst:
-            #    nlst+=str(i)
             table=self.table.split('.')
             table[self.filenames.index(filename)]=nlst
             self.table='.'.join(table)
