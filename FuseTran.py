@@ -21,8 +21,9 @@ class FuseTran(Operations):
         self.tmpfolders=[]
         Thread(target=self.autosimp,daemon=True).start()
     def autosimp(self):
-        sleep(60)
-        self.s.simptable()
+        while True:
+            self.s.simptable()
+            sleep(60)
     # Helpers
     # =======
     def _full_path(self,partial):
