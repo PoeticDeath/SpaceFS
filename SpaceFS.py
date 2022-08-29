@@ -258,7 +258,7 @@ class SpaceFS():
             raise FileNotFoundError
         self.flst.pop(self.filenames.index(filename))
         self.table='.'
-        for i in lst:
+        for i in self.flst:
             for o in i:
                 if self.table[-1]=='.':
                     self.table+=str(o)
@@ -321,9 +321,9 @@ class SpaceFS():
                 if ';' in lst[-1]:
                     lst=lst[:-1]
             self.flst[self.filenames.index(filename)]=lst
-            nlst=''
-            for i in lst:
-                nlst+=str(i)
+            nlst=','.join(lst)
+            #for i in lst:
+            #    nlst+=str(i)
             table=self.table.split('.')
             table[self.filenames.index(filename)]=nlst
             self.table='.'.join(table)
