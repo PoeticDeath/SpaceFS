@@ -43,6 +43,7 @@ class SpaceFS():
         self.oldredtable=[]
         self.part={}
         self.flst=self.readtable()
+        self.simptable()
     def readtable(self):
         if self.oldreadtable==self.table:
             return self.oldredtable
@@ -255,8 +256,7 @@ class SpaceFS():
     def deletefile(self,filename):
         if filename not in self.filenames:
             raise FileNotFoundError
-        lst=self.readtable()
-        lst.pop(self.filenames.index(filename))
+        self.flst.pop(self.filenames.index(filename))
         self.table='.'
         for i in lst:
             for o in i:
@@ -267,7 +267,6 @@ class SpaceFS():
             self.table+='.'
         self.table=self.table[1:]
         self.filenames.pop(self.filenames.index(filename))
-        self.simptable()
         self.missinglst=[]
     def renamefile(self,oldfilename,newfilename):
         if oldfilename not in self.filenames:
@@ -275,7 +274,6 @@ class SpaceFS():
         if newfilename in self.filenames:
             raise FileExistsError
         self.filenames[self.filenames.index(oldfilename)]=newfilename
-        self.simptable()
     def readfile(self,filename,start,amount):
         if filename not in self.filenames:
             raise FileNotFoundError
@@ -317,25 +315,19 @@ class SpaceFS():
                 except AttributeError:
                     return s+self.sectorsize
             return 0
-        lst=lst[:(size+self.sectorsize-1)//self.sectorsize]
-        if len(lst)==0:
-            if size%self.sectorsize!=0:
-                lst=[str(self.findnewblock(pop=True))+';0;'+str(size%self.sectorsize)]
-        else:
-            if size%self.sectorsize!=0:
-                try:
-                    tlst=lst[-1].split(';')[1]
-                    lst[-1]=','+str(lst[-1]).split(';')[0]+';'+tlst+';'+str(int(tlst)+size%self.sectorsize)
-                except AttributeError:
-                    lst[-1]=','+str(lst[-1])+';0;'+str(size%self.sectorsize)
-        nlst=''
-        for i in lst:
-            nlst+=str(i)
-        table=self.table.split('.')
-        table[self.filenames.index(filename)]=nlst
-        self.table='.'.join(table)
-        self.simptable()
-        self.missinglst=[]
+        if size<self.trunfile(filename):
+            lst=lst[:(size+self.sectorsize-1)//self.sectorsize]
+            if len(lst)>0:
+                if ';' in lst[-1]:
+                    lst=lst[:-1]
+            self.flst[self.filenames.index(filename)]=lst
+            nlst=''
+            for i in lst:
+                nlst+=str(i)
+            table=self.table.split('.')
+            table[self.filenames.index(filename)]=nlst
+            self.table='.'.join(table)
+            self.missinglst=[]
     def writefile(self,filename,start,data):
         if filename not in self.filenames:
             raise FileNotFoundError
