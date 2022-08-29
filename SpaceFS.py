@@ -420,7 +420,6 @@ class SpaceFS():
                 tlst=self.table.split('.')
                 if len(lst)==minblocks:
                     tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
-                    #self.flst[self.filenames.index(filename)].pop()
                 if (f[1]==0)&(f[2]==self.sectorsize):
                     e=f[0]
                 else:
