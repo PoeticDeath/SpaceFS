@@ -354,9 +354,9 @@ class SpaceFS():
         except IndexError:
             pass
         odata=None
-        tlst=self.table.split('.')
-        tmp=tlst[self.filenames.index(filename)]
         if m!=2:
+            tlst=self.table.split('.')
+            tmp=tlst[self.filenames.index(filename)]
             if ';' in tmp:
                 tmp=tmp.split(';')
                 self.disk.seek(-(int(tmp[0])*self.sectorsize+self.sectorsize),2)
