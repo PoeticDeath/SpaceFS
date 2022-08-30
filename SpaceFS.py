@@ -326,13 +326,14 @@ class SpaceFS():
                     except KeyError:
                         self.part[int(part[0])]=[int(part[1]),int(part[2])]
                     lst=lst[:-1]
+            newmiss=lst[(size+self.sectorsize-1)//self.sectorsize:]
             lst=lst[:(size+self.sectorsize-1)//self.sectorsize]
             self.flst[self.filenames.index(filename)]=lst
             nlst=','.join(lst)
             table=self.table.split('.')
             table[self.filenames.index(filename)]=nlst
             self.table='.'.join(table)
-            self.missinglst=[]
+            self.missinglst+=newmiss
     def writefile(self,filename,start,data):
         if filename not in self.filenames:
             raise FileNotFoundError
