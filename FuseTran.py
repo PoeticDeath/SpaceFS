@@ -19,6 +19,8 @@ class FuseTran(Operations):
             self.s=SpaceFS(disk)
         self.mount=mount
         self.tmpfolders=[]
+        self.oldtmpfolders=[]
+        self.tmpf=[]
         Thread(target=self.autosimp,daemon=True).start()
     def autosimp(self):
         while True:
@@ -48,7 +50,10 @@ class FuseTran(Operations):
             mode=16877
             if path!='/':
                 if path+'/' not in self.tmpfolders:
-                    if path not in ['/'.join(i.split('/')[:-1]) for i in self.s.filenames]:
+                    if self.tmpfolders!=self.oldtmpfolders:
+                        self.tmpf=['/'.join(i.split('/')[:-1]) for i in self.s.filenames]
+                        self.oldtmpfolders=self.tmpfolders
+                    if path not in self.tmpf:
                         full_path=self._full_path(path)
                         st=os.lstat(full_path)
                         return dict((key,getattr(st,key)) for key in ('st_size','st_mode','st_gid','st_uid'))
@@ -143,13 +148,16 @@ class FuseTran(Operations):
     def fsync(self,path,fdatasync,fh):
         self.s.simptable()
 def main():
-    mount='/home/akerr/SpaceFS'
     try:
         disk=str(argv[1])
     except IndexError:
         disk='SpaceFS.bin'
     try:
-        bs=int(argv[2])
+        mount=str(argv[2])
+    except IndexError:
+        mount='/home/akerr/SpaceFS'
+    try:
+        bs=int(argv[3])
     except IndexError:
         bs=None
     FUSE(FuseTran(mount,disk,bs),mount,nothreads=True,foreground=True,allow_other=True,big_writes=True,intr=True)
