@@ -327,13 +327,16 @@ class SpaceFS():
             return 0
         if size<self.trunfile(filename):
             if len(lst)>0:
-                if ';' in lst[-1]:
-                    part=lst[-1].split(';')
-                    try:
-                        self.part[int(part[0])]=sorted(self.part[int(part[0])]+[int(part[1]),int(part[2])])
-                    except KeyError:
-                        self.part[int(part[0])]=[int(part[1]),int(part[2])]
-                    lst=lst[:-1]
+                try:
+                    if ';' in lst[-1]:
+                        part=lst[-1].split(';')
+                        try:
+                            self.part[int(part[0])]=sorted(self.part[int(part[0])]+[int(part[1]),int(part[2])])
+                        except KeyError:
+                            self.part[int(part[0])]=[int(part[1]),int(part[2])]
+                        lst=lst[:-1]
+                except TypeError:
+                    pass
             newmiss=lst[(size+self.sectorsize-1)//self.sectorsize:]
             lst=lst[:(size+self.sectorsize-1)//self.sectorsize]
             self.flst[index]=lst
