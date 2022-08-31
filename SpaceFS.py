@@ -32,7 +32,8 @@ class SpaceFS():
         self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
         t=self.disk.read(self.sectorsize*self.tablesectorcount-5).split(b'\xfe')[0].split(b'\xff')
         self.table=decode(t[0]).split('.')
-        self.filenames=[i.decode() for i in t[1:-1]]
+        self.filenameslst=[i.decode() for i in t[1:-1]]
+        self.filenamesset=set(self.filenameslst)
         if self.table[-1]==len(self.table[-1])*'0':
             self.table[-1]=''
         self.table='.'.join(self.table)
@@ -229,7 +230,7 @@ class SpaceFS():
             lst+='.'
         elst=encode(lst)
         filenames=b'\xff'
-        for i in self.filenames:
+        for i in self.filenameslst:
             filenames+=i.encode()+b'\xff'
         filenames+=b'\xfe'
         self.disk.seek(5)
@@ -242,7 +243,8 @@ class SpaceFS():
         self.disk.flush()
         t=self.disk.read(self.sectorsize*self.tablesectorcount-5).split(b'\xfe')[0].split(b'\xff')
         self.table=decode(t[0]).split('.')
-        self.filenames=[i.decode() for i in t[1:-1]]
+        self.filenameslst=[i.decode() for i in t[1:-1]]
+        self.filenamesset=set(self.filenameslst)
         if self.table[-1]==len(self.table[-1])*'0':
             self.table[-1]=''
         self.table='.'.join(self.table)
@@ -250,15 +252,17 @@ class SpaceFS():
         self.disk.seek(0)
         self.flst=self.readtable()
     def createfile(self,filename):
-        if filename in self.filenames:
+        if filename in self.filenamesset:
             raise FileExistsError
-        self.filenames+=[filename]
+        self.filenameslst+=[filename]
+        self.filenamesset.add(filename)
         self.table+='.'
         self.flst+=[[]]
     def deletefile(self,filename):
-        if filename not in self.filenames:
+        if filename not in self.filenamesset:
             raise FileNotFoundError
-        self.flst.pop(self.filenames.index(filename))
+        index=self.filenameslst.index(filename)
+        self.flst.pop(index)
         self.table='.'
         for i in self.flst:
             for o in i:
@@ -268,18 +272,21 @@ class SpaceFS():
                     self.table+=','+str(o)
             self.table+='.'
         self.table=self.table[1:]
-        self.filenames.pop(self.filenames.index(filename))
+        self.filenameslst.pop(index)
+        self.filenamesset.remove(filename)
         self.missinglst=[]
     def renamefile(self,oldfilename,newfilename):
-        if oldfilename not in self.filenames:
+        if oldfilename not in self.filenamesset:
             raise FileNotFoundError
-        if newfilename in self.filenames:
+        if newfilename in self.filenamesset:
             raise FileExistsError
-        self.filenames[self.filenames.index(oldfilename)]=newfilename
+        self.filenameslst[self.filenameslst.index(oldfilename)]=newfilename
+        self.filenamesset.remove(oldfilename)
+        self.filenamesset.add(newfilename)
     def readfile(self,filename,start,amount):
-        if filename not in self.filenames:
+        if filename not in self.filenamesset:
             raise FileNotFoundError
-        lst=self.flst[self.filenames.index(filename)][start//self.sectorsize:(start+amount)//self.sectorsize+1]
+        lst=self.flst[self.filenameslst.index(filename)][start//self.sectorsize:(start+amount)//self.sectorsize+1]
         data=b''
         try:
             i=lst[0]
@@ -301,13 +308,14 @@ class SpaceFS():
         self.disk.seek(0)
         return data[:amount]
     def trunfile(self,filename,size=None):
+        index=self.filenameslst.index(filename)
         try:
-            lst=self.flst[self.filenames.index(filename)]
+            lst=self.flst[index]
         except IndexError:
             if size==0:
                 return 0
             self.flst=self.readtable()
-            lst=self.flst[self.filenames.index(filename)]
+            lst=self.flst[index]
         if size==None:
             if len(lst)!=0:
                 s=(len(lst)-1)*self.sectorsize
@@ -328,16 +336,17 @@ class SpaceFS():
                     lst=lst[:-1]
             newmiss=lst[(size+self.sectorsize-1)//self.sectorsize:]
             lst=lst[:(size+self.sectorsize-1)//self.sectorsize]
-            self.flst[self.filenames.index(filename)]=lst
+            self.flst[index]=lst
             nlst=','.join(lst)
             table=self.table.split('.')
-            table[self.filenames.index(filename)]=nlst
+            table[index]=nlst
             self.table='.'.join(table)
             self.missinglst+=newmiss
     def writefile(self,filename,start,data):
-        if filename not in self.filenames:
+        if filename not in self.filenamesset:
             raise FileNotFoundError
-        lst=self.flst[self.filenames.index(filename)]
+        index=self.filenameslst.index(filename)
+        lst=self.flst[index]
         minblocks=(start+len(data))//self.sectorsize
         m=0
         c=(start+len(data))%self.sectorsize
@@ -356,24 +365,24 @@ class SpaceFS():
         odata=None
         if m!=2:
             tlst=self.table.split('.')
-            tmp=tlst[self.filenames.index(filename)]
+            tmp=tlst[index]
             if ';' in tmp:
                 tmp=tmp.split(';')
                 self.disk.seek(-(int(tmp[0])*self.sectorsize+self.sectorsize),2)
                 odata=self.disk.read(self.sectorsize)[int(tmp[1]):int(tmp[2])]
-                d=self.flst[self.filenames.index(filename)].index(self.readtable()[self.filenames.index(filename)][-1])
-                self.flst[self.filenames.index(filename)].pop()
-                tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
+                d=self.flst[index].index(self.readtable()[index][-1])
+                self.flst[index].pop()
+                tlst[index]=','.join(tlst[index].split(',')[:-1])
                 self.table='.'.join(tlst)
         while minblocks-m>len(lst):
             tlst=self.table.split('.')
             block=self.findnewblock(pop=True)
             if len(lst)==0:
-                tlst[self.filenames.index(filename)]=str(block)
+                tlst[index]=str(block)
             else:
-                tlst[self.filenames.index(filename)]+=','+str(block)
+                tlst[index]+=','+str(block)
             self.table='.'.join(tlst)
-            self.flst[self.filenames.index(filename)]+=[block]
+            self.flst[index]+=[block]
             if c!=0:
                 m=1
         if m==1:
@@ -417,29 +426,29 @@ class SpaceFS():
                     f=[f,0,c]
                 tlst=self.table.split('.')
                 if len(lst)==minblocks:
-                    tlst[self.filenames.index(filename)]=','.join(tlst[self.filenames.index(filename)].split(',')[:-1])
+                    tlst[index]=','.join(tlst[index].split(',')[:-1])
                 if (f[1]==0)&(f[2]==self.sectorsize):
                     e=f[0]
                 else:
                     e=str(f[0])+';'+str(f[1])+';'+str(f[2])
                 if len(lst)==0:
-                    tlst[self.filenames.index(filename)]=str(e)
+                    tlst[index]=str(e)
                 else:
-                    tlst[self.filenames.index(filename)]+=','+str(e)
-                self.flst[self.filenames.index(filename)]+=[e]
+                    tlst[index]+=','+str(e)
+                self.flst[index]+=[e]
                 self.table='.'.join(tlst)
         if odata!=None:
             try:
-                f=self.readtable()[self.filenames.index(filename)][d*self.sectorsize+int(tmp[1])].split(';')
+                f=self.readtable()[index][d*self.sectorsize+int(tmp[1])].split(';')
                 self.disk.seek(-(int(f[0])+self.sectorsize),2)
                 self.disk.write(odata[:int(f[2])-int(f[1])])
             except AttributeError:
-                self.disk.seek(-(int(self.readtable()[self.filenames.index(filename)][d*self.sectorsize+int(tmp[1])])+self.sectorsize),2)
+                self.disk.seek(-(int(self.readtable()[index][d*self.sectorsize+int(tmp[1])])+self.sectorsize),2)
                 self.disk.write(odata)
         st=start-(start//self.sectorsize*self.sectorsize)
         end=(start+len(data))//self.sectorsize+1
         data=[data[:self.sectorsize-st]]+[data[i:i+self.sectorsize] for i in range(self.sectorsize-st,len(data),self.sectorsize)]
-        for i in enumerate(self.flst[self.filenames.index(filename)][start//self.sectorsize:end]):
+        for i in enumerate(self.flst[index][start//self.sectorsize:end]):
             u=0
             if type(i[1])==str:
                 u=int(i[1].split(';')[1])
