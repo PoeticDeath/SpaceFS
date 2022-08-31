@@ -146,7 +146,8 @@ class SpaceFS():
             return self.missinglst.pop(0)
         return self.missinglst[0]
     def simptable(self):
-        if self.oldsimptable==self.table:
+        table=self.table
+        if self.oldsimptable==table:
             return
         tmplst=self.readtable()
         lst=''
@@ -241,16 +242,8 @@ class SpaceFS():
         self.tablesectorcount+=1
         self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
         self.disk.flush()
-        t=self.disk.read(self.sectorsize*self.tablesectorcount-5).split(b'\xfe')[0].split(b'\xff')
-        self.table=decode(t[0]).split('.')
-        self.filenameslst=[i.decode() for i in t[1:-1]]
-        self.filenamesset=set(self.filenameslst)
-        if self.table[-1]==len(self.table[-1])*'0':
-            self.table[-1]=''
-        self.table='.'.join(self.table)
-        self.oldsimptable=self.table
+        self.oldsimptable=table
         self.disk.seek(0)
-        self.flst=self.readtable()
     def createfile(self,filename):
         if filename in self.filenamesset:
             raise FileExistsError
