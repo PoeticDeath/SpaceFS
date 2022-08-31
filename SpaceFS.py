@@ -255,7 +255,17 @@ class SpaceFS():
         if filename not in self.filenamesset:
             raise FileNotFoundError
         index=self.filenameslst.index(filename)
-        self.flst.pop(index)
+        mlst=self.flst.pop(index)
+        try:
+            if type(mlst[-1])==str:
+                m=mlst.pop(-1).split(';')
+                try:
+                    self.part[int(m[0])]+=[int(m[1]),int(m[2])]
+                except KeyError:
+                    self.part[int(m[0])]=[int(m[1]),int(m[2])]
+        except IndexError:
+            pass
+        self.missinglst+=mlst
         self.table='.'
         for i in self.flst:
             for o in i:
@@ -267,7 +277,6 @@ class SpaceFS():
         self.table=self.table[1:]
         self.filenameslst.pop(index)
         self.filenamesset.remove(filename)
-        self.missinglst=[]
     def renamefile(self,oldfilename,newfilename):
         if oldfilename not in self.filenamesset:
             raise FileNotFoundError
@@ -321,7 +330,7 @@ class SpaceFS():
         if size<self.trunfile(filename):
             if len(lst)>0:
                 try:
-                    if ';' in lst[-1]:
+                    if type(lst[-1])==str:
                         part=lst[-1].split(';')
                         try:
                             self.part[int(part[0])]=sorted(self.part[int(part[0])]+[int(part[1]),int(part[2])])
@@ -346,7 +355,15 @@ class SpaceFS():
         minblocks=(start+len(data))//self.sectorsize
         m=0
         c=(start+len(data))%self.sectorsize
-        if self.findnewblock()>self.sectorcount:
+        partfull=True
+        try:
+            if type(lst[-1])==str:
+                prtfull=lst[-1].split(';')
+                if int(prtfull[1])-int(prtfull[0])>=c:
+                    partfull=False
+        except IndexError:
+            pass
+        if (self.findnewblock()>self.sectorcount)&partfull:
             self.findnewblock(part=True)
             full=True
             for i in self.part:
