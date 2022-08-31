@@ -346,6 +346,16 @@ class SpaceFS():
         minblocks=(start+len(data))//self.sectorsize
         m=0
         c=(start+len(data))%self.sectorsize
+        if self.findnewblock()>self.sectorcount:
+            self.findnewblock(part=True)
+            full=True
+            for i in self.part:
+                prt=self.part[i]
+                if prt[1]-prt[0]<=c:
+                    full=False
+                    break
+            if full==True:
+                return 0
         if c!=0:
             m=1
         try:
@@ -370,6 +380,8 @@ class SpaceFS():
                 self.flst[index].pop()
                 tlst[index]=','.join(tlst[index].split(',')[:-1])
                 self.table='.'.join(tlst)
+        elif m==2:
+            m=1
         while minblocks-m>len(lst):
             tlst=self.table.split('.')
             block=self.findnewblock(pop=True)

@@ -99,7 +99,10 @@ class FuseTran(Operations):
         return 0
     def statfs(self,path):
         c={}
-        c['f_bavail']=c['f_bfree']=c['f_favail']=c['f_ffree']=self.s.sectorcount-self.s.findnewblock()
+        avail=self.s.sectorcount-self.s.findnewblock()
+        if avail<0:
+            avail=0
+        c['f_bavail']=c['f_bfree']=c['f_favail']=c['f_ffree']=avail
         c['f_bsize']=c['f_flag']=c['f_frsize']=self.s.sectorsize
         c['f_blocks']=self.s.sectorcount
         c['f_files']=16777216
@@ -137,7 +140,8 @@ class FuseTran(Operations):
     def read(self,path,length,offset,fh):
         return self.s.readfile(path,offset,length)
     def write(self,path,data,offset,fh):
-        self.s.writefile(path,offset,data)
+        if self.s.writefile(path,offset,data)==0:
+            raise FuseOSError(errno.ENOSPC)
         return len(data)
     def truncate(self,path,length,fh=None):
         self.s.trunfile(path,length)
