@@ -51,7 +51,7 @@ class FuseTran(Operations):
             if path!='/':
                 if path+'/' not in self.tmpfolders:
                     if self.tmpfolders!=self.oldtmpfolders:
-                        self.tmpf=['/'.join(i.split('/')[:-1]) for i in self.s.filenamesset]
+                        self.tmpf=['/'.join(i.split('/')[:-1]) for i in self.s.filenamesdic]
                         self.oldtmpfolders=self.tmpfolders
                     if path not in self.tmpf:
                         full_path=self._full_path(path)
@@ -62,7 +62,7 @@ class FuseTran(Operations):
         dirents = ['.','..']
         if path[-1]!='/':
                 path+='/'
-        for i in self.s.filenamesset:
+        for i in self.s.filenamesdic:
             if i.startswith(path):
                 if path.count('/')==i.count('/'):
                     dirents+=[i[1:].split('/')[-1]]
@@ -113,8 +113,8 @@ class FuseTran(Operations):
     def symlink(self,name,target):
         pass
     def rename(self,old,new):
-        if old not in self.s.filenamesset:
-            for i in self.s.filenamesset:
+        if old not in self.s.filenamesdic:
+            for i in self.s.filenamesdic:
                 if i.startswith(old+'/'):
                     self.s.renamefile(i,i.replace(old,new))
             try:
