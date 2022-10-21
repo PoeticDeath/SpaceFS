@@ -33,7 +33,9 @@ class SpaceFS():
         t=self.disk.read(self.sectorsize*self.tablesectorcount-5).split(b'\xfe')[0].split(b'\xff')
         self.table=decode(t[0]).split('.')
         self.filenameslst=[i.decode() for i in t[1:-1]]
-        self.filenamesset=set(self.filenameslst)
+        self.filenamesdic={}
+        for i in enumerate(self.filenameslst):
+            self.filenamesdic[i[1]]=[i[0]]
         if self.table[-1]==len(self.table[-1])*'0':
             self.table[-1]=''
         self.table='.'.join(self.table)
@@ -243,14 +245,14 @@ class SpaceFS():
         self.oldsimptable=table
         self.disk.seek(0)
     def createfile(self,filename):
-        if filename in self.filenamesset:
+        if filename in self.filenamesdic:
             raise FileExistsError
         self.filenameslst+=[filename]
-        self.filenamesset.add(filename)
+        self.filenamesdic[filename]=len(self.filenamesdic)
         self.table+='.'
         self.flst+=[[]]
     def deletefile(self,filename):
-        if filename not in self.filenamesset:
+        if filename not in self.filenamesdic:
             raise FileNotFoundError
         index=self.filenameslst.index(filename)
         mlst=self.flst.pop(index)
@@ -274,17 +276,18 @@ class SpaceFS():
             self.table+='.'
         self.table=self.table[1:]
         self.filenameslst.pop(index)
-        self.filenamesset.remove(filename)
+        del self.filenamesdic[filename]
     def renamefile(self,oldfilename,newfilename):
-        if oldfilename not in self.filenamesset:
+        if oldfilename not in self.filenamesdic:
             raise FileNotFoundError
-        if newfilename in self.filenamesset:
+        if newfilename in self.filenamesdic:
             raise FileExistsError
-        self.filenameslst[self.filenameslst.index(oldfilename)]=newfilename
-        self.filenamesset.remove(oldfilename)
-        self.filenamesset.add(newfilename)
+        oldindex=self.filenameslst.index(oldfilename)
+        self.filenameslst[oldindex]=newfilename
+        del self.filenamesdic[oldfilename]
+        self.filenamesdic[newfilename]=oldindex
     def readfile(self,filename,start,amount):
-        if filename not in self.filenamesset:
+        if filename not in self.filenamesdic:
             raise FileNotFoundError
         lst=self.flst[self.filenameslst.index(filename)][start//self.sectorsize:(start+amount)//self.sectorsize+1]
         data=b''
@@ -308,7 +311,10 @@ class SpaceFS():
         self.disk.seek(0)
         return data[:amount]
     def trunfile(self,filename,size=None):
-        index=self.filenameslst.index(filename)
+        try:
+            index=self.filenamesdic[filename]
+        except KeyError:
+            [].index(filename)
         try:
             lst=self.flst[index]
         except IndexError:
@@ -346,7 +352,7 @@ class SpaceFS():
             self.table='.'.join(table)
             self.missinglst+=newmiss
     def writefile(self,filename,start,data):
-        if filename not in self.filenamesset:
+        if filename not in self.filenamesdic:
             raise FileNotFoundError
         index=self.filenameslst.index(filename)
         lst=self.flst[index]
