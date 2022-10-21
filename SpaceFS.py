@@ -254,7 +254,7 @@ class SpaceFS():
     def deletefile(self,filename):
         if filename not in self.filenamesdic:
             raise FileNotFoundError
-        index=self.filenameslst.index(filename)
+        index=self.filenamesdic[filename]
         mlst=self.flst.pop(index)
         try:
             if type(mlst[-1])==str:
@@ -282,14 +282,14 @@ class SpaceFS():
             raise FileNotFoundError
         if newfilename in self.filenamesdic:
             raise FileExistsError
-        oldindex=self.filenameslst.index(oldfilename)
+        oldindex=self.filenamesdic[oldfilename]
         self.filenameslst[oldindex]=newfilename
         del self.filenamesdic[oldfilename]
         self.filenamesdic[newfilename]=oldindex
     def readfile(self,filename,start,amount):
         if filename not in self.filenamesdic:
             raise FileNotFoundError
-        lst=self.flst[self.filenameslst.index(filename)][start//self.sectorsize:(start+amount)//self.sectorsize+1]
+        lst=self.flst[self.filenamesdic[filename]][start//self.sectorsize:(start+amount)//self.sectorsize+1]
         data=b''
         try:
             i=lst[0]
@@ -354,7 +354,7 @@ class SpaceFS():
     def writefile(self,filename,start,data):
         if filename not in self.filenamesdic:
             raise FileNotFoundError
-        index=self.filenameslst.index(filename)
+        index=self.filenamesdic[filename]
         lst=self.flst[index]
         minblocks=(start+len(data))//self.sectorsize
         m=0
