@@ -113,11 +113,9 @@ class SpaceFS():
                     tmp=set()
                     self.part[i]=sorted(self.part[i])
                     for o in self.part[i]:
-                        if self.part[i].count(o)>1:
+                        if self.part[i].count(o)==1:
                             tmp.add(o)
-                    for o in tmp:
-                        for p in range(0,self.part[i].count(o)):
-                            self.part[i].remove(o)
+                    self.part[i]=list(tmp)
                     if self.part[i][0]==0:
                         self.part[i].pop(0)
                     else:
