@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import os
 import errno
-import logging
 from sys import argv
 from time import sleep
 from SpaceFS import SpaceFS
