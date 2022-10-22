@@ -41,6 +41,7 @@ class FuseTran(Operations):
         return 0
     def chown(self,path,uid,gid):
         return 0
+    getxattr=None
     def getattr(self,path,fh=None):
         try:
             s=self.s.trunfile(path)
