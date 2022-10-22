@@ -162,9 +162,13 @@ def main():
     except IndexError:
         mount='/home/akerr/SpaceFS'
     try:
-        bs=int(argv[3])
+        fg=not int(argv[3])
+    except IndexError:
+        fg=True
+    try:
+        bs=int(argv[4])
     except IndexError:
         bs=None
-    FUSE(FuseTran(mount,disk,bs),mount,nothreads=True,foreground=True,allow_other=True,big_writes=True,intr=True)
+    FUSE(FuseTran(mount,disk,bs),mount,nothreads=True,foreground=fg,allow_other=True,big_writes=True,intr=True)
 if __name__=='__main__':
     main()
