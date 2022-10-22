@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import errno
+import logging
 from sys import argv
 from time import sleep
 from SpaceFS import SpaceFS
@@ -43,6 +44,9 @@ class FuseTran(Operations):
         return 0
     getxattr=None
     def getattr(self,path,fh=None):
+        guid=1000
+        if (self.mount[0]!='/')&(self.mount[1:3]==':\\'):
+            guid=545
         try:
             s=self.s.trunfile(path)
             mode=33188
@@ -58,7 +62,7 @@ class FuseTran(Operations):
                         full_path=self._full_path(path)
                         st=os.lstat(full_path)
                         return dict((key,getattr(st,key)) for key in ('st_size','st_mode','st_gid','st_uid'))
-        return {'st_size':s,'st_mode':mode,'st_gid':1000,'st_uid':1000}
+        return {'st_size':s,'st_mode':mode,'st_gid':guid,'st_uid':guid}
     def readdir(self,path,fh):
         dirents = ['.','..']
         if path[-1]!='/':

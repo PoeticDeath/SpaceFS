@@ -35,7 +35,7 @@ class SpaceFS():
         self.filenameslst=[i.decode() for i in t[1:-1]]
         self.filenamesdic={}
         for i in enumerate(self.filenameslst):
-            self.filenamesdic[i[1]]=[i[0]]
+            self.filenamesdic[i[1]]=i[0]
         if self.table[-1]==len(self.table[-1])*'0':
             self.table[-1]=''
         self.table='.'.join(self.table)
