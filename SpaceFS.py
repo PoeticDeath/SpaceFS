@@ -128,7 +128,8 @@ class SpaceFS():
                         t+=[i]
                 for i in t:
                     self.part.pop(i)
-        if self.missinglst==[]:
+        if (self.missinglst==[])|whole:
+            self.missinglst=[]
             table=self.table
             table=[i for i in table.replace(',','.').split('.') if i]
             if len(table)==0:
@@ -141,7 +142,7 @@ class SpaceFS():
                 else:
                     if int(i.split(';')[0]) not in lst:
                         lst+=[int(i.split(';')[0])]
-            self.missinglst+=set(range(0,max(lst)+10000)).difference(set(lst))
+            self.missinglst+=set(range(0,min(max(lst)+10000,self.sectorcount))).difference(set(lst))
         if pop:
             return self.missinglst.pop(0)
         if whole:
