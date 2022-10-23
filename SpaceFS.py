@@ -130,11 +130,13 @@ class SpaceFS():
                     self.part.pop(i)
         if (self.missinglst==[])|whole:
             self.missinglst=[]
+            lst=[]
             table=self.table
             table=[i for i in table.replace(',','.').split('.') if i]
             if len(table)==0:
-                return 0
-            lst=[]
+                if not whole:
+                    return 0
+                lst=[0]
             for i in table:
                 if '-' in i:
                     p=i.split('-')
