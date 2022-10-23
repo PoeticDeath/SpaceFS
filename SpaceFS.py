@@ -91,7 +91,7 @@ class SpaceFS():
                 self.part[int(i[0])]=[int(i[1]),int(i[2])]
         except IndexError:
             pass
-    def findnewblock(self,part=False,pop=False):
+    def findnewblock(self,part=False,pop=False,whole=False):
         if part:
             t=True
             for i in self.part:
@@ -144,6 +144,8 @@ class SpaceFS():
             self.missinglst+=set(range(0,max(lst)+10000)).difference(set(lst))
         if pop:
             return self.missinglst.pop(0)
+        if whole:
+            return len(self.missinglst)
         return self.missinglst[0]
     def simptable(self):
         table=self.table

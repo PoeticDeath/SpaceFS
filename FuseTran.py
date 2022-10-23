@@ -103,7 +103,7 @@ class FuseTran(Operations):
         return 0
     def statfs(self,path):
         c={}
-        avail=self.s.sectorcount-self.s.findnewblock()
+        avail=self.s.sectorcount-self.s.findnewblock(whole=True)
         if avail<0:
             avail=0
         c['f_bavail']=c['f_bfree']=c['f_favail']=c['f_ffree']=avail
