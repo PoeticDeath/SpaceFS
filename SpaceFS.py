@@ -353,6 +353,8 @@ class SpaceFS():
             table[index]=nlst
             self.table='.'.join(table)
             self.missinglst+=newmiss
+        if size>self.trunfile(filename):
+            self.writefile(filename,self.trunfile(filename),b'\x00'*(size-self.trunfile(filename)))
     def writefile(self,filename,start,data):
         if filename not in self.filenamesdic:
             raise FileNotFoundError
