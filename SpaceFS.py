@@ -402,7 +402,7 @@ class SpaceFS():
         odata=None
         if m!=2:
             tlst=self.table.split('.')
-            tmp=tlst[index]
+            tmp=tlst[index].split(',')[-1]
             if ';' in tmp:
                 tmp=tmp.split(';')
                 self.disk.seek(-(int(tmp[0])*self.sectorsize+self.sectorsize),2)
@@ -478,9 +478,8 @@ class SpaceFS():
                 self.table='.'.join(tlst)
         if odata!=None:
             try:
-                f=self.readtable()[index][d*self.sectorsize+int(tmp[1])].split(';')
-                self.disk.seek(-(int(f[0])+self.sectorsize),2)
-                self.disk.write(odata[:int(f[2])-int(f[1])])
+                self.disk.seek(-(int(tmp[0])+self.sectorsize),2)
+                self.disk.write(odata[:int(tmp[2])-int(tmp[1])])
             except AttributeError:
                 self.disk.seek(-(int(self.readtable()[index][d*self.sectorsize+int(tmp[1])])+self.sectorsize),2)
                 self.disk.write(odata)
