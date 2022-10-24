@@ -294,9 +294,7 @@ class SpaceFS():
     def readfile(self,filename,start,amount):
         if filename not in self.filenamesdic:
             raise FileNotFoundError
-        end=(start+amount)//self.sectorsize
-        if start//self.sectorsize==end:
-            end+=1
+        end=(start+amount+self.sectorsize-1)//self.sectorsize
         lst=self.flst[self.filenamesdic[filename]][start//self.sectorsize:end]
         data=b''
         try:
