@@ -302,10 +302,10 @@ class SpaceFS():
         except IndexError:
             return
         if type(i)==int:
-            self.disk.seek(-(i*self.sectorsize+(start%self.sectorsize)+self.sectorsize),2)
+            self.disk.seek(-(i*self.sectorsize-(start%self.sectorsize)+self.sectorsize),2)
             data+=self.disk.read(self.sectorsize-(start%self.sectorsize))
         else:
-            self.disk.seek(-(int(i.split(';')[0])*self.sectorsize+(start%self.sectorsize)-int(i.split(';')[1])+self.sectorsize),2)
+            self.disk.seek(-(int(i.split(';')[0])*self.sectorsize-(start%self.sectorsize)-int(i.split(';')[1])+self.sectorsize),2)
             data+=self.disk.read(int(i.split(';')[2])-int(i.split(';')[1]))
         for i in lst[1:]:
             if type(i)==int:
