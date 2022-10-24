@@ -136,7 +136,7 @@ class SpaceFS():
             if len(table)==0:
                 if not whole:
                     return 0
-                lst=[0]
+                lst=[-1]
             for i in table:
                 if '-' in i:
                     p=i.split('-')
@@ -400,7 +400,7 @@ class SpaceFS():
         except IndexError:
             pass
         odata=None
-        if m!=2:
+        if (m!=2)&(minblocks>len(lst)):
             tlst=self.table.split('.')
             tmp=tlst[index].split(',')[-1]
             if ';' in tmp:
@@ -413,7 +413,7 @@ class SpaceFS():
                 self.table='.'.join(tlst)
         elif m==2:
             m=1
-        while minblocks-m>len(lst):
+        while minblocks>len(lst):
             tlst=self.table.split('.')
             block=self.findnewblock(pop=True)
             if len(lst)==0:
@@ -464,7 +464,7 @@ class SpaceFS():
                         pass
                     f=[f,0,c]
                 tlst=self.table.split('.')
-                if len(lst)==minblocks:
+                if (len(lst)==minblocks)&(type(self.flst[index][-1])==str):
                     tlst[index]=','.join(tlst[index].split(',')[:-1])
                 if (f[1]==0)&(f[2]==self.sectorsize):
                     e=f[0]
@@ -484,11 +484,9 @@ class SpaceFS():
                 self.disk.seek(-(int(self.readtable()[index][d*self.sectorsize+int(tmp[1])])+self.sectorsize),2)
                 self.disk.write(odata)
         st=start-(start//self.sectorsize*self.sectorsize)
-        end=(start+len(data))//self.sectorsize
-        if start//self.sectorsize==end:
-            end+=1
+        end=(len(data)+self.sectorsize-1)//self.sectorsize
         data=[data[:self.sectorsize-st]]+[data[i:i+self.sectorsize] for i in range(self.sectorsize-st,len(data),self.sectorsize)]
-        for i in enumerate(self.flst[index][start//self.sectorsize:end]):
+        for i in enumerate(self.flst[index][start//self.sectorsize:start//self.sectorsize+end]):
             u=0
             if type(i[1])==str:
                 u=int(i[1].split(';')[1])
