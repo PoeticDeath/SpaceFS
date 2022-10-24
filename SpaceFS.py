@@ -464,7 +464,7 @@ class SpaceFS():
                         pass
                     f=[f,0,c]
                 tlst=self.table.split('.')
-                if (len(lst)==minblocks)&(type(self.flst[index][-1])==str):
+                if len(lst)==minblocks:
                     tlst[index]=','.join(tlst[index].split(',')[:-1])
                 if (f[1]==0)&(f[2]==self.sectorsize):
                     e=f[0]
