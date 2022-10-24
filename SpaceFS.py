@@ -482,9 +482,9 @@ class SpaceFS():
                 self.disk.seek(-(int(self.readtable()[index][d*self.sectorsize+int(tmp[1])])+self.sectorsize),2)
                 self.disk.write(odata)
         st=start-(start//self.sectorsize*self.sectorsize)
-        end=(len(data)+self.sectorsize-1)//self.sectorsize
+        end=(start+len(data)+self.sectorsize-1)//self.sectorsize
         data=[data[:self.sectorsize-st]]+[data[i:i+self.sectorsize] for i in range(self.sectorsize-st,len(data),self.sectorsize)]
-        for i in enumerate(self.flst[index][start//self.sectorsize:start//self.sectorsize+end]):
+        for i in enumerate(self.flst[index][start//self.sectorsize:end]):
             u=0
             if type(i[1])==str:
                 u=int(i[1].split(';')[1])
