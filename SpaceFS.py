@@ -302,17 +302,17 @@ class SpaceFS():
             return
         if type(i)==int:
             self.disk.seek(-(i*self.sectorsize-(start%self.sectorsize)+self.sectorsize),2)
-            data+=self.disk.read(self.sectorsize-(start%self.sectorsize))
+            data+=self.disk.read(min(self.sectorsize-(start%self.sectorsize),amount))
         else:
             self.disk.seek(-(int(i.split(';')[0])*self.sectorsize-(start%self.sectorsize)-int(i.split(';')[1])+self.sectorsize),2)
-            data+=self.disk.read(int(i.split(';')[2])-int(i.split(';')[1]))
+            data+=self.disk.read(min(int(i.split(';')[2])-int(i.split(';')[1]),amount))
         for i in lst[1:]:
             if type(i)==int:
                 self.disk.seek(-(i*self.sectorsize+self.sectorsize),2)
-                data+=self.disk.read(self.sectorsize)
+                data+=self.disk.read(min(self.sectorsize,amount))
             else:
                 self.disk.seek(-(int(i.split(';')[0])*self.sectorsize-int(i.split(';')[1])+self.sectorsize),2)
-                data+=self.disk.read(int(i.split(';')[2])-int(i.split(';')[1]))
+                data+=self.disk.read(min(int(i.split(';')[2])-int(i.split(';')[1]),amount))
         return data[:amount]
     def trunfile(self,filename,size=None):
         try:
