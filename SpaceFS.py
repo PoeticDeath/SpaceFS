@@ -270,15 +270,7 @@ class SpaceFS():
         except IndexError:
             pass
         self.missinglst+=mlst
-        self.table='.'
-        for i in self.flst:
-            for o in i:
-                if self.table[-1]=='.':
-                    self.table+=str(o)
-                else:
-                    self.table+=','+str(o)
-            self.table+='.'
-        self.table=self.table[1:]
+        self.table='.'.join([','.join(i) for i in self.flst])+'.'
         self.filenameslst.pop(index)
         del self.filenamesdic[filename]
     def renamefile(self,oldfilename,newfilename):
