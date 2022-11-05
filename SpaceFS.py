@@ -273,6 +273,8 @@ class SpaceFS():
         self.table='.'.join([','.join(i) for i in self.flst])+'.'
         self.filenameslst.pop(index)
         del self.filenamesdic[filename]
+        for i in enumerate(self.filenameslst[index:]):
+            self.filenamesdic[i[1]]=i[0]+index
     def renamefile(self,oldfilename,newfilename):
         if oldfilename not in self.filenamesdic:
             raise FileNotFoundError
