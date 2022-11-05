@@ -248,7 +248,6 @@ class SpaceFS():
         self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
         self.disk.flush()
         self.oldsimptable=table
-        self.disk.seek(0)
     def createfile(self,filename):
         if filename in self.filenamesdic:
             raise FileExistsError
@@ -314,7 +313,6 @@ class SpaceFS():
             else:
                 self.disk.seek(-(int(i.split(';')[0])*self.sectorsize-int(i.split(';')[1])+self.sectorsize),2)
                 data+=self.disk.read(int(i.split(';')[2])-int(i.split(';')[1]))
-        self.disk.seek(0)
         return data[:amount]
     def trunfile(self,filename,size=None):
         try:
@@ -499,5 +497,3 @@ class SpaceFS():
                 except AttributeError:
                     self.disk.seek(-(i[1]*self.sectorsize+self.sectorsize-u),2)
             self.disk.write(data[i[0]])
-        self.disk.flush()
-        self.disk.seek(0)
