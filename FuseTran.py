@@ -71,9 +71,9 @@ class FuseTran(Operations):
                 if path.count('/')==i.count('/'):
                     dirents+=[i[1:].split('/')[-1]]
                 if path.count('/')+1==i.count('/'):
-                    dirents+=[i[1:].split('/')[-2]]
-                    if i+'/' not in self.tmpfolders:
-                        self.tmpfolders+=[i+'/']
+                    if i[1:].split('/')[-2] not in dirents:
+                        dirents+=[i[1:].split('/')[-2]]
+                        self.tmpfolders+=['/'.join(i.split('/')[:-1])+'/']
                 if path.count('/')+1<=i.count('/'):
                     c=i.split('/')[path.count('/')]
                     if c not in dirents:
@@ -81,12 +81,6 @@ class FuseTran(Operations):
                         dirents+=[c]
                         if d not in self.tmpfolders:
                             self.tmpfolders+=[d]
-        for i in self.tmpfolders:
-            if i!=path:
-                if path.count('/')==i.count('/')-1:
-                    if i.startswith(path):
-                        if i.split('/')[-2] not in dirents:
-                            dirents+=[i.split('/')[-2]]
         for r in dirents:
             yield r
     def readlink(self,path):
@@ -117,15 +111,12 @@ class FuseTran(Operations):
     def symlink(self,name,target):
         pass
     def rename(self,old,new):
-        if old not in self.s.filenamesdic:
-            for i in self.s.filenamesdic:
+        tmp=self.s.filenameslst
+        if old not in tmp:
+            for i in tmp:
                 if i.startswith(old+'/'):
-                    self.s.renamefile(i,i.replace(old,new))
-            try:
-                self.tmpfolders.pop(self.tmpfolders.index(old+'/'))
-            except ValueError:
-                pass
-            self.tmpfolders+=[new+'/']
+                    self.s.renamefile(i,i.replace(old,new,1))
+            self.tmpfolders=[new+'/']
         else:
             self.s.renamefile(old,new)
     def link(self,target,name):
