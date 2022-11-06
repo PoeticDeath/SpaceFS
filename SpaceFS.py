@@ -113,10 +113,14 @@ class SpaceFS():
                 t=[]
                 for i in self.part:
                     tmp=set()
+                    tpt=set()
                     self.part[i]=sorted(self.part[i])
                     for o in self.part[i]:
-                        if self.part[i].count(o)==1:
+                        if o not in tpt:
                             tmp.add(o)
+                            tpt.add(o)
+                        else:
+                            tmp.remove(o)
                     self.part[i]=list(tmp)
                     if self.part[i][0]==0:
                         self.part[i].pop(0)
