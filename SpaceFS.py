@@ -132,7 +132,7 @@ class SpaceFS():
                         t+=[i]
                 for i in t:
                     self.part.pop(i)
-        if (self.missinglst==[])|whole:
+        if (self.missinglst==[]):
             self.missinglst=[]
             lst=[]
             table=self.table
