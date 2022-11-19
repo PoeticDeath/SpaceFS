@@ -14,8 +14,8 @@ class FuseTran(Operations):
             while bs>512:
                 i+=1
                 bs=bs>>1
-            self.s.disk.write(i.to_bytes(1,'big')+b'\x00'*4+b'\xff\xfe')
-            self.s.disk.flush()
+            with open(disk,'rb+') as o:
+                o.write(i.to_bytes(1,'big')+b'\x00'*4+b'\xff\xfe')
         self.s=SpaceFS(disk)
         self.mount=mount
         self.tmpfolders=[]
