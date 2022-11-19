@@ -9,7 +9,6 @@ from threading import Thread,Lock
 from fuse import FUSE,FuseOSError,Operations,fuse_get_context
 class FuseTran(Operations):
     def __init__(self,mount,disk,bs=None):
-        self.s=SpaceFS(disk)
         if bs!=None:
             i=0
             while bs>512:
@@ -17,7 +16,7 @@ class FuseTran(Operations):
                 bs=bs>>1
             self.s.disk.write(i.to_bytes(1,'big')+b'\x00'*4+b'\xff\xfe')
             self.s.disk.flush()
-            self.s=SpaceFS(disk)
+        self.s=SpaceFS(disk)
         self.mount=mount
         self.tmpfolders=[]
         self.oldtmpfolders=[]
