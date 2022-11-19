@@ -9,4 +9,4 @@ The blocksize will be rounded to the next highest power of 2 at or after 512 aut
   Windows:  
     SpaceFS.exe "C:\Space FS.bin" "C:\Space FS" (NoWindow) (BlockSize)  
   Linux:  
-    ./SpaceFS /Space\ FS.bin /mnt/Space\ FS/ (NoWindow) (BlockSize)
+    ./SpaceFS /Space\ FS.bin /mnt/Space\ FS (NoWindow) (BlockSize)
