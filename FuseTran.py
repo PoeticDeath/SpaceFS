@@ -85,7 +85,9 @@ class FuseTran(Operations):
                 if path.count('/')+1==i.count('/'):
                     if i[1:].split('/')[-2] not in dirents:
                         dirents+=[i[1:].split('/')[-2]]
-                        self.tmpfolders+=['/'.join(i.split('/')[:-1])+'/']
+                        tmp='/'.join(i.split('/')[:-1])+'/'
+                        if tmp not in self.tmpfolders:
+                            self.tmpfolders+=[tmp]
                 if path.count('/')+1<=i.count('/'):
                     c=i.split('/')[path.count('/')]
                     if c not in dirents:
@@ -94,14 +96,15 @@ class FuseTran(Operations):
                         if d not in self.tmpfolders:
                             self.tmpfolders+=[d]
         for i in self.tmpfolders:
-            if i.startswith(path):
-                ni=True
-                for o in self.s.filenamesdic:
-                    if o.startswith(i):
-                        ni=False
-                        break
-                if ni:
-                    dirents+=[i.split('/')[-2]]
+            if i.count('/')==path.count('/')+1:
+                if i.startswith(path):
+                    ni=True
+                    for o in self.s.filenamesdic:
+                        if o.startswith(i):
+                            ni=False
+                            break
+                    if ni:
+                        dirents+=[i.split('/')[-2]]
         for r in dirents:
             yield r
     def readlink(self,path):
@@ -173,8 +176,7 @@ class FuseTran(Operations):
     def release(self,path,fh):
         pass
     def fsync(self,path,fdatasync,fh):
-        with self.rwlock:
-            self.s.simptable()
+        pass
 def main():
     try:
         disk=str(argv[1])
