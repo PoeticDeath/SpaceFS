@@ -1,5 +1,7 @@
 import os
+import struct
 import shutil
+from time import time
 charmap='0123456789-,.; '
 emap={}
 dmap={}
@@ -30,7 +32,8 @@ class SpaceFS():
         self.sectorsize=2**(int.from_bytes(self.disk.read(1),'big')+9)
         self.tablesectorcount=int.from_bytes(self.disk.read(4),'big')+1
         self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
-        t=self.disk.read(self.sectorsize*self.tablesectorcount-5).split(b'\xfe')[0].split(b'\xff')
+        s=self.disk.read(self.sectorsize*self.tablesectorcount-5).split(b'\xfe')
+        t=s[0].split(b'\xff')
         self.table=decode(t[0]).split('.')
         self.filenameslst=[i.decode() for i in t[1:-1]]
         self.filenamesdic={}
@@ -47,6 +50,7 @@ class SpaceFS():
         self.part={}
         self.findnewblock(part=True)
         self.flst=self.readtable()
+        self.times=s[1][:len(self.filenamesdic)*24]
         self.simptable()
     def readtable(self):
         if self.oldreadtable==self.table:
@@ -242,7 +246,7 @@ class SpaceFS():
         filenames=b'\xff'
         for i in self.filenameslst:
             filenames+=i.encode()+b'\xff'
-        filenames+=b'\xfe'
+        filenames+=b'\xfe'+self.times
         self.disk.seek(5)
         self.disk.write(elst+filenames)
         self.tablesectorcount=(len(elst+filenames)+self.sectorsize-1)//self.sectorsize-1
@@ -259,6 +263,7 @@ class SpaceFS():
         self.filenamesdic[filename]=len(self.filenamesdic)
         self.table+='.'
         self.flst+=[[]]
+        self.times+=struct.pack('!d',time())*3
     def deletefile(self,filename):
         if filename not in self.filenamesdic:
             raise FileNotFoundError
@@ -279,6 +284,7 @@ class SpaceFS():
         del self.filenamesdic[filename]
         for i in enumerate(self.filenameslst[index:]):
             self.filenamesdic[i[1]]=i[0]+index
+        self.times=self.times[:index*24]+self.times[index*24+24:]
     def renamefile(self,oldfilename,newfilename):
         if oldfilename not in self.filenamesdic:
             raise FileNotFoundError
@@ -289,7 +295,8 @@ class SpaceFS():
         del self.filenamesdic[oldfilename]
         self.filenamesdic[newfilename]=oldindex
     def readfile(self,filename,start,amount):
-        if filename not in self.filenamesdic:
+        index=self.filenamesdic[filename]
+        if index==-1:
             raise FileNotFoundError
         end=(start+amount+self.sectorsize-1)//self.sectorsize
         lst=self.flst[self.filenamesdic[filename]][start//self.sectorsize:end]
@@ -311,6 +318,7 @@ class SpaceFS():
             else:
                 self.disk.seek(-(int(i.split(';')[0])*self.sectorsize-int(i.split(';')[1])+self.sectorsize),2)
                 data+=self.disk.read(min(int(i.split(';')[2])-int(i.split(';')[1]),amount))
+        self.times=self.times[:index*24]+struct.pack('!d',time())+self.times[index*24+8:]
         return data[:amount]
     def trunfile(self,filename,size=None):
         try:
@@ -355,6 +363,7 @@ class SpaceFS():
             self.missinglst+=newmiss
         if size>self.trunfile(filename):
             self.writefile(filename,self.trunfile(filename),b'\x00'*(size-self.trunfile(filename)))
+        self.times=self.times[:index*24+8]+struct.pack('!d',time())+self.times[index*24+16:]
     def writefile(self,filename,start,data):
         if filename not in self.filenamesdic:
             raise FileNotFoundError

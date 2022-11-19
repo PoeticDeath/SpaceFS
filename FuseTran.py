@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 import os
 import errno
+import struct
 from sys import argv
-from time import sleep
+from time import sleep,time
 from SpaceFS import SpaceFS
-from threading import Thread
+from threading import Thread,Lock
 from fuse import FUSE,FuseOSError,Operations,fuse_get_context
 class FuseTran(Operations):
     def __init__(self,mount,disk,bs=None):
@@ -21,10 +22,12 @@ class FuseTran(Operations):
         self.tmpfolders=[]
         self.oldtmpfolders=[]
         self.tmpf=[]
+        self.rwlock=Lock()
         Thread(target=self.autosimp,daemon=True).start()
     def autosimp(self):
         while True:
-            self.s.simptable()
+            with self.rwlock:
+                self.s.simptable()
             sleep(60)
     # Helpers
     # =======
@@ -44,11 +47,20 @@ class FuseTran(Operations):
     getxattr=None
     def getattr(self,path,fh=None):
         guid=1000
+        ti=time()
+        t=[ti]*3
         if (self.mount[0]!='/')&(self.mount[1:3]==':\\'):
             guid=545
         try:
-            s=self.s.trunfile(path)
+            with self.rwlock:
+                s=self.s.trunfile(path)
             mode=33188
+            index=self.s.filenamesdic[path]
+            t=self.s.times[index*24:index*24+24]
+            if t==b'':
+                t=struct.pack('!d',ti)*3
+                self.s.times+=t
+            t=[struct.unpack('!d',t[i:i+8])[0] for i in range(0,24,8)]
         except ValueError:
             s=0
             mode=16877
@@ -60,8 +72,8 @@ class FuseTran(Operations):
                     if path not in self.tmpf:
                         full_path=self._full_path(path)
                         st=os.lstat(full_path)
-                        return dict((key,getattr(st,key)) for key in ('st_size','st_mode','st_gid','st_uid'))
-        return {'st_size':s,'st_mode':mode,'st_gid':guid,'st_uid':guid}
+                        return dict((key,getattr(st,key)) for key in ('st_blocks','st_atime','st_mtime','st_ctime','st_birthtime','st_size','st_mode','st_gid','st_uid'))
+        return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':guid,'st_uid':guid}
     def readdir(self,path,fh):
         dirents = ['.','..']
         if path[-1]!='/':
@@ -81,6 +93,15 @@ class FuseTran(Operations):
                         dirents+=[c]
                         if d not in self.tmpfolders:
                             self.tmpfolders+=[d]
+        for i in self.tmpfolders:
+            if i.startswith(path):
+                ni=True
+                for o in self.s.filenamesdic:
+                    if o.startswith(i):
+                        ni=False
+                        break
+                if ni:
+                    dirents+=[i.split('/')[-2]]
         for r in dirents:
             yield r
     def readlink(self,path):
@@ -97,7 +118,8 @@ class FuseTran(Operations):
         return 0
     def statfs(self,path):
         c={}
-        avail=self.s.findnewblock(whole=True)
+        with self.rwlock:
+            avail=self.s.findnewblock(whole=True)
         if avail<0:
             avail=0
         c['f_bavail']=c['f_bfree']=c['f_favail']=c['f_ffree']=avail
@@ -107,18 +129,20 @@ class FuseTran(Operations):
         c['f_namemax']=255
         return c
     def unlink(self,path):
-        self.s.deletefile(path)
+        with self.rwlock:
+            self.s.deletefile(path)
     def symlink(self,name,target):
         pass
     def rename(self,old,new):
-        tmp=self.s.filenameslst
-        if old not in tmp:
-            for i in tmp:
-                if i.startswith(old+'/'):
-                    self.s.renamefile(i,i.replace(old,new,1))
-            self.tmpfolders=[new+'/']
-        else:
-            self.s.renamefile(old,new)
+        with self.rwlock:
+            tmp=self.s.filenameslst
+            if old not in tmp:
+                for i in tmp:
+                    if i.startswith(old+'/'):
+                        self.s.renamefile(i,i.replace(old,new,1))
+                self.tmpfolders=[new+'/']
+            else:
+                self.s.renamefile(old,new)
     def link(self,target,name):
         pass
     def utimens(self,path,times=None):
@@ -128,24 +152,29 @@ class FuseTran(Operations):
     def open(self,path,flags):
         return 0
     def create(self,path,mode,fi=None):
-        self.s.createfile(path)
-        if '/'.join(path.split('/')[:-1]) in self.tmpfolders:
-            self.tmpfolders.pop(self.tmpfolders.index('/'.join(path.split('/')[:-1])))
-        return 0
+        with self.rwlock:
+            self.s.createfile(path)
+            if '/'.join(path.split('/')[:-1]) in self.tmpfolders:
+                self.tmpfolders.pop(self.tmpfolders.index('/'.join(path.split('/')[:-1])))
+            return 0
     def read(self,path,length,offset,fh):
-        return self.s.readfile(path,offset,length)
+        with self.rwlock:
+            return self.s.readfile(path,offset,length)
     def write(self,path,data,offset,fh):
-        if self.s.writefile(path,offset,data)==0:
-            raise FuseOSError(errno.ENOSPC)
-        return len(data)
+        with self.rwlock:
+            if self.s.writefile(path,offset,data)==0:
+                raise FuseOSError(errno.ENOSPC)
+            return len(data)
     def truncate(self,path,length,fh=None):
-        self.s.trunfile(path,length)
+        with self.rwlock:
+            self.s.trunfile(path,length)
     def flush(self,path,fh):
         pass
     def release(self,path,fh):
         pass
     def fsync(self,path,fdatasync,fh):
-        self.s.simptable()
+        with self.rwlock:
+            self.s.simptable()
 def main():
     try:
         disk=str(argv[1])
@@ -163,6 +192,6 @@ def main():
         bs=int(argv[4])
     except IndexError:
         bs=None
-    FUSE(FuseTran(mount,disk,bs),mount,nothreads=True,foreground=fg,allow_other=True,big_writes=True,intr=True)
+    FUSE(FuseTran(mount,disk,bs),mount,nothreads=False,foreground=fg,allow_other=True,big_writes=True,intr=True)
 if __name__=='__main__':
     main()
