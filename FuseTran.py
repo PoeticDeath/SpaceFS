@@ -22,6 +22,7 @@ class FuseTran(Operations):
         self.oldtmpfolders=[]
         self.tmpf=[]
         self.rwlock=Lock()
+        self.fd=0
         Thread(target=self.autosimp,daemon=True).start()
     def autosimp(self):
         while True:
@@ -152,13 +153,15 @@ class FuseTran(Operations):
     # File methods
     # ============
     def open(self,path,flags):
-        return 0
+        self.fd+=1
+        return self.fd
     def create(self,path,mode,fi=None):
         with self.rwlock:
             self.s.createfile(path)
             if '/'.join(path.split('/')[:-1]) in self.tmpfolders:
                 self.tmpfolders.pop(self.tmpfolders.index('/'.join(path.split('/')[:-1])))
-            return 0
+            self.fd+=1
+            return self.fd
     def read(self,path,length,offset,fh):
         with self.rwlock:
             return self.s.readfile(path,offset,length)
