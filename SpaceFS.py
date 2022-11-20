@@ -246,11 +246,9 @@ class SpaceFS():
         for i in self.filenameslst:
             filenames+=i.encode()+b'\xff'
         filenames+=b'\xfe'+self.times
-        self.disk.seek(5)
-        self.disk.write(elst+filenames)
         self.tablesectorcount=(len(elst+filenames)+self.sectorsize-1)//self.sectorsize-1
         self.disk.seek(1)
-        self.disk.write(self.tablesectorcount.to_bytes(4,'big'))
+        self.disk.write(self.tablesectorcount.to_bytes(4,'big')+elst+filenames)
         self.tablesectorcount+=1
         self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
         self.disk.flush()

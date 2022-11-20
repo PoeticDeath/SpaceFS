@@ -34,7 +34,7 @@ class FuseTran(Operations):
     def _full_path(self,partial):
         if partial.startswith('/'):
             partial=partial[1:]
-        path = os.path.join(self.mount+'-TMP/',partial)
+        path=os.path.join(self.mount+'-TMP/',partial)
         return path
     # Filesystem methods
     # ==================
@@ -75,7 +75,7 @@ class FuseTran(Operations):
                         return dict((key,getattr(st,key)) for key in ('st_blocks','st_atime','st_mtime','st_ctime','st_birthtime','st_size','st_mode','st_gid','st_uid'))
         return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':guid,'st_uid':guid}
     def readdir(self,path,fh):
-        dirents = ['.','..']
+        dirents=['.','..']
         if path[-1]!='/':
                 path+='/'
         for i in self.s.filenamesdic:
