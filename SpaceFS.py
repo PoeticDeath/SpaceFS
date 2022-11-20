@@ -136,8 +136,7 @@ class SpaceFS():
                         t+=[i]
                 for i in t:
                     self.part.pop(i)
-        if (self.missinglst==[]):
-            self.missinglst=[]
+        if len(self.missinglst)==0:
             lst=[]
             table=self.table
             table=[i for i in table.replace(',','.').split('.') if i]
@@ -362,9 +361,9 @@ class SpaceFS():
             self.table='.'.join(table)
             self.missinglst+=newmiss
         if size>self.trunfile(filename):
-            self.writefile(filename,self.trunfile(filename),b'\x00'*(size-self.trunfile(filename)))
+            self.writefile(filename,self.trunfile(filename),bytes(size-self.trunfile(filename)),True)
         self.times=self.times[:index*24+8]+struct.pack('!d',time())+self.times[index*24+16:]
-    def writefile(self,filename,start,data):
+    def writefile(self,filename,start,data,T=False):
         if filename not in self.filenamesdic:
             raise FileNotFoundError
         index=self.filenamesdic[filename]
@@ -488,7 +487,10 @@ class SpaceFS():
                 self.disk.write(odata)
         st=start-(start//self.sectorsize*self.sectorsize)
         end=(start+len(data)+self.sectorsize-1)//self.sectorsize
-        data=[data[:self.sectorsize-st]]+[data[i:i+self.sectorsize] for i in range(self.sectorsize-st,len(data),self.sectorsize)]
+        if T:
+            data=[data[:self.sectorsize-st]]+[0 for i in range(self.sectorsize-st,len(data)//self.sectorsize*self.sectorsize,self.sectorsize)]
+        else:
+            data=[data[:self.sectorsize-st]]+[data[i:i+self.sectorsize] for i in range(self.sectorsize-st,len(data),self.sectorsize)]
         for i in enumerate(self.flst[index][start//self.sectorsize:end]):
             u=0
             if type(i[1])==str:
@@ -503,5 +505,6 @@ class SpaceFS():
                     self.disk.seek(-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-u),2)
                 except AttributeError:
                     self.disk.seek(-(i[1]*self.sectorsize+self.sectorsize-u),2)
-            self.disk.write(data[i[0]])
+            if type(data[i[0]])==bytes:
+                self.disk.write(data[i[0]])
         self.times=self.times[:index*24+8]+struct.pack('!d',time())+self.times[index*24+16:]

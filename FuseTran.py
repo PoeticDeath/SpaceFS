@@ -15,7 +15,7 @@ class FuseTran(Operations):
                 i+=1
                 bs=bs>>1
             with open(disk,'rb+') as o:
-                o.write(i.to_bytes(1,'big')+b'\x00'*4+b'\xff\xfe')
+                o.write(i.to_bytes(1,'big')+bytes(4)+b'\xff\xfe')
         self.s=SpaceFS(disk)
         self.mount=mount
         self.tmpfolders=[]
