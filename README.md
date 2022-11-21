@@ -9,7 +9,7 @@ The blocksize will be rounded to the next highest power of 2 at or after 512 aut
   Windows:  
     SpaceFS.exe "C:\Space FS.bin" "C:\Space FS" (NoWindow) (BlockSize)  
   Linux:  
-    ./SpaceFS /Space\ FS.bin /mnt/Space\ FS (NoWindow) (BlockSize)
+    ./SpaceFS /Space\ FS.bin /mnt/Space\ FS (NoWindow) (BlockSize)  
 Storage Efficiency:
 ![F82FCD64-6CE6-412B-8F98-350532021035](https://user-images.githubusercontent.com/46275713/203096681-daefd933-c199-4d6a-8a18-50a56b1fc219.png)
 4GB File Size:
