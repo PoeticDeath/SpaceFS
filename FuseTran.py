@@ -196,6 +196,6 @@ def main():
         bs=int(argv[4])
     except IndexError:
         bs=None
-    FUSE(FuseTran(mount,disk,bs),mount,nothreads=False,foreground=fg,allow_other=True,big_writes=True,intr=True)
+    FUSE(FuseTran(mount,disk,bs),mount,nothreads=False,foreground=fg,allow_other=True,big_writes=True)
 if __name__=='__main__':
     main()
