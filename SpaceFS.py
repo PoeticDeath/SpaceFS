@@ -303,17 +303,25 @@ class SpaceFS():
         except IndexError:
             return
         if type(i)==int:
-            self.disk.seek(-(i*self.sectorsize-(start%self.sectorsize)+self.sectorsize),2)
+            seek=self.disksize-(i*self.sectorsize-(start%self.sectorsize)+self.sectorsize)
+            if seek!=self.disk.tell():
+                self.disk.seek(seek)
             data+=self.disk.read(min(self.sectorsize-(start%self.sectorsize),amount))
         else:
-            self.disk.seek(-(int(i.split(';')[0])*self.sectorsize-(start%self.sectorsize)-int(i.split(';')[1])+self.sectorsize),2)
+            seek=self.disksize-(int(i.split(';')[0])*self.sectorsize-(start%self.sectorsize)-int(i.split(';')[1])+self.sectorsize)
+            if seek!=self.disk.tell():
+                self.disk.seek(seek)
             data+=self.disk.read(min(int(i.split(';')[2])-int(i.split(';')[1]),amount))
         for i in lst[1:]:
             if type(i)==int:
-                self.disk.seek(-(i*self.sectorsize+self.sectorsize),2)
+                seek=self.disksize-(i*self.sectorsize+self.sectorsize)
+                if seek!=self.disk.tell():
+                    self.disk.seek(seek)
                 data+=self.disk.read(min(self.sectorsize,amount))
             else:
-                self.disk.seek(-(int(i.split(';')[0])*self.sectorsize-int(i.split(';')[1])+self.sectorsize),2)
+                seek=self.disksize-(int(i.split(';')[0])*self.sectorsize-int(i.split(';')[1])+self.sectorsize)
+                if seek!=self.disk.tell():
+                    self.disk.seek(seek)
                 data+=self.disk.read(min(int(i.split(';')[2])-int(i.split(';')[1]),amount))
         self.times=self.times[:index*24]+struct.pack('!d',time())+self.times[index*24+8:]
         return data[:amount]
@@ -495,14 +503,22 @@ class SpaceFS():
                 u=int(i[1].split(';')[1])
             if i[0]==0:
                 try:
-                    self.disk.seek(-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-st-u),2)
+                    seek=self.disksize-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-st-u)
+                    if seek!=self.disk.tell():
+                        self.disk.seek(seek)
                 except AttributeError:
-                    self.disk.seek(-(i[1]*self.sectorsize+self.sectorsize-st-u),2)
+                    seek=self.disksize-(i[1]*self.sectorsize+self.sectorsize-st-u)
+                    if seek!=self.disk.tell():
+                        self.disk.seek(seek)
             else:
                 try:
-                    self.disk.seek(-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-u),2)
+                    seek=self.disksize-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-u)
+                    if seek!=self.disk.tell():
+                        self.disk.seek(seek)
                 except AttributeError:
-                    self.disk.seek(-(i[1]*self.sectorsize+self.sectorsize-u),2)
+                    seek=self.disksize-(i[1]*self.sectorsize+self.sectorsize-u)
+                    if seek!=self.disk.tell():
+                        self.disk.seek(seek)
             if type(data[i[0]])==bytes:
                 self.disk.write(data[i[0]])
         self.times=self.times[:index*24+8]+struct.pack('!d',time())+self.times[index*24+16:]
