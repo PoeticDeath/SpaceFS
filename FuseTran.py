@@ -173,6 +173,9 @@ class FuseTran(Operations):
     def truncate(self,path,length,fh=None):
         with self.rwlock:
             self.s.trunfile(path,length)
+    def destroy(self,path):
+        with self.rwlock:
+            self.s.simptable()
     def flush(self,path,fh):
         pass
     def release(self,path,fh):
