@@ -303,25 +303,17 @@ class SpaceFS():
         except IndexError:
             return
         if type(i)==int:
-            seek=self.disksize-(i*self.sectorsize-(start%self.sectorsize)+self.sectorsize)
-            if seek!=self.disk.tell():
-                self.disk.seek(seek)
+            self.disk.seek(self.disksize-(i*self.sectorsize-(start%self.sectorsize)+self.sectorsize))
             data+=self.disk.read(min(self.sectorsize-(start%self.sectorsize),amount))
         else:
-            seek=self.disksize-(int(i.split(';')[0])*self.sectorsize-(start%self.sectorsize)-int(i.split(';')[1])+self.sectorsize)
-            if seek!=self.disk.tell():
-                self.disk.seek(seek)
+            self.disk.seek(self.disksize-(int(i.split(';')[0])*self.sectorsize-(start%self.sectorsize)-int(i.split(';')[1])+self.sectorsize))
             data+=self.disk.read(min(int(i.split(';')[2])-int(i.split(';')[1]),amount))
         for i in lst[1:]:
             if type(i)==int:
-                seek=self.disksize-(i*self.sectorsize+self.sectorsize)
-                if seek!=self.disk.tell():
-                    self.disk.seek(seek)
+                self.disk.seek(self.disksize-(i*self.sectorsize+self.sectorsize))
                 data+=self.disk.read(min(self.sectorsize,amount))
             else:
-                seek=self.disksize-(int(i.split(';')[0])*self.sectorsize-int(i.split(';')[1])+self.sectorsize)
-                if seek!=self.disk.tell():
-                    self.disk.seek(seek)
+                self.disk.seek(self.disksize-(int(i.split(';')[0])*self.sectorsize-int(i.split(';')[1])+self.sectorsize))
                 data+=self.disk.read(min(int(i.split(';')[2])-int(i.split(';')[1]),amount))
         self.times=self.times[:index*24]+struct.pack('!d',time())+self.times[index*24+8:]
         return data[:amount]
