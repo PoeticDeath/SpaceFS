@@ -486,10 +486,10 @@ class SpaceFS():
                 self.table='.'.join(tlst)
         if odata!=None:
             try:
-                self.disk.seek(-(int(tmp[0])+self.sectorsize),2)
+                self.disk.seek(self.disksize-(int(tmp[0])+self.sectorsize))
                 self.disk.write(odata[:int(tmp[2])-int(tmp[1])])
             except AttributeError:
-                self.disk.seek(-(int(self.readtable()[index][d*self.sectorsize+int(tmp[1])])+self.sectorsize),2)
+                self.disk.seek(self.disksize-(int(self.readtable()[index][d*self.sectorsize+int(tmp[1])])+self.sectorsize))
                 self.disk.write(odata)
         st=start-(start//self.sectorsize*self.sectorsize)
         end=(start+len(data)+self.sectorsize-1)//self.sectorsize
@@ -503,22 +503,14 @@ class SpaceFS():
                 u=int(i[1].split(';')[1])
             if i[0]==0:
                 try:
-                    seek=self.disksize-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-st-u)
-                    if seek!=self.disk.tell():
-                        self.disk.seek(seek)
+                    self.disk.seek(self.disksize-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-st-u))
                 except AttributeError:
-                    seek=self.disksize-(i[1]*self.sectorsize+self.sectorsize-st-u)
-                    if seek!=self.disk.tell():
-                        self.disk.seek(seek)
+                    self.disk.seek(self.disksize-(i[1]*self.sectorsize+self.sectorsize-st-u))
             else:
                 try:
-                    seek=self.disksize-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-u)
-                    if seek!=self.disk.tell():
-                        self.disk.seek(seek)
+                    self.disk.seek(self.disksize-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-u))
                 except AttributeError:
-                    seek=self.disksize-(i[1]*self.sectorsize+self.sectorsize-u)
-                    if seek!=self.disk.tell():
-                        self.disk.seek(seek)
+                    self.disk.seek(self.disksize-(i[1]*self.sectorsize+self.sectorsize-u))
             if type(data[i[0]])==bytes:
                 self.disk.write(data[i[0]])
         self.times=self.times[:index*24+8]+struct.pack('!d',time())+self.times[index*24+16:]
