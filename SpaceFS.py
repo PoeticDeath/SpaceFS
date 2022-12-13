@@ -151,7 +151,7 @@ class SpaceFS():
                 else:
                     if int(i.split(';')[0]) not in lst:
                         lst+=[int(i.split(';')[0])]
-            self.missinglst+=set(range(0,min(max(lst)+10000,self.sectorcount))).difference(set(lst))
+            self.missinglst+=set(range(0,self.sectorcount)).difference(set(lst))
         if pop:
             return self.missinglst.pop(0)
         if whole:
@@ -377,16 +377,21 @@ class SpaceFS():
                     partfull=False
         except IndexError:
             pass
-        if (self.findnewblock()>self.sectorcount)&partfull:
-            self.findnewblock(part=True)
-            full=True
-            for i in self.part:
-                prt=self.part[i]
-                if prt[1]-prt[0]<=c:
-                    full=False
-                    break
-            if full==True:
+        if partfull:
+            try:
+                c=self.findnewblock()
+            except IndexError:
                 return 0
+            if c>self.sectorcount:
+                self.findnewblock(part=True)
+                full=True
+                for i in self.part:
+                    prt=self.part[i]
+                    if prt[1]-prt[0]<=c:
+                        full=False
+                        break
+                if full==True:
+                    return 0
         if c!=0:
             m=1
         try:
