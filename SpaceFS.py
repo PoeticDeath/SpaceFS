@@ -509,6 +509,7 @@ class SpaceFS():
                 except AttributeError:
                     self.disk.seek(self.disksize-(i[1]*self.sectorsize+self.sectorsize-u))
             if type(data[i[0]])==bytes:
-                self.disk.write(data[i[0]])
+                for o in range(0,(len(data[i[0]])+16777215)//16777216):
+                    self.disk.write(data[i[0]][o*16777216:o*16777216+16777216])
         self.times=self.times[:index*24+8]+struct.pack('!d',time())+self.times[index*24+16:]
         self.disk.flush()
