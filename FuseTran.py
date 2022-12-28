@@ -23,6 +23,7 @@ class FuseTran(Operations):
         self.tmpf=[]
         self.rwlock=Lock()
         self.fd=0
+    def init(self,path):
         Thread(target=self.autosimp,daemon=True).start()
     def autosimp(self):
         while True:
@@ -32,22 +33,32 @@ class FuseTran(Operations):
     # Filesystem methods
     # ==================
     def access(self,path,mode):
-        pass
+        if mode!=self.s.modes[path]:
+            raise FuseOSError(errno.EACCES)
     def chmod(self,path,mode):
+        self.s.modes[path]&=0o770000
+        self.s.modes[path]|=mode
         return 0
     def chown(self,path,uid,gid):
-        return 0
+        self.s.guids[path]=(gid,uid)
     getxattr=None
     def getattr(self,path,fh=None):
-        guid=1000
         ti=time()
         t=[ti]*3
-        if os.name=='nt':
-            guid=545
+        try:
+            gid,uid=self.s.guids[path]
+        except KeyError:
+            if os.name=='nt':
+                gid=uid=545
+            else:
+                gid=uid=1000
         try:
             with self.rwlock:
                 s=self.s.trunfile(path)
-            mode=33188
+            try:
+                mode=self.s.modes[path]
+            except KeyError:
+                self.s.modes[path]=mode=33188
             index=self.s.filenamesdic[path]
             t=self.s.times[index*24:index*24+24]
             if t==b'':
@@ -56,7 +67,10 @@ class FuseTran(Operations):
             t=[struct.unpack('!d',t[i:i+8])[0] for i in range(0,24,8)]
         except ValueError:
             s=0
-            mode=16877
+            try:
+                mode=self.s.modes[path]
+            except KeyError:
+                mode=16877
             if path!='/':
                 if path+'/' not in self.tmpfolders:
                     if self.tmpfolders!=self.oldtmpfolders:
@@ -64,7 +78,7 @@ class FuseTran(Operations):
                         self.oldtmpfolders=self.tmpfolders
                     if path not in self.tmpf:
                         raise FuseOSError(errno.ENOENT)
-        return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':guid,'st_uid':guid}
+        return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':gid,'st_uid':uid}
     def readdir(self,path,fh):
         dirents=['.','..']
         if path[-1]!='/':
@@ -129,6 +143,16 @@ class FuseTran(Operations):
         pass
     def rename(self,old,new):
         with self.rwlock:
+            try:
+                self.s.guids[new]=self.s.guids[old]
+                del self.s.guids[old]
+            except KeyError:
+                pass
+            try:
+                self.s.modes[new]=self.s.modes[old]
+                del self.s.modes[old]
+            except KeyError:
+                pass
             tmp=self.s.filenameslst
             if old not in tmp:
                 for i in tmp:
