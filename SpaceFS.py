@@ -413,7 +413,7 @@ class SpaceFS():
         except IndexError:
             pass
         odata=None
-        if m!=2:
+        if (m!=2)&(start+len(data)>self.trunfile(filename)):
             tlst=self.table.split('.')
             tmp=tlst[index].split(',')[-1]
             if ';' in tmp:
