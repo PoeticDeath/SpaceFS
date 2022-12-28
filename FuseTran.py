@@ -52,6 +52,7 @@ class FuseTran(Operations):
                 gid=uid=545
             else:
                 gid=uid=1000
+            self.s.guids[path]=(gid,uid)
         try:
             with self.rwlock:
                 s=self.s.trunfile(path)
