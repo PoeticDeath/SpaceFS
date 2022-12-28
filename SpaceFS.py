@@ -321,7 +321,7 @@ class SpaceFS():
         try:
             index=self.filenamesdic[filename]
         except KeyError:
-            [].index(filename)
+            raise ValueError
         try:
             lst=self.flst[index]
         except IndexError:
@@ -373,16 +373,16 @@ class SpaceFS():
         try:
             if type(lst[-1])==str:
                 prtfull=lst[-1].split(';')
-                if int(prtfull[1])-int(prtfull[0])>=c:
+                if int(prtfull[2])-int(prtfull[1])>=c:
                     partfull=False
         except IndexError:
             pass
         if partfull:
             try:
-                c=self.findnewblock()
+                d=self.findnewblock()
             except IndexError:
                 return 0
-            if c>self.sectorcount:
+            if d>self.sectorcount:
                 self.findnewblock(part=True)
                 full=True
                 for i in self.part:
@@ -405,12 +405,12 @@ class SpaceFS():
         except IndexError:
             pass
         odata=None
-        if (m!=2)&(minblocks>len(lst)):
+        if (m!=2):
             tlst=self.table.split('.')
             tmp=tlst[index].split(',')[-1]
             if ';' in tmp:
                 tmp=tmp.split(';')
-                self.disk.seek(-(int(tmp[0])*self.sectorsize+self.sectorsize),2)
+                self.disk.seek(self.disksize-(int(tmp[0])*self.sectorsize+self.sectorsize))
                 odata=self.disk.read(self.sectorsize)[int(tmp[1]):int(tmp[2])]
                 d=self.flst[index].index(self.readtable()[index][-1])
                 self.flst[index].pop()
@@ -490,25 +490,22 @@ class SpaceFS():
                 self.disk.write(odata)
         st=start-(start//self.sectorsize*self.sectorsize)
         end=(start+len(data)+self.sectorsize-1)//self.sectorsize
-        if T:
-            data=[data[:self.sectorsize-st]]+[0 for i in range(self.sectorsize-st,len(data)//self.sectorsize*self.sectorsize,self.sectorsize)]
-        else:
+        if not T:
             data=[data[:self.sectorsize-st]]+[data[i:i+self.sectorsize] for i in range(self.sectorsize-st,len(data),self.sectorsize)]
-        for i in enumerate(self.flst[index][start//self.sectorsize:end]):
-            u=0
-            if type(i[1])==str:
-                u=int(i[1].split(';')[1])
-            if i[0]==0:
-                try:
-                    self.disk.seek(self.disksize-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-st-u))
-                except AttributeError:
-                    self.disk.seek(self.disksize-(i[1]*self.sectorsize+self.sectorsize-st-u))
-            else:
-                try:
-                    self.disk.seek(self.disksize-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-u))
-                except AttributeError:
-                    self.disk.seek(self.disksize-(i[1]*self.sectorsize+self.sectorsize-u))
-            if type(data[i[0]])==bytes:
+            for i in enumerate(self.flst[index][start//self.sectorsize:end]):
+                u=0
+                if type(i[1])==str:
+                    u=int(i[1].split(';')[1])
+                if i[0]==0:
+                    try:
+                        self.disk.seek(self.disksize-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-st-u))
+                    except AttributeError:
+                        self.disk.seek(self.disksize-(i[1]*self.sectorsize+self.sectorsize-st-u))
+                else:
+                    try:
+                        self.disk.seek(self.disksize-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-u))
+                    except AttributeError:
+                        self.disk.seek(self.disksize-(i[1]*self.sectorsize+self.sectorsize-u))
                 for o in range(0,(len(data[i[0]])+16777215)//16777216):
                     self.disk.write(data[i[0]][o*16777216:o*16777216+16777216])
         self.times=self.times[:index*24+8]+struct.pack('!d',time())+self.times[index*24+16:]
