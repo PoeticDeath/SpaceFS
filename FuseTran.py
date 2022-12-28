@@ -29,13 +29,6 @@ class FuseTran(Operations):
             with self.rwlock:
                 self.s.simptable()
             sleep(60)
-    # Helpers
-    # =======
-    def _full_path(self,partial):
-        if partial.startswith('/'):
-            partial=partial[1:]
-        path=os.path.join(self.mount+'-TMP/',partial)
-        return path
     # Filesystem methods
     # ==================
     def access(self,path,mode):
@@ -49,7 +42,7 @@ class FuseTran(Operations):
         guid=1000
         ti=time()
         t=[ti]*3
-        if (self.mount[0]!='/')&(self.mount[1:3]==':\\'):
+        if os.name=='nt':
             guid=545
         try:
             with self.rwlock:
@@ -70,9 +63,7 @@ class FuseTran(Operations):
                         self.tmpf=['/'.join(i.split('/')[:-1]) for i in self.s.filenamesdic]
                         self.oldtmpfolders=self.tmpfolders
                     if path not in self.tmpf:
-                        full_path=self._full_path(path)
-                        st=os.lstat(full_path)
-                        return dict((key,getattr(st,key)) for key in ('st_blocks','st_atime','st_mtime','st_ctime','st_birthtime','st_size','st_mode','st_gid','st_uid'))
+                        raise FuseOSError(errno.ENOENT)
         return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':guid,'st_uid':guid}
     def readdir(self,path,fh):
         dirents=['.','..']
@@ -122,7 +113,7 @@ class FuseTran(Operations):
     def statfs(self,path):
         c={}
         with self.rwlock:
-            avail=self.s.findnewblock(whole=True)
+            avail=len(self.s.findnewblock(whole=True))
         if avail<0:
             avail=0
         c['f_bavail']=c['f_bfree']=c['f_favail']=c['f_ffree']=avail

@@ -155,7 +155,7 @@ class SpaceFS():
         if pop:
             return self.missinglst.pop(0)
         if whole:
-            return len(self.missinglst)
+            return self.missinglst
         return self.missinglst[0]
     def simptable(self):
         table=self.table
@@ -405,7 +405,7 @@ class SpaceFS():
         except IndexError:
             pass
         odata=None
-        if (m!=2):
+        if m!=2:
             tlst=self.table.split('.')
             tmp=tlst[index].split(',')[-1]
             if ';' in tmp:
