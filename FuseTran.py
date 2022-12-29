@@ -185,6 +185,11 @@ class FuseTran(Operations):
                 self.s.createfile(path)
             except FileExistsError:
                 raise FuseOSError(errno.EEXIST)
+            if os.name=='nt':
+                gid=uid=545
+            else:
+                gid=uid=1000
+            self.s.guids[path]=(gid,uid)
             self.s.modes[path]=mode
             self.fd+=1
             return self.fd
