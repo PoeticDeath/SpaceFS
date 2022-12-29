@@ -119,12 +119,20 @@ class FuseTran(Operations):
         return 0
     def rmdir(self,path):
         if path+'/' in self.tmpfolders:
-            self.tmpfolders.pop(self.tmpfolders.index(path+'/'))
+            if list(self.readdir(path,0))==['.','..']:
+                self.tmpfolders.pop(self.tmpfolders.index(path+'/'))
+        else:
+            raise FuseOSError(errno.ENOENT)
         return 0
     def mkdir(self,path,mode):
         if path+'/' not in self.tmpfolders:
             self.tmpfolders+=[path+'/']
+        else:
+            raise FuseOSError(errno.EEXIST)
         return 0
+    def opendir(self,path):
+        self.fd+=1
+        return self.fd
     def statfs(self,path):
         c={}
         with self.rwlock:
@@ -173,9 +181,11 @@ class FuseTran(Operations):
         return self.fd
     def create(self,path,mode,fi=None):
         with self.rwlock:
-            self.s.createfile(path)
-            if '/'.join(path.split('/')[:-1]) in self.tmpfolders:
-                self.tmpfolders.pop(self.tmpfolders.index('/'.join(path.split('/')[:-1])))
+            try:
+                self.s.createfile(path)
+            except FileExistsError:
+                raise FuseOSError(errno.EEXIST)
+            self.s.modes[path]=mode
             self.fd+=1
             return self.fd
     def read(self,path,length,offset,fh):
