@@ -54,9 +54,9 @@ class SpaceFS():
         self.guids={}
         self.modes={}
         for i in enumerate(self.filenameslst):
-            ofs=(len(self.filenamesdic)*24)+(i[0]*12)
-            self.guids[i[1]]=(int.from_bytes(s[1][ofs:ofs+4],'big'),int.from_bytes(s[1][ofs+4:ofs+8],'big'))
-            self.modes[i[1]]=int.from_bytes(s[1][ofs+8:ofs+12],'big')
+            ofs=(len(self.filenamesdic)*24)+(i[0]*7)
+            self.guids[i[1]]=(int.from_bytes(s[1][ofs:ofs+3],'big'),int.from_bytes(s[1][ofs+3:ofs+5],'big'))
+            self.modes[i[1]]=int.from_bytes(s[1][ofs+5:ofs+7],'big')
         self.simptable()
     def readtable(self):
         if self.oldreadtable==self.table:
@@ -252,7 +252,7 @@ class SpaceFS():
         guidsmodes=b''
         for i in self.filenameslst:
             filenames+=i.encode()+b'\xff'
-            guidsmodes+=self.guids[i][0].to_bytes(4,'big')+self.guids[i][1].to_bytes(4,'big')+self.modes[i].to_bytes(4,'big')
+            guidsmodes+=self.guids[i][0].to_bytes(3,'big')+self.guids[i][1].to_bytes(2,'big')+self.modes[i].to_bytes(2,'big')
         filenames+=b'\xfe'+self.times+guidsmodes
         self.tablesectorcount=(len(elst+filenames)+self.sectorsize-1)//self.sectorsize-1
         self.disk.seek(1)

@@ -126,10 +126,10 @@ class FuseTran(Operations):
             avail=len(self.s.findnewblock(whole=True))
         if avail<0:
             avail=0
-        c['f_bavail']=c['f_bfree']=c['f_favail']=c['f_ffree']=avail
-        c['f_bsize']=c['f_flag']=c['f_frsize']=self.s.sectorsize
+        c['f_bavail']=c['f_bfree']=c['f_favail']=avail
+        c['f_bsize']=c['f_frsize']=self.s.sectorsize
         c['f_blocks']=self.s.sectorcount
-        c['f_files']=16777216
+        c['f_files']=len(self.s.filenamesdic)
         c['f_namemax']=255
         return c
     def unlink(self,path):
@@ -178,9 +178,6 @@ class FuseTran(Operations):
                 gid=uid=1000
             self.s.guids[path]=(gid,uid)
             self.s.modes[path]=mode
-            ti=time()
-            t=struct.pack('!d',ti)*3
-            self.s.times+=t
             self.fd+=1
             return self.fd
     def read(self,path,length,offset,fh):
