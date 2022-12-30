@@ -303,6 +303,8 @@ class SpaceFS():
         index=self.filenamesdic[filename]
         if index==-1:
             raise FileNotFoundError
+        if start>=self.trunfile(filename):
+            raise EOFError
         end=(start+amount+self.sectorsize-1)//self.sectorsize
         lst=self.flst[self.filenamesdic[filename]][start//self.sectorsize:end]
         data=b''

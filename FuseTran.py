@@ -51,11 +51,7 @@ class FuseTran(Operations):
                 gid,uid=self.s.guids[path]
                 mode=self.s.modes[path]
                 index=self.s.filenamesdic[path]
-                t=self.s.times[index*24:index*24+24]
-                if t==b'':
-                    t=struct.pack('!d',ti)*3
-                    self.s.times+=t
-                t=[struct.unpack('!d',t[i:i+8])[0] for i in range(0,24,8)]
+                t=[struct.unpack('!d',self.s.times[index*24:index*24+24][i:i+8])[0] for i in range(0,24,8)]
             except ValueError:
                 s=0
                 if os.name=='nt':
@@ -182,11 +178,17 @@ class FuseTran(Operations):
                 gid=uid=1000
             self.s.guids[path]=(gid,uid)
             self.s.modes[path]=mode
+            ti=time()
+            t=struct.pack('!d',ti)*3
+            self.s.times+=t
             self.fd+=1
             return self.fd
     def read(self,path,length,offset,fh):
         with self.rwlock:
-            return self.s.readfile(path,offset,length)
+            try:
+                return self.s.readfile(path,offset,length)
+            except EOFError:
+                pass
     def write(self,path,data,offset,fh):
         with self.rwlock:
             if self.s.writefile(path,offset,data)==0:
