@@ -24,6 +24,7 @@ jobs:
       run: |
         choco install winfsp -y --version=1.12.22339
         python -m pip install --upgrade pip
+        pip install wheel
         pip install fusepy pyinstaller
     - name: Download winfsp-test
       uses: engineerd/configurator@v0.0.8
@@ -38,17 +39,17 @@ jobs:
         copy dist/FuseTran.exe SpaceFS.exe
     - name: create_test
       run: |
-        start SpaceFS.exe SpaceFS.bin S: 0 67108864
-        copy winfsp-tests-x64.exe S:\winfsp-tests-x64.exe
-        copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
-        cd /d S:
+        start SpaceFS.exe SpaceFS.bin S 0 67108864
+        copy winfsp-tests-x64.exe S\winfsp-tests-x64.exe
+        copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S\winfsp-x64.dll
+        cd S
         winfsp-tests-x64.exe --external create_test
         taskkill /IM SpaceFS.exe
     - name: create_fileattr_test
       run: |
-        start SpaceFS.exe SpaceFS.bin S: 0 67108864
-        copy winfsp-tests-x64.exe S:\winfsp-tests-x64.exe
-        copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
-        cd /d S:
+        start SpaceFS.exe SpaceFS.bin S 0 67108864
+        copy winfsp-tests-x64.exe S\winfsp-tests-x64.exe
+        copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S\winfsp-x64.dll
+        cd S
         winfsp-tests-x64.exe --external create_fileattr_test
         taskkill /IM SpaceFS.exe
