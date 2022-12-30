@@ -32,26 +32,26 @@ jobs:
           name: winfsp-tests-x64.exe
           url: https://github.com/winfsp/winfsp/releases/download/v1.12.22339/winfsp-tests-1.12.22339.zip
           pathInArchive: winfsp-tests-x64.exe
-    - name: Create Drive File and Compile SpaceFS
+    - name: Create Drive File and Compile & Start SpaceFS
       run: |
         fsutil file createnew SpaceFS.bin 1073741824
         pyinstaller -F FuseTran.py
         copy dist/FuseTran.exe SpaceFS.exe
+        start Start.bat
     - name: create_test
+      working-directory: S:\
       if: always()
       run: |
-        start Start.bat
         python -c "from time import sleep; sleep(10)"
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
-        cd /d "S:\"
         winfsp-tests-x64.exe --external create_test
         taskkill /IM SpaceFS.exe
+        start Start.bat
     - name: create_fileattr_test
+      working-directory: S:\
       if: always()
       run: |
-        start Start.bat
         python -c "from time import sleep; sleep(10)"
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
-        cd /d "S:\"
         winfsp-tests-x64.exe --external create_fileattr_test
         taskkill /IM SpaceFS.exe
