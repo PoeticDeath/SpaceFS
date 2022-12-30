@@ -43,7 +43,7 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(10)"
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
-        cd /d S:
+        cd /d "S:\"
         winfsp-tests-x64.exe --external create_test
         taskkill /IM SpaceFS.exe
     - name: create_fileattr_test
@@ -52,6 +52,6 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(10)"
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
-        cd /d S:
+        cd /d "S:\"
         winfsp-tests-x64.exe --external create_fileattr_test
         taskkill /IM SpaceFS.exe
