@@ -1,0 +1,54 @@
+name: SpaceFS
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  win-build-test:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.11.1
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11.1"
+    - name: Install dependencies
+      run: |
+        choco install winfsp -y --version=1.12.22339
+        python -m pip install --upgrade pip
+        pip install fusepy pyinstaller
+    - name: Download winfsp-test
+      uses: engineerd/configurator@v0.0.8
+      with:
+          name: winfsp-tests-x64.exe
+          url: https://github.com/winfsp/winfsp/releases/download/v1.12.22339/winfsp-tests-1.12.22339.zip
+          pathInArchive: winfsp-tests-x64.exe
+    - name: Create Drive File and Compile SpaceFS
+      run: |
+        fsutil file createnew SpaceFS.bin 1073741824
+        pyinstaller -F FuseTran.py
+        copy dist/FuseTran.exe SpaceFS.exe
+    - name: create_test
+    - run: |
+        start SpaceFS.exe SpaceFS.bin S: 0 67108864
+        copy winfsp-tests-x64.exe S:\winfsp-tests-x64.exe
+        copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
+        cd /d S:
+        winfsp-tests-x64.exe --external create_test
+        taskkill /IM SpaceFS.exe
+    - name: create_fileattr_test
+    - run: |
+        start SpaceFS.exe SpaceFS.bin S: 0 67108864
+        copy winfsp-tests-x64.exe S:\winfsp-tests-x64.exe
+        copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
+        cd /d S:
+        winfsp-tests-x64.exe --external create_fileattr_test
+        taskkill /IM SpaceFS.exe
