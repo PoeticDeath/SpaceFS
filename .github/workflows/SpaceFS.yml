@@ -40,26 +40,18 @@ jobs:
         copy dist/FuseTran.exe C:\Users\runneradmin\runneradmin\configurator\bin\SpaceFS.exe
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" C:\Users\runneradmin\runneradmin\configurator\bin\winfsp-x64.dll
         start Start.bat
-        ping -n 10 -w 1000 0.0.0.1 > NUL
     - name: create_test
       working-directory: S:\
       if: always()
       run: |
-        taskkill /F /IM SpaceFS.exe
-        start Start.bat
-        ping -n 10 -w 1000 0.0.0.1 > NUL
         winfsp-tests-x64.exe --external create_test
-        taskkill /F /IM SpaceFS.exe
-        start Start.bat
-        ping -n 10 -w 1000 0.0.0.1 > NUL
-    - name: create_fileattr_test
-      working-directory: S:\
+    - name: Format 1
       if: always()
       run: |
         taskkill /F /IM SpaceFS.exe
         start Start.bat
-        ping -n 10 -w 1000 0.0.0.1 > NUL
+    - name: create_fileattr_test
+      working-directory: S:\
+      if: always()
+      run: |
         winfsp-tests-x64.exe --external create_fileattr_test
-        taskkill /F /IM SpaceFS.exe
-        start Start.bat
-        ping -n 10 -w 1000 0.0.0.1 > NUL
