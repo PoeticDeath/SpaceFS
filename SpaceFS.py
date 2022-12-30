@@ -361,9 +361,7 @@ class SpaceFS():
             newmiss=lst[(size+self.sectorsize-1)//self.sectorsize:]
             lst=lst[:(size+self.sectorsize-1)//self.sectorsize]
             self.flst[index]=lst
-            if type(lst)==int:
-                lst=str(lst)
-            nlst=','.join(lst)
+            nlst=','.join([str(i) for i in lst])
             table=self.table.split('.')
             table[index]=nlst
             self.table='.'.join(table)
