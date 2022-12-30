@@ -37,7 +37,7 @@ jobs:
         pyinstaller -F FuseTran.py
         copy dist/FuseTran.exe SpaceFS.exe
     - name: create_test
-    - run: |
+      run: |
         start SpaceFS.exe SpaceFS.bin S: 0 67108864
         copy winfsp-tests-x64.exe S:\winfsp-tests-x64.exe
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
@@ -45,7 +45,7 @@ jobs:
         winfsp-tests-x64.exe --external create_test
         taskkill /IM SpaceFS.exe
     - name: create_fileattr_test
-    - run: |
+      run: |
         start SpaceFS.exe SpaceFS.bin S: 0 67108864
         copy winfsp-tests-x64.exe S:\winfsp-tests-x64.exe
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
