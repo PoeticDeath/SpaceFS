@@ -39,7 +39,7 @@ jobs:
         copy dist/FuseTran.exe SpaceFS.exe
     - name: create_test
       run: |
-        start SpaceFS.bat
+        start Start.bat
         copy winfsp-tests-x64.exe S:\winfsp-tests-x64.exe
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
         cd /d S:
@@ -47,7 +47,7 @@ jobs:
         taskkill /IM SpaceFS.exe
     - name: create_fileattr_test
       run: |
-        start SpaceFS.bat
+        start Start.bat
         copy winfsp-tests-x64.exe S:\winfsp-tests-x64.exe
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
         cd /d S:
