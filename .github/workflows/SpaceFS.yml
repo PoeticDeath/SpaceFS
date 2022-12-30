@@ -35,6 +35,7 @@ jobs:
     - name: Download Start.bat
       uses: engineerd/configurator@v0.0.8
       with:
+          path: C:\
           name: Start.bat
           url: https://raw.githubusercontent.com/PoeticDeath/SpaceFS/main/Start.bat
     - name: Create Drive File and Compile & Start SpaceFS
