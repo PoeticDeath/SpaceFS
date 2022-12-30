@@ -882,14 +882,14 @@ jobs:
       if: always()
       run: |
         winfsp-tests-x64.exe --external stream_getstreaminfo_expire_cache_test
-    - name: Format 77
-      if: always()
-      run: |
-        taskkill /F /IM SpaceFS.exe
-        start Start.bat
-        python -c "from time import sleep; sleep(10)"
-    - name: stream_dirnotify_test
-      working-directory: S:\
-      if: always()
-      run: |
-        winfsp-tests-x64.exe --external stream_dirnotify_test
+    #- name: Format 77
+    #  if: always()
+    #  run: |
+    #    taskkill /F /IM SpaceFS.exe
+    #    start Start.bat
+    #    python -c "from time import sleep; sleep(10)"
+    #- name: stream_dirnotify_test
+    #  working-directory: S:\
+    #  if: always()
+    #  run: |
+    #    winfsp-tests-x64.exe --external stream_dirnotify_test
