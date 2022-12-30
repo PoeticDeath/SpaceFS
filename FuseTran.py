@@ -167,7 +167,7 @@ class FuseTran(Operations):
                 for i in tmp:
                     if i.startswith(old+'/'):
                         self.s.renamefile(i,i.replace(old,new,1))
-                self.tmpfolders=[new+'/']
+                self.tmpfolders[self.tmpfolders.index(old+'/')]=new+'/'
             else:
                 self.s.renamefile(old,new)
     def link(self,target,name):
