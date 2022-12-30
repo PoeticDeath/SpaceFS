@@ -36,8 +36,9 @@ jobs:
       run: |
         fsutil file createnew D:\SpaceFS.bin 1073741824
         pyinstaller -F FuseTran.py
-        copy dist/FuseTran.exe C:\Users\runneradmin\runneradmin\configurator\bin\SpaceFS.exe
         copy Start.bat C:\Users\runneradmin\runneradmin\configurator\bin\Start.bat
+        copy dist/FuseTran.exe C:\Users\runneradmin\runneradmin\configurator\bin\SpaceFS.exe
+        copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" C:\Users\runneradmin\runneradmin\configurator\bin\winfsp-x64.dll
         start Start.bat
         python -c "from time import sleep; sleep(5)"
     - name: create_test
@@ -47,7 +48,6 @@ jobs:
         taskkill /F /IM SpaceFS.exe
         start Start.bat
         python -c "from time import sleep; sleep(5)"
-        copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
         winfsp-tests-x64.exe --external create_test
         taskkill /F /IM SpaceFS.exe
         start Start.bat
@@ -59,7 +59,6 @@ jobs:
         taskkill /F /IM SpaceFS.exe
         start Start.bat
         python -c "from time import sleep; sleep(5)"
-        copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
         winfsp-tests-x64.exe --external create_fileattr_test
         taskkill /F /IM SpaceFS.exe
         start Start.bat
