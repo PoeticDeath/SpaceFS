@@ -32,26 +32,39 @@ jobs:
           name: winfsp-tests-x64.exe
           url: https://github.com/winfsp/winfsp/releases/download/v1.12.22339/winfsp-tests-1.12.22339.zip
           pathInArchive: winfsp-tests-x64.exe
+    - name: Download Start.bat
+      uses: engineerd/configurator@v0.0.8
+      with:
+          name: Start.bat
+          url: https://raw.githubusercontent.com/PoeticDeath/SpaceFS/main/Start.bat
     - name: Create Drive File and Compile & Start SpaceFS
       run: |
         fsutil file createnew SpaceFS.bin 1073741824
         pyinstaller -F FuseTran.py
         copy dist/FuseTran.exe SpaceFS.exe
         start Start.bat
+        python -c "from time import sleep; sleep(5)"
     - name: create_test
       working-directory: S:\
       if: always()
       run: |
-        python -c "from time import sleep; sleep(10)"
+        taskkill /IM SpaceFS.exe
+        start Start.bat
+        python -c "from time import sleep; sleep(5)"
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
         winfsp-tests-x64.exe --external create_test
         taskkill /IM SpaceFS.exe
         start Start.bat
+        python -c "from time import sleep; sleep(5)"
     - name: create_fileattr_test
       working-directory: S:\
       if: always()
       run: |
-        python -c "from time import sleep; sleep(10)"
+        taskkill /IM SpaceFS.exe
+        start Start.bat
+        python -c "from time import sleep; sleep(5)"
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
         winfsp-tests-x64.exe --external create_fileattr_test
         taskkill /IM SpaceFS.exe
+        start Start.bat
+        python -c "from time import sleep; sleep(5)"
