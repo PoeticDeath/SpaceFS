@@ -38,6 +38,7 @@ jobs:
         pyinstaller -F FuseTran.py
         copy dist/FuseTran.exe SpaceFS.exe
     - name: create_test
+      if: always()
       run: |
         start Start.bat
         python -c "from time import sleep; sleep(10)"
@@ -46,6 +47,7 @@ jobs:
         winfsp-tests-x64.exe --external create_test
         taskkill /IM SpaceFS.exe
     - name: create_fileattr_test
+      if: always()
       run: |
         start Start.bat
         python -c "from time import sleep; sleep(10)"
