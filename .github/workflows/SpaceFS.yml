@@ -40,6 +40,7 @@ jobs:
     - name: create_test
       run: |
         start Start.bat
+        timeout 10
         copy winfsp-tests-x64.exe S:\winfsp-tests-x64.exe
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
         cd /d S:
@@ -48,6 +49,7 @@ jobs:
     - name: create_fileattr_test
       run: |
         start Start.bat
+        timeout 10
         copy winfsp-tests-x64.exe S:\winfsp-tests-x64.exe
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" S:\winfsp-x64.dll
         cd /d S:
