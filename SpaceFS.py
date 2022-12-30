@@ -163,9 +163,9 @@ class SpaceFS():
         if whole:
             return self.missinglst
         return self.missinglst[0]
-    def simptable(self):
+    def simptable(self,F=False):
         table=self.table
-        if self.oldsimptable==table:
+        if (self.oldsimptable==table)&(not F):
             return
         tmplst=self.readtable()
         lst=''
