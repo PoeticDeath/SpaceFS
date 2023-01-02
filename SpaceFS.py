@@ -57,6 +57,7 @@ class SpaceFS():
             ofs=(len(self.filenamesdic)*24)+(i[0]*7)
             self.guids[i[1]]=(int.from_bytes(s[1][ofs:ofs+3],'big'),int.from_bytes(s[1][ofs+3:ofs+5],'big'))
             self.modes[i[1]]=int.from_bytes(s[1][ofs+5:ofs+7],'big')
+        self.symlinks={}
         self.simptable()
     def readtable(self):
         if self.oldreadtable==self.table:
@@ -261,15 +262,30 @@ class SpaceFS():
         self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
         self.disk.flush()
         self.oldsimptable=table
-    def createfile(self,filename):
+    def createfile(self,filename,mode):
+        c=[i for i in self.symlinks if filename.startswith(i+'/')]
+        if len(c)>0:
+            filename=filename.replace(c[0],self.symlinks[c[0]],1)
         if filename in self.filenamesdic:
             raise FileExistsError
+        if os.name=='nt':
+            gid=uid=545
+        else:
+            gid=uid=1000
+        self.guids[filename]=(gid,uid)
+        self.modes[filename]=mode
         self.filenameslst+=[filename]
         self.filenamesdic[filename]=len(self.filenamesdic)
         self.table+='.'
         self.flst+=[[]]
         self.times+=struct.pack('!d',time())*3
     def deletefile(self,filename):
+        c=[i for i in self.symlinks if filename.startswith(i+'/')]
+        if len(c)>0:
+            filename=filename.replace(c[0],self.symlinks[c[0]],1)
+        if filename in self.symlinks:
+            del self.symlinks[filename]
+            return
         if filename not in self.filenamesdic:
             raise FileNotFoundError
         index=self.filenamesdic[filename]
@@ -291,6 +307,14 @@ class SpaceFS():
             self.filenamesdic[i[1]]=i[0]+index
         self.times=self.times[:index*24]+self.times[index*24+24:]
     def renamefile(self,oldfilename,newfilename):
+        c=[i for i in self.symlinks if oldfilename.startswith(i+'/')]
+        if oldfilename in self.symlinks:
+            self.deletefile(newfilename)
+            self.symlinks[newfilename]=self.symlinks[oldfilename]
+            del self.symlinks[oldfilename]
+        if len(c)>0:
+            oldfilename=oldfilename.replace(c[0],self.symlinks[c[0]],1)
+            newfilename=newfilename.replace(c[0],self.symlinks[c[0]],1)
         if oldfilename not in self.filenamesdic:
             raise FileNotFoundError
         if newfilename in self.filenamesdic:
@@ -300,6 +324,11 @@ class SpaceFS():
         del self.filenamesdic[oldfilename]
         self.filenamesdic[newfilename]=oldindex
     def readfile(self,filename,start,amount):
+        c=[i for i in self.symlinks if filename.startswith(i+'/')]
+        if len(c)>0:
+            filename=filename.replace(c[0],self.symlinks[c[0]],1)
+        if filename in self.symlinks:
+            filename=self.symlinks[filename]
         index=self.filenamesdic[filename]
         if index==-1:
             raise FileNotFoundError
@@ -328,6 +357,11 @@ class SpaceFS():
         self.times=self.times[:index*24]+struct.pack('!d',time())+self.times[index*24+8:]
         return data[:amount]
     def trunfile(self,filename,size=None):
+        c=[i for i in self.symlinks if filename.startswith(i+'/')]
+        if len(c)>0:
+            filename=filename.replace(c[0],self.symlinks[c[0]],1)
+        if filename in self.symlinks:
+            filename=self.symlinks[filename]
         try:
             index=self.filenamesdic[filename]
         except KeyError:
@@ -372,6 +406,11 @@ class SpaceFS():
             self.writefile(filename,self.trunfile(filename),bytes(size-self.trunfile(filename)),True)
         self.times=self.times[:index*24+8]+struct.pack('!d',time())+self.times[index*24+16:]
     def writefile(self,filename,start,data,T=False):
+        c=[i for i in self.symlinks if filename.startswith(i+'/')]
+        if len(c)>0:
+            filename=filename.replace(c[0],self.symlinks[c[0]],1)
+        if filename in self.symlinks:
+            filename=self.symlinks[filename]
         if filename not in self.filenamesdic:
             raise FileNotFoundError
         index=self.filenamesdic[filename]
@@ -417,12 +456,7 @@ class SpaceFS():
         odata=None
         if (m!=2)&(start+len(data)>self.trunfile(filename)):
             tlst=self.table.split('.')
-            tmp=tlst[index].split(',')[-1]
-            if ';' in tmp:
-                tmp=tmp.split(';')
-                self.disk.seek(self.disksize-(int(tmp[0])*self.sectorsize+self.sectorsize))
-                odata=self.disk.read(self.sectorsize)[int(tmp[1]):int(tmp[2])]
-                d=self.flst[index].index(self.readtable()[index][-1])
+            if ';' in tlst[index].split(',')[-1]:
                 self.flst[index].pop()
                 tlst[index]=','.join(tlst[index].split(',')[:-1])
                 self.table='.'.join(tlst)
@@ -491,13 +525,6 @@ class SpaceFS():
                     tlst[index]+=','+str(e)
                 self.flst[index]+=[e]
                 self.table='.'.join(tlst)
-        if odata!=None:
-            try:
-                self.disk.seek(self.disksize-(int(tmp[0])+self.sectorsize))
-                self.disk.write(odata[:int(tmp[2])-int(tmp[1])])
-            except AttributeError:
-                self.disk.seek(self.disksize-(int(self.readtable()[index][d*self.sectorsize+int(tmp[1])])+self.sectorsize))
-                self.disk.write(odata)
         st=start-(start//self.sectorsize*self.sectorsize)
         end=(start+len(data)+self.sectorsize-1)//self.sectorsize
         if not T:
