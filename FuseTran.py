@@ -43,6 +43,9 @@ class FuseTran(Operations):
         self.s.modes[path]|=mode
         return 0
     def chown(self,path,uid,gid):
+        c=[i for i in self.s.symlinks if (path.startswith(i+'/'))|(path==i)]
+        if len(c)>0:
+            path=path.replace(c[0],self.s.symlinks[c[0]],1)
         self.s.guids[path]=(gid,uid)
     getxattr=None
     def getattr(self,path,fh=None):
