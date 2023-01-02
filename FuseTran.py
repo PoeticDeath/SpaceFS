@@ -157,7 +157,13 @@ class FuseTran(Operations):
         with self.rwlock:
             self.s.deletefile(path)
     def symlink(self,name,target):
-        self.s.symlinks[name]=os.path.normpath(self.mount+'/'.join(name.split('/')[:-1])+'/'+target).replace(self.mount,'',1).replace('\\','/')
+        c=os.path.normpath(self.mount+'/'.join(name.split('/')[:-1])+'/'+target).replace(self.mount,'',1).replace('\\','/')
+        if os.path.exists(c):
+            self.s.symlinks[name]=c
+        else:
+            if target[0]!='/':
+                target='/'+target
+            self.s.symlinks[name]=target
     def renameguidmode(self,old,new):
         try:
             self.s.guids[new]=self.s.guids[old]
