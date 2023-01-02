@@ -37,8 +37,12 @@ class SpaceFS():
         self.table=decode(t[0]).split('.')
         self.filenameslst=[i.decode() for i in t[1:-1]]
         self.filenamesdic={}
+        self.symlinks={}
         for i in enumerate(self.filenameslst):
-            self.filenamesdic[i[1]]=i[0]
+            filename=i[1].split(',')
+            self.filenamesdic[filename[0]]=i[0]
+            for o in filename[1:]:
+                self.symlinks[o]=filename[0]
         if self.table[-1]==len(self.table[-1])*'0':
             self.table[-1]=''
         self.table='.'.join(self.table)
@@ -55,9 +59,9 @@ class SpaceFS():
         self.modes={}
         for i in enumerate(self.filenameslst):
             ofs=(len(self.filenamesdic)*24)+(i[0]*7)
-            self.guids[i[1]]=(int.from_bytes(s[1][ofs:ofs+3],'big'),int.from_bytes(s[1][ofs+3:ofs+5],'big'))
-            self.modes[i[1]]=int.from_bytes(s[1][ofs+5:ofs+7],'big')
-        self.symlinks={}
+            filename=i[1].split(',')[0]
+            self.guids[filename]=(int.from_bytes(s[1][ofs:ofs+3],'big'),int.from_bytes(s[1][ofs+3:ofs+5],'big'))
+            self.modes[filename]=int.from_bytes(s[1][ofs+5:ofs+7],'big')
         self.simptable()
     def readtable(self):
         if self.oldreadtable==self.table:
@@ -252,8 +256,12 @@ class SpaceFS():
         filenames=b'\xff'
         guidsmodes=b''
         for i in self.filenameslst:
-            filenames+=i.encode()+b'\xff'
+            i=i.split(',')[0]
             guidsmodes+=self.guids[i][0].to_bytes(3,'big')+self.guids[i][1].to_bytes(2,'big')+self.modes[i].to_bytes(2,'big')
+            for p in self.symlinks:
+                if self.symlinks[p]==i:
+                    i+=','+p
+            filenames+=i.encode()+b'\xff'
         filenames+=b'\xfe'+self.times+guidsmodes
         self.tablesectorcount=(len(elst+filenames)+self.sectorsize-1)//self.sectorsize-1
         self.disk.seek(1)
@@ -279,11 +287,11 @@ class SpaceFS():
         self.table+='.'
         self.flst+=[[]]
         self.times+=struct.pack('!d',time())*3
-    def deletefile(self,filename):
+    def deletefile(self,filename,block=False):
         c=[i for i in self.symlinks if filename.startswith(i+'/')]
         if len(c)>0:
             filename=filename.replace(c[0],self.symlinks[c[0]],1)
-        if filename in self.symlinks:
+        if (filename in self.symlinks)&(block==False):
             del self.symlinks[filename]
             return
         if filename not in self.filenamesdic:
@@ -309,9 +317,11 @@ class SpaceFS():
     def renamefile(self,oldfilename,newfilename):
         c=[i for i in self.symlinks if oldfilename.startswith(i+'/')]
         if oldfilename in self.symlinks:
-            self.deletefile(newfilename)
             self.symlinks[newfilename]=self.symlinks[oldfilename]
             del self.symlinks[oldfilename]
+            if newfilename in self.filenamesdic:
+                self.deletefile(newfilename,block=True)
+            return
         if len(c)>0:
             oldfilename=oldfilename.replace(c[0],self.symlinks[c[0]],1)
             newfilename=newfilename.replace(c[0],self.symlinks[c[0]],1)

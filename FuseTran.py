@@ -36,6 +36,9 @@ class FuseTran(Operations):
         if mode!=self.s.modes[path]:
             raise FuseOSError(errno.EACCES)
     def chmod(self,path,mode):
+        c=[i for i in self.s.symlinks if (path.startswith(i+'/'))|(path==i)]
+        if len(c)>0:
+            path=path.replace(c[0],self.s.symlinks[c[0]],1)
         self.s.modes[path]&=0o770000
         self.s.modes[path]|=mode
         return 0
@@ -169,7 +172,7 @@ class FuseTran(Operations):
             self.s.renamefile(old,new)
         else:
             with self.rwlock:
-                tmp=self.s.filenameslst
+                tmp=self.s.filenamesdic
                 if old not in tmp:
                     for i in tmp:
                         if i.startswith(old+'/'):
