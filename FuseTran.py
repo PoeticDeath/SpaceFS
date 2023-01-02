@@ -175,7 +175,7 @@ class FuseTran(Operations):
             self.s.renamefile(old,new)
         else:
             with self.rwlock:
-                tmp=self.s.filenamesdic
+                tmp=list(self.s.filenamesdic.keys())
                 if old not in tmp:
                     for i in tmp:
                         if i.startswith(old+'/'):
