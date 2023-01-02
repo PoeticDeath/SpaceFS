@@ -259,7 +259,7 @@ class SpaceFS():
             i=i.split(',')[0]
             guidsmodes+=self.guids[i][0].to_bytes(3,'big')+self.guids[i][1].to_bytes(2,'big')+self.modes[i].to_bytes(2,'big')
             for p in self.symlinks:
-                if self.symlinks[p]==i:
+                if self.symlinks[p]==i.split(',')[0]:
                     i+=','+p
             filenames+=i.encode()+b'\xff'
         filenames+=b'\xfe'+self.times+guidsmodes
