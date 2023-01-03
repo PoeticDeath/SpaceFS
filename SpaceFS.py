@@ -294,6 +294,10 @@ class SpaceFS():
         if (filename in self.symlinks)&(block==False):
             del self.symlinks[filename]
             return
+        if filename in self.symlinks.values():
+            for i in list(self.symlinks.keys()):
+                if self.symlinks[i]==filename:
+                    del self.symlinks[i]
         if filename not in self.filenamesdic:
             raise FileNotFoundError
         index=self.filenamesdic[filename]
