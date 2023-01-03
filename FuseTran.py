@@ -230,11 +230,11 @@ class FuseTran(Operations):
         with self.rwlock:
             self.s.simptable(F=True)
     def flush(self,path,fh):
-        pass
+        return 0
     def release(self,path,fh):
-        pass
+        return 0
     def fsync(self,path,fdatasync,fh):
-        pass
+        return 0
 def main():
     try:
         disk=str(argv[1])
