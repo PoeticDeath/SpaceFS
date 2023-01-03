@@ -89,18 +89,22 @@ class FuseTran(Operations):
         for i in list(self.s.filenamesdic.keys())+list(self.s.symlinks.keys()):
             if i.startswith(path):
                 if path.count('/')==i.count('/'):
-                    dirents+=[i[1:].split('/')[-1]]
+                    c=i[1:].split('/')[-1]
+                    if c not in dirents:
+                        dirents+=[c]
                 if path.count('/')+1==i.count('/'):
                     if i[1:].split('/')[-2] not in dirents:
-                        dirents+=[i[1:].split('/')[-2]]
+                        tmp=i[1:].split('/')[-2]
+                        if tmp not in dirents:
+                            dirents+=[tmp]
                         tmp='/'.join(i.split('/')[:-1])+'/'
                         if tmp not in self.tmpfolders:
                             self.tmpfolders+=[tmp]
                 if path.count('/')+1<=i.count('/'):
-                    c=i.split('/')[path.count('/')]
-                    if c not in dirents:
+                    tmp=i.split('/')[path.count('/')]
+                    if tmp not in dirents:
                         d='/'.join(i.split('/')[:path.count('/')+1])+'/'
-                        dirents+=[c]
+                        dirents+=[tmp]
                         if d not in self.tmpfolders:
                             self.tmpfolders+=[d]
         for i in self.tmpfolders:
