@@ -42,7 +42,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: create_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external create_test
     - name: Format 1
@@ -52,7 +53,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: create_fileattr_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external create_fileattr_test
     - name: Format 2
@@ -62,7 +64,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: create_readonlydir_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external create_readonlydir_test
     - name: Format 3
@@ -72,7 +75,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: create_related_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external create_related_test
     - name: Format 4
@@ -82,7 +86,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: create_sd_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external create_sd_test
     - name: Format 5
@@ -92,7 +97,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: create_backup_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external create_backup_test
     - name: Format 6
@@ -102,7 +108,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: create_restore_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external create_restore_test
     - name: Format 7
@@ -112,7 +119,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: create_share_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external create_share_test
     - name: Format 8
@@ -122,7 +130,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: create_curdir_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external create_curdir_test
     - name: Format 9
@@ -132,7 +141,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: create_namelen_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external create_namelen_test
     - name: Format 10
@@ -142,7 +152,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: getfileinfo_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external getfileinfo_test
     - name: Format 11
@@ -152,7 +163,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: setfileinfo_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external setfileinfo_test
     - name: Format 12
@@ -162,7 +174,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: delete_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external delete_test
     - name: Format 13
@@ -172,7 +185,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: delete_access_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external delete_access_test
     - name: Format 14
@@ -182,7 +196,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: delete_pending_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external delete_pending_test
     - name: Format 15
@@ -192,7 +207,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: delete_mmap_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external delete_mmap_test
     - name: Format 16
@@ -202,7 +218,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: delete_standby_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external delete_standby_test
     - name: Format 17
@@ -212,7 +229,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: delete_ex_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external delete_ex_test
     - name: Format 18
@@ -222,7 +240,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rename_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_test
     - name: Format 19
@@ -232,7 +251,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rename_backslash_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_backslash_test
     - name: Format 20
@@ -242,7 +262,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rename_open_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_open_test
     - name: Format 21
@@ -252,7 +273,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rename_caseins_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_caseins_test
     - name: Format 22
@@ -262,7 +284,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rename_flipflop_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_flipflop_test
     - name: Format 23
@@ -272,7 +295,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rename_mmap_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_mmap_test
     - name: Format 24
@@ -282,7 +306,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rename_standby_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_standby_test
     - name: Format 25
@@ -292,7 +317,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rename_ex_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_ex_test
     - name: Format 26
@@ -302,7 +328,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: getvolinfo_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external getvolinfo_test
     - name: Format 27
@@ -312,7 +339,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: setvolinfo_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external setvolinfo_test
     - name: Format 28
@@ -322,7 +350,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: getsecurity_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external getsecurity_test
     - name: Format 29
@@ -332,7 +361,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rdwr_noncached_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_noncached_test
     - name: Format 30
@@ -342,7 +372,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rdwr_noncached_overlapped_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_noncached_overlapped_test
     - name: Format 31
@@ -352,7 +383,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rdwr_cached_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_cached_test
     - name: Format 32
@@ -362,7 +394,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rdwr_cached_append_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_cached_append_test
     - name: Format 33
@@ -372,7 +405,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rdwr_cached_overlapped_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_cached_overlapped_test
     - name: Format 34
@@ -382,7 +416,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rdwr_writethru_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_writethru_test
     - name: Format 35
@@ -392,7 +427,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rdwr_writethru_append_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_writethru_append_test
     - name: Format 36
@@ -402,7 +438,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rdwr_writethru_overlapped_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_writethru_overlapped_test
     - name: Format 37
@@ -412,7 +449,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rdwr_mmap_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_mmap_test
     - name: Format 38
@@ -422,7 +460,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: rdwr_mixed_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_mixed_test
     - name: Format 39
@@ -432,7 +471,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: flush_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external flush_test
     - name: Format 40
@@ -442,7 +482,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: flush_volume_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external flush_volume_test
     - name: Format 41
@@ -452,7 +493,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: lock_noncached_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external lock_noncached_test
     - name: Format 42
@@ -462,7 +504,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: lock_noncached_overlapped_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external lock_noncached_overlapped_test
     - name: Format 43
@@ -472,7 +515,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: lock_cached_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external lock_cached_test
     - name: Format 44
@@ -482,7 +526,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: lock_cached_overlapped_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external lock_cached_overlapped_test
     - name: Format 45
@@ -492,7 +537,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: querydir_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external querydir_test
     - name: Format 46
@@ -502,7 +548,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: querydir_expire_cache_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external querydir_expire_cache_test
     - name: Format 47
@@ -512,7 +559,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: querydir_buffer_overflow_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external querydir_buffer_overflow_test
     - name: Format 48
@@ -522,7 +570,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: querydir_namelen_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external querydir_namelen_test
     - name: Format 49
@@ -532,7 +581,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: dirnotify_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external dirnotify_test
     - name: Format 50
@@ -542,7 +592,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: exec_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external exec_test
     - name: Format 51
@@ -552,7 +603,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: exec_delete_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external exec_delete_test
     - name: Format 52
@@ -562,7 +614,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: exec_rename_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external exec_rename_test
     - name: Format 53
@@ -572,7 +625,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: exec_rename_dir_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external exec_rename_dir_test
     - name: Format 54
@@ -582,7 +636,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: reparse_nfs_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external reparse_nfs_test
     - name: Format 55
@@ -592,7 +647,8 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: reparse_symlink_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external reparse_symlink_test
     - name: Format 56
@@ -602,6 +658,7 @@ jobs:
         start Start.bat
         python -c "from time import sleep; sleep(2)"
     - name: reparse_symlink_relative_test
-      working-directory: S:      if: always()
+      working-directory: S:\
+      if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external reparse_symlink_relative_test
