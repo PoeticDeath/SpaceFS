@@ -467,13 +467,18 @@ class SpaceFS():
             pass
         except IndexError:
             pass
+        h=None
         if (m!=2)&(start+len(data)>self.trunfile(filename)):
             tlst=self.table.split('.')
             if ';' in tlst[index].split(',')[-1]:
-                self.flst[index].pop()
+                h=self.flst[index].pop()
+                self.findnewblock(part=True)
+                self.part[int(h.split(';')[0])]+=[int(h.split(';')[1])]
+                self.part[int(h.split(';')[0])].remove(int(h.split(';')[2]))
+                self.part[int(h.split(';')[0])].sort()
                 tlst[index]=','.join(tlst[index].split(',')[:-1])
                 self.table='.'.join(tlst)
-        elif m==2:
+        if m==2:
             m=1
         while minblocks>len(lst):
             tlst=self.table.split('.')
