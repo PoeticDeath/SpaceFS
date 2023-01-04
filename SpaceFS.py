@@ -467,14 +467,22 @@ class SpaceFS():
             pass
         except IndexError:
             pass
+        h=None
+        odata=None
         if (m!=2)&(start+len(data)>self.trunfile(filename)):
             tlst=self.table.split('.')
             if ';' in tlst[index].split(',')[-1]:
                 h=self.flst[index].pop()
                 self.findnewblock(part=True)
-                self.part[int(h.split(';')[0])]+=[int(h.split(';')[1])]
-                self.part[int(h.split(';')[0])].remove(int(h.split(';')[2]))
-                self.part[int(h.split(';')[0])].sort()
+                try:
+                    self.part[int(h.split(';')[0])]+=[int(h.split(';')[1])]
+                    try:
+                        self.part[int(h.split(';')[0])].remove(int(h.split(';')[2]))
+                    except ValueError:
+                        self.part[int(h.split(';')[0])]+=[int(h.split(';')[2])]
+                    self.part[int(h.split(';')[0])].sort()
+                except KeyError:
+                    self.part[int(h.split(';')[0])]=[0,self.sectorsize]
                 tlst[index]=','.join(tlst[index].split(',')[:-1])
                 self.table='.'.join(tlst)
         elif m==2:
@@ -509,6 +517,11 @@ class SpaceFS():
                                     l=False
                                 if o[1]-o[0]>=c:
                                     f=[i,o[0],o[0]+c]
+                                    if h!=None:
+                                        if (i!=int(h.split(';')[0]))|(o[0]!=int(h.split(';')[1])):
+                                            u=int(h.split(';')[1])
+                                            self.disk.seek(self.disksize-(int(h.split(';')[0])*self.sectorsize+self.sectorsize-u))
+                                            odata=self.disk.read(int(h.split(';')[2])-int(h.split(';')[1]))
                                     if l:
                                         if o[1]-o[0]==c:
                                             self.part[i].remove(o[0])
@@ -551,6 +564,12 @@ class SpaceFS():
                 if type(i[1])==str:
                     u=int(i[1].split(';')[1])
                 if i[0]==0:
+                    if odata!=None:
+                        try:
+                            self.disk.seek(self.disksize-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-u))
+                        except AttributeError:
+                            self.disk.seek(self.disksize-(i[1]*self.sectorsize+self.sectorsize-u))
+                        self.disk.write(odata)
                     try:
                         self.disk.seek(self.disksize-(int(i[1].split(';')[0])*self.sectorsize+self.sectorsize-st-u))
                     except AttributeError:
