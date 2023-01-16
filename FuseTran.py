@@ -19,8 +19,6 @@ class FuseTran(Operations):
         self.s=SpaceFS(disk)
         self.mount=mount
         self.tmpfolders=[]
-        self.oldtmpfolders=[]
-        self.tmpf=[]
         self.rwlock=Lock()
         self.fd=0
     def init(self,path):
@@ -76,11 +74,7 @@ class FuseTran(Operations):
                     mode=16877
                     if path!='/':
                         if path+'/' not in self.tmpfolders:
-                            if self.tmpfolders!=self.oldtmpfolders:
-                                self.tmpf=['/'.join(i.split('/')[:-1]) for i in self.s.filenamesdic]
-                                self.oldtmpfolders=self.tmpfolders
-                            if path not in self.tmpf:
-                                raise FuseOSError(errno.ENOENT)
+                            raise FuseOSError(errno.ENOENT)
                 return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':gid,'st_uid':uid}
     def readdir(self,path,fh):
         c=[i for i in self.s.symlinks if (path.startswith(i+'/'))|(path==i)]
