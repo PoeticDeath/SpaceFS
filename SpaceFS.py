@@ -332,7 +332,7 @@ class SpaceFS():
         if oldfilename not in self.filenamesdic:
             raise FileNotFoundError
         if newfilename in self.filenamesdic:
-            raise FileExistsError
+            self.deletefile(newfilename)
         oldindex=self.filenamesdic[oldfilename]
         self.filenameslst[oldindex]=newfilename
         del self.filenamesdic[oldfilename]
