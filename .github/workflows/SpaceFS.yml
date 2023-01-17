@@ -25,7 +25,8 @@ jobs:
         choco install winfsp -y --version=1.12.22339
         python -m pip install --upgrade pip
         pip install wheel
-        pip install fusepy pyinstaller
+        pip install pyinstaller
+        pip install https://github.com/PoeticDeath/refuse/archive/refs/heads/master.zip
     - name: Download winfsp-test
       uses: engineerd/configurator@v0.0.8
       with:
