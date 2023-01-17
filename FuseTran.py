@@ -6,7 +6,7 @@ from sys import argv
 from time import sleep,time
 from SpaceFS import SpaceFS
 from threading import Thread,Lock
-from fuse import FUSE,FuseOSError,Operations
+from refuse.high import FUSE,FuseOSError,Operations
 class FuseTran(Operations):
     def __init__(self,mount,disk,bs=None):
         if bs!=None:
