@@ -194,6 +194,14 @@ class FuseTran(Operations):
     def truncate(self,path,length,fh=None):
         with self.rwlock:
             self.s.trunfile(path,length)
+    def setchgtime(self,path,time):
+        index=self.s.filenamesdic[path]
+        self.s.times=self.s.times[:index*24+8]+struct.pack('!d',time)+self.s.times[index*24+16:]
+        return 0
+    def setcrtime(self,path,time):
+        index=self.s.filenamesdic[path]
+        self.s.times=self.s.times[:index*24+16]+struct.pack('!d',time)+self.s.times[index*24+24:]
+        return 0
     def destroy(self,path):
         with self.rwlock:
             self.s.simptable(F=True)
