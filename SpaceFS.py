@@ -284,7 +284,7 @@ class SpaceFS():
             gid=uid=1000
         self.guids[filename]=(gid,uid)
         self.modes[filename]=mode
-        self.winattrs[filename]=0
+        self.winattrs[filename]=2048
         self.filenameslst+=[filename]
         self.filenamesdic[filename]=len(self.filenamesdic)
         self.table+='.'
