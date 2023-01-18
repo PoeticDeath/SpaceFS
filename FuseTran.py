@@ -78,6 +78,8 @@ class FuseTran(Operations):
                     mode=16877
                     if path!='/':
                         raise FuseOSError(errno.ENOENT)
+                if mode==8696:
+                    return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':gid,'st_uid':uid,'st_flags':flags,'st_rdev':int.from_bytes(self.s.readfile(path,0,s),'big')}
                 return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':gid,'st_uid':uid,'st_flags':flags}
     def readdir(self,path,fh):
         c=[i for i in self.s.symlinks if (path.startswith(i+'/'))|(path==i)]
@@ -107,6 +109,8 @@ class FuseTran(Operations):
     def readlink(self,path):
         pass
     def mknod(self,path,mode,dev):
+        self.s.createfile(path,mode)
+        self.s.writefile(path,0,dev.to_bytes((dev.bit_length()+7)//8,'big'))
         return 0
     def rmdir(self,path):
         c=[i for i in self.s.symlinks if path.startswith(i+'/')]
