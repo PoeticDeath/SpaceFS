@@ -18,7 +18,6 @@ class FuseTran(Operations):
                 o.write(i.to_bytes(1,'big')+bytes(4)+b'\xff\xfe')
         self.s=SpaceFS(disk)
         self.mount=mount
-        self.tmpfolders=[]
         self.rwlock=Lock()
         self.fd=0
     def init(self,path):
@@ -78,8 +77,7 @@ class FuseTran(Operations):
                     flags=0
                     mode=16877
                     if path!='/':
-                        if path+'/' not in self.tmpfolders:
-                            raise FuseOSError(errno.ENOENT)
+                        raise FuseOSError(errno.ENOENT)
                 return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':gid,'st_uid':uid,'st_flags':flags}
     def readdir(self,path,fh):
         c=[i for i in self.s.symlinks if (path.startswith(i+'/'))|(path==i)]
@@ -99,26 +97,11 @@ class FuseTran(Operations):
                         tmp=i[1:].split('/')[-2]
                         if tmp not in dirents:
                             dirents+=[tmp]
-                        tmp='/'.join(i.split('/')[:-1])+'/'
-                        if tmp not in self.tmpfolders:
-                            self.tmpfolders+=[tmp]
                 if path.count('/')+1<=i.count('/'):
                     tmp=i.split('/')[path.count('/')]
                     if tmp not in dirents:
                         d='/'.join(i.split('/')[:path.count('/')+1])+'/'
                         dirents+=[tmp]
-                        if d not in self.tmpfolders:
-                            self.tmpfolders+=[d]
-        for i in self.tmpfolders:
-            if i.count('/')==path.count('/')+1:
-                if i.startswith(path):
-                    ni=True
-                    for o in self.s.filenamesdic:
-                        if o.startswith(i):
-                            ni=False
-                            break
-                    if ni:
-                        dirents+=[i.split('/')[-2]]
         for r in dirents:
             yield r
     def readlink(self,path):
@@ -129,20 +112,14 @@ class FuseTran(Operations):
         c=[i for i in self.s.symlinks if path.startswith(i+'/')]
         if len(c)>0:
             path=path.replace(c[0],self.s.symlinks[c[0]],1)
-        if path+'/' in self.tmpfolders:
-            if list(self.readdir(path,0))==['.','..']:
-                self.tmpfolders.pop(self.tmpfolders.index(path+'/'))
-        else:
-            raise FuseOSError(errno.ENOENT)
+        if list(self.readdir(path,0))==['.','..']:
+            self.s.deletefile(path,16877)
         return 0
     def mkdir(self,path,mode):
         c=[i for i in self.s.symlinks if path.startswith(i+'/')]
         if len(c)>0:
             path=path.replace(c[0],self.s.symlinks[c[0]],1)
-        if path+'/' not in self.tmpfolders:
-            self.tmpfolders+=[path+'/']
-        else:
-            raise FuseOSError(errno.EEXIST)
+        self.s.createfile(path,16877)
         return 0
     def opendir(self,path):
         self.fd+=1
@@ -180,13 +157,12 @@ class FuseTran(Operations):
         else:
             with self.rwlock:
                 tmp=list(self.s.filenamesdic.keys())
+                tmp=[i for i in tmp if self.s.modes[i]!=16877]
                 if old not in tmp:
                     for i in tmp:
                         if i.startswith(old+'/'):
                             self.s.renamefile(i,i.replace(old,new,1))
-                    self.tmpfolders[self.tmpfolders.index(old+'/')]=new+'/'
-                else:
-                    self.s.renamefile(old,new)
+                self.s.renamefile(old,new)
     def link(self,target,name):
         pass
     def utimens(self,path,times=None):

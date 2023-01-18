@@ -343,15 +343,12 @@ class SpaceFS():
         self.filenameslst[oldindex]=newfilename
         del self.filenamesdic[oldfilename]
         self.filenamesdic[newfilename]=oldindex
-        try:
-            self.guids[newfilename]=self.guids[oldfilename]
-            del self.guids[oldfilename]
-            self.modes[newfilename]=self.modes[oldfilename]
-            del self.modes[oldfilename]
-            self.winattrs[newfilename]=self.winattrs[oldfilename]
-            del self.winattrs[oldfilename]
-        except KeyError:
-            pass
+        self.guids[newfilename]=self.guids[oldfilename]
+        del self.guids[oldfilename]
+        self.modes[newfilename]=self.modes[oldfilename]
+        del self.modes[oldfilename]
+        self.winattrs[newfilename]=self.winattrs[oldfilename]
+        del self.winattrs[oldfilename]
     def readfile(self,filename,start,amount):
         c=[i for i in self.symlinks if filename.startswith(i+'/')]
         if len(c)>0:
