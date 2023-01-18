@@ -33,6 +33,9 @@ class FuseTran(Operations):
     def access(self,path,mode):
         if mode!=self.s.modes[path]:
             raise FuseOSError(errno.EACCES)
+    def chflags(self,path,flags):
+        self.s.winattrs[path]=flags
+        return 0
     def chmod(self,path,mode):
         c=[i for i in self.s.symlinks if (path.startswith(i+'/'))|(path==i)]
         if len(c)>0:
@@ -60,6 +63,7 @@ class FuseTran(Operations):
                     s=self.s.trunfile(path)
                     gid,uid=self.s.guids[path]
                     mode=self.s.modes[path]
+                    flags=self.s.winattrs[path]
                     index=self.s.filenamesdic[path]
                     try:
                         t=[struct.unpack('!d',self.s.times[index*24:index*24+24][i:i+8])[0] for i in range(0,24,8)]
@@ -71,11 +75,12 @@ class FuseTran(Operations):
                         gid=uid=545
                     else:
                         gid=uid=1000
+                    flags=0
                     mode=16877
                     if path!='/':
                         if path+'/' not in self.tmpfolders:
                             raise FuseOSError(errno.ENOENT)
-                return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':gid,'st_uid':uid}
+                return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':gid,'st_uid':uid,'st_flags':flags}
     def readdir(self,path,fh):
         c=[i for i in self.s.symlinks if (path.startswith(i+'/'))|(path==i)]
         if len(c)>0:
@@ -165,14 +170,6 @@ class FuseTran(Operations):
             if target[0]!='/':
                 target='/'+target
             self.s.symlinks[name]=target
-    def renameguidmode(self,old,new):
-        try:
-            self.s.guids[new]=self.s.guids[old]
-            del self.s.guids[old]
-            self.s.modes[new]=self.s.modes[old]
-            del self.s.modes[old]
-        except KeyError:
-            pass
     def rename(self,old,new):
         c=[i for i in self.s.symlinks if old.startswith(i+'/')]
         if len(c)>0:
@@ -187,11 +184,9 @@ class FuseTran(Operations):
                     for i in tmp:
                         if i.startswith(old+'/'):
                             self.s.renamefile(i,i.replace(old,new,1))
-                            self.renameguidmode(i,i.replace(old,new,1))
                     self.tmpfolders[self.tmpfolders.index(old+'/')]=new+'/'
                 else:
                     self.s.renamefile(old,new)
-                    self.renameguidmode(old,new)
     def link(self,target,name):
         pass
     def utimens(self,path,times=None):

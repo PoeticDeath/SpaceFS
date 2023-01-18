@@ -57,11 +57,13 @@ class SpaceFS():
         self.times=s[1][:len(self.filenamesdic)*24]
         self.guids={}
         self.modes={}
+        self.winattrs={}
         for i in enumerate(self.filenameslst):
-            ofs=(len(self.filenamesdic)*24)+(i[0]*7)
+            ofs=(len(self.filenamesdic)*24)+(i[0]*11)
             filename=i[1].split(',')[0]
             self.guids[filename]=(int.from_bytes(s[1][ofs:ofs+3],'big'),int.from_bytes(s[1][ofs+3:ofs+5],'big'))
             self.modes[filename]=int.from_bytes(s[1][ofs+5:ofs+7],'big')
+            self.winattrs[filename]=int.from_bytes(s[1][ofs+7:ofs+11],'big')
         self.simptable()
     def readtable(self):
         if self.oldreadtable==self.table:
@@ -257,7 +259,7 @@ class SpaceFS():
         guidsmodes=b''
         for i in self.filenameslst:
             i=i.split(',')[0]
-            guidsmodes+=self.guids[i][0].to_bytes(3,'big')+self.guids[i][1].to_bytes(2,'big')+self.modes[i].to_bytes(2,'big')
+            guidsmodes+=self.guids[i][0].to_bytes(3,'big')+self.guids[i][1].to_bytes(2,'big')+self.modes[i].to_bytes(2,'big')+self.winattrs[i].to_bytes(4,'big')
             for p in self.symlinks:
                 if self.symlinks[p]==i.split(',')[0]:
                     i+=','+p
@@ -282,6 +284,7 @@ class SpaceFS():
             gid=uid=1000
         self.guids[filename]=(gid,uid)
         self.modes[filename]=mode
+        self.winattrs[filename]=0
         self.filenameslst+=[filename]
         self.filenamesdic[filename]=len(self.filenamesdic)
         self.table+='.'
@@ -315,6 +318,9 @@ class SpaceFS():
         self.table='.'.join([','.join(i) for i in self.flst])+'.'
         self.filenameslst.pop(index)
         del self.filenamesdic[filename]
+        del self.guids[filename]
+        del self.modes[filename]
+        del self.winattrs[filename]
         for i in enumerate(self.filenameslst[index:]):
             self.filenamesdic[i[1]]=i[0]+index
         self.times=self.times[:index*24]+self.times[index*24+24:]
@@ -337,6 +343,15 @@ class SpaceFS():
         self.filenameslst[oldindex]=newfilename
         del self.filenamesdic[oldfilename]
         self.filenamesdic[newfilename]=oldindex
+        try:
+            self.guids[newfilename]=self.guids[oldfilename]
+            del self.guids[oldfilename]
+            self.modes[newfilename]=self.modes[oldfilename]
+            del self.modes[oldfilename]
+            self.winattrs[newfilename]=self.winattrs[oldfilename]
+            del self.winattrs[oldfilename]
+        except KeyError:
+            pass
     def readfile(self,filename,start,amount):
         c=[i for i in self.symlinks if filename.startswith(i+'/')]
         if len(c)>0:
