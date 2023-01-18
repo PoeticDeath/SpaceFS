@@ -112,14 +112,20 @@ class FuseTran(Operations):
         c=[i for i in self.s.symlinks if path.startswith(i+'/')]
         if len(c)>0:
             path=path.replace(c[0],self.s.symlinks[c[0]],1)
-        if list(self.readdir(path,0))==['.','..']:
-            self.s.deletefile(path,16877)
+        if path in self.s.filenamesdic:
+            if list(self.readdir(path,0))==['.','..']:
+                self.s.deletefile(path,16877)
+        else:
+            raise FuseOSError(errno.ENOENT)
         return 0
     def mkdir(self,path,mode):
         c=[i for i in self.s.symlinks if path.startswith(i+'/')]
         if len(c)>0:
             path=path.replace(c[0],self.s.symlinks[c[0]],1)
-        self.s.createfile(path,16877)
+        try:
+            self.s.createfile(path,16877)
+        except FileExistsError:
+            raise FuseOSError(errno.EEXIST)
         return 0
     def opendir(self,path):
         self.fd+=1
@@ -157,7 +163,8 @@ class FuseTran(Operations):
         else:
             with self.rwlock:
                 tmp=list(self.s.filenamesdic.keys())
-                tmp=[i for i in tmp if self.s.modes[i]!=16877]
+                if self.s.modes[old]==16877:
+                    tmp.pop(tmp.index(old))
                 if old not in tmp:
                     for i in tmp:
                         if i.startswith(old+'/'):
