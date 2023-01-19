@@ -243,9 +243,10 @@ def main():
         bs=int(argv[4])
     except IndexError:
         bs=None
+    f=FuseTran(mount,disk,bs)
     if os.name=='nt':
-        FUSE(FuseTran(mount,disk,bs),mount,nothreads=False,foreground=fg,allow_other=True,big_writes=True,ExactFileSystemName='SpaceFS')
+        FUSE(f,mount,nothreads=False,foreground=fg,allow_other=True,big_writes=True,ExactFileSystemName='SpaceFS',SectorSize=512,SectorsPerAllocationUnit=f.s.sectorsize//512)
     else:
-        FUSE(FuseTran(mount,disk,bs),mount,nothreads=False,foreground=fg,allow_other=True,big_writes=True,fsname='SpaceFS')
+        FUSE(f,mount,nothreads=False,foreground=fg,allow_other=True,big_writes=True,fsname='SpaceFS')
 if __name__=='__main__':
     main()
