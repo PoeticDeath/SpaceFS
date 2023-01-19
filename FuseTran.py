@@ -177,6 +177,8 @@ class FuseTran(Operations):
     def link(self,target,name):
         pass
     def utimens(self,path,times=None):
+        index=self.s.filenamesdic[path]
+        self.s.times=self.s.times[:index*24]+struct.pack('!d',times[0])+struct.pack('!d',times[1])+self.s.times[index*24+16:]
         return 0
     # File methods
     # ============
