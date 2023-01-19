@@ -362,10 +362,12 @@ class SpaceFS():
         if filename in self.symlinks:
             filename=self.symlinks[filename]
         index=self.filenamesdic[filename]
+        filesize=self.trunfile(filename)
         if index==-1:
             raise FileNotFoundError
-        if start>=self.trunfile(filename):
+        if start>=filesize:
             raise EOFError
+        amount=min(filesize,amount+start)-start
         end=(start+amount+self.sectorsize-1)//self.sectorsize
         lst=self.flst[self.filenamesdic[filename]][start//self.sectorsize:end]
         data=b''
