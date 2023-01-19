@@ -48,12 +48,12 @@ class FuseTran(Operations):
             path=path.replace(c[0],self.s.symlinks[c[0]],1)
         self.s.guids[path]=(gid,uid)
     getxattr=None
-    def getattr(self,path,fh=None):
+    def getattr(self,path,fh=None,sym=False):
         c=[i for i in self.s.symlinks if path.startswith(i+'/')]
         if len(c)>0:
             path=path.replace(c[0],self.s.symlinks[c[0]],1)
         if path in self.s.symlinks:
-            return self.getattr(self.s.symlinks[path],fh)
+            return self.getattr(self.s.symlinks[path],fh,True)
         else:
             with self.rwlock:
                 ti=time()
@@ -77,7 +77,9 @@ class FuseTran(Operations):
                     flags=0
                     mode=16877
                     if path!='/':
-                        raise FuseOSError(errno.ENOENT)
+                        if not sym:
+                            raise FuseOSError(errno.ENOENT)
+                        mode=504
                 if mode==8696:
                     return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':gid,'st_uid':uid,'st_flags':flags,'st_rdev':int.from_bytes(self.s.readfile(path,0,s),'big')}
                 return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':gid,'st_uid':uid,'st_flags':flags}
