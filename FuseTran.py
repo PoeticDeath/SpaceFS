@@ -80,7 +80,7 @@ class FuseTran(Operations):
                         if not sym:
                             raise FuseOSError(errno.ENOENT)
                         mode=504
-                if mode==8696:
+                if bin(mode)[2:].zfill(14)[-14]=='1':
                     return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':gid,'st_uid':uid,'st_flags':flags,'st_rdev':int.from_bytes(self.s.readfile(path,0,s),'big')}
                 return {'st_blocks':(s+self.s.sectorsize-1)//self.s.sectorsize,'st_atime':t[0],'st_mtime':t[1],'st_ctime':t[2],'st_birthtime':t[2],'st_size':s,'st_mode':mode,'st_gid':gid,'st_uid':uid,'st_flags':flags}
     def readdir(self,path,fh):
