@@ -64,7 +64,10 @@ class FuseTran(Operations):
                     gid,uid=self.s.guids[path]
                     mode=self.s.modes[path]
                     if os.name!='nt':
-                        mode=33188
+                        if mode<=16384:
+                            mode=33188
+                        else:
+                            mode=16877
                     flags=self.s.winattrs[path]
                     index=self.s.filenamesdic[path]
                     try:
