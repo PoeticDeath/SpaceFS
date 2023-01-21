@@ -28,7 +28,7 @@ jobs:
         pip install pyinstaller
         pip install https://github.com/PoeticDeath/refuse/archive/refs/heads/master.zip
     - name: Download winfsp-test
-      uses: engineerd/configurator@v0.0.8
+      uses: engineerd/configurator@v0.0.9
       with:
           name: winfsp-tests-x64.exe
           url: https://github.com/winfsp/winfsp/releases/download/v1.12.22339/winfsp-tests-1.12.22339.zip
