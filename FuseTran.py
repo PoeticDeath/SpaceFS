@@ -181,7 +181,7 @@ class FuseTran(Operations):
                 self.s.renamefile(old,new)
     def link(self,target,name):
         pass
-    def utimens(self,path,times=None):
+    def utimens(self,path,times=[time()]*2):
         index=self.s.filenamesdic[path]
         self.s.times=self.s.times[:index*24]+struct.pack('!d',times[0])+struct.pack('!d',times[1])+self.s.times[index*24+16:]
         return 0
