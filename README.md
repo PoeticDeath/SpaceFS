@@ -9,12 +9,10 @@ The blocksize will be rounded to the next highest power of 2 at or after 512 aut
     SpaceFS.exe "C:\Space FS.bin" "C:\Space FS" (NoWindow) (BlockSize)  
   Linux:  
     ./SpaceFS /Space\ FS.bin /mnt/Space\ FS (NoWindow) (BlockSize)  
-As of Version 1.3.3:  
-Storage Efficiency:
-![image](https://user-images.githubusercontent.com/46275713/203096681-daefd933-c199-4d6a-8a18-50a56b1fc219.png)
-4GB File Size:
-![image](https://user-images.githubusercontent.com/46275713/203096357-3b4f10d9-8ab8-491a-af5b-68e0a333f25d.png)
-![image](https://user-images.githubusercontent.com/46275713/203179699-ec70d766-bd70-4c5d-bf3c-c8cf40cd9ee9.png)
-64MB File Size:
-![image](https://user-images.githubusercontent.com/46275713/202867530-989db682-4a97-44f4-b816-ae910b9036ce.png)
-![image](https://user-images.githubusercontent.com/46275713/202867527-d3442e51-1c1d-4f2e-9cb0-c20cf0456319.png)
+As of Version 1.5.9:  
+Storage Efficiency:  
+![SpaceEff](https://user-images.githubusercontent.com/46275713/213942347-c400bc6a-6e8d-42a5-8748-a5be8d45655d.png)  
+ATTO:  
+![ATTO](https://user-images.githubusercontent.com/46275713/213942366-bc901beb-8a7c-4167-ad48-48f25b986183.png)  
+CrystalDiskMark:  
+![CrystalDiskMark](https://user-images.githubusercontent.com/46275713/213942389-dae2fe25-113b-4690-acea-d69874f6bd29.png)  
