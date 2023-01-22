@@ -63,11 +63,6 @@ class FuseTran(Operations):
                     s=self.s.trunfile(path)
                     gid,uid=self.s.guids[path]
                     mode=self.s.modes[path]
-                    if os.name!='nt':
-                        if mode<=16384:
-                            mode=33188
-                        else:
-                            mode=16877
                     flags=self.s.winattrs[path]
                     index=self.s.filenamesdic[path]
                     try:
