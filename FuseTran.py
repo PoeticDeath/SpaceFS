@@ -196,7 +196,8 @@ class FuseTran(Operations):
             raise FuseOSError(errno.ENOSPC)
         return len(data)
     def truncate(self,path,length,fh=None):
-        self.s.trunfile(path,length)
+        if self.s.trunfile(path,length)==0:
+            raise FuseOSError(errno.ENOSPC)
     def setchgtime(self,path,time):
         index=self.s.filenamesdic[path]
         self.s.times=self.s.times[:index*24+8]+struct.pack('!d',time)+self.s.times[index*24+16:]
@@ -232,7 +233,13 @@ def main():
         bs=None
     f=FuseTran(mount,disk,bs)
     if os.name=='nt':
-        FUSE(f,mount,nothreads=False,foreground=fg,allow_other=True,big_writes=True,ExactFileSystemName='SpaceFS',SectorSize=512,SectorsPerAllocationUnit=f.s.sectorsize//512)
+        if fg==False:
+            if bs!=None:
+                os.system('powershell "start \''+argv[0]+'\' -Args \''+argv[1]+' '+argv[2]+' 0 '+str(argv[4])+'\' -WindowStyle Hidden"')
+            else:
+                os.system('powershell "start \''+argv[0]+'\' -Args \''+argv[1]+' '+argv[2]+' 0\' -WindowStyle Hidden"')
+        else:
+            FUSE(f,mount,nothreads=False,foreground=fg,allow_other=True,big_writes=True,ExactFileSystemName='SpaceFS',SectorSize=512,SectorsPerAllocationUnit=f.s.sectorsize//512)
     else:
         FUSE(f,mount,nothreads=False,foreground=fg,allow_other=True,big_writes=True,fsname='SpaceFS')
 if __name__=='__main__':

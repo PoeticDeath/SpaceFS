@@ -438,7 +438,8 @@ class SpaceFS():
             self.table='.'.join(table)
             self.missinglst+=newmiss
         if size>self.trunfile(filename):
-            self.writefile(filename,self.trunfile(filename),bytes(size-self.trunfile(filename)),True)
+            if self.writefile(filename,self.trunfile(filename),bytes(size-self.trunfile(filename)),True)==0:
+                return 0
         self.times=self.times[:index*24+8]+struct.pack('!d',time())+self.times[index*24+16:]
     def writefile(self,filename,start,data,T=False):
         c=[i for i in self.symlinks if filename.startswith(i+'/')]
@@ -492,9 +493,12 @@ class SpaceFS():
         odata=None
         if (m!=2)&(start+len(data)>self.trunfile(filename)):
             tlst=self.table.split('.')
+            try:
+                self.findnewblock(part=True)
+            except IndexError:
+                return 0
             if ';' in tlst[index].split(',')[-1]:
                 h=self.flst[index].pop()
-                self.findnewblock(part=True)
                 try:
                     self.part[int(h.split(';')[0])]+=[int(h.split(';')[1])]
                     try:
