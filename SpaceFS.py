@@ -34,6 +34,7 @@ class SpaceFS():
         self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
         s=self.disk.read(self.sectorsize*self.tablesectorcount-5).split(b'\xfe')
         t=s[0].split(b'\xff')
+        s=b'\xfe'.join(s[1:])+b'\xfe'
         self.table=decode(t[0]).split('.')
         self.filenameslst=[i.decode() for i in t[1:-1]]
         self.filenamesdic={}
@@ -54,16 +55,16 @@ class SpaceFS():
         self.part={}
         self.findnewblock(part=True)
         self.flst=self.readtable()
-        self.times=s[1][:len(self.filenamesdic)*24]
+        self.times=s[:len(self.filenamesdic)*24]
         self.guids={}
         self.modes={}
         self.winattrs={}
         for i in enumerate(self.filenameslst):
             ofs=(len(self.filenamesdic)*24)+(i[0]*11)
             filename=i[1].split(',')[0]
-            self.guids[filename]=(int.from_bytes(s[1][ofs:ofs+3],'big'),int.from_bytes(s[1][ofs+3:ofs+5],'big'))
-            self.modes[filename]=int.from_bytes(s[1][ofs+5:ofs+7],'big')
-            self.winattrs[filename]=int.from_bytes(s[1][ofs+7:ofs+11],'big')
+            self.guids[filename]=(int.from_bytes(s[ofs:ofs+3],'big'),int.from_bytes(s[ofs+3:ofs+5],'big'))
+            self.modes[filename]=int.from_bytes(s[ofs+5:ofs+7],'big')
+            self.winattrs[filename]=int.from_bytes(s[ofs+7:ofs+11],'big')
         self.simptable()
     def readtable(self):
         if self.oldreadtable==self.table:

@@ -62,10 +62,7 @@ class FuseTran(Operations):
                 mode=self.s.modes[path]
                 flags=self.s.winattrs[path]
                 index=self.s.filenamesdic[path]
-                try:
-                    t=[struct.unpack('!d',self.s.times[index*24:index*24+24][i:i+8])[0] for i in range(0,24,8)]
-                except struct.error:
-                    pass
+                t=[struct.unpack('!d',self.s.times[index*24:index*24+24][i:i+8])[0] for i in range(0,24,8)]
             except ValueError:
                 s=0
                 if os.name=='nt':
