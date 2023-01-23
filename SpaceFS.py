@@ -22,13 +22,49 @@ def encode(locstr):
     for i in [locstr[o:o+2] for o in range(0,len(locstr),2)]:
         locbytes+=emap[i].to_bytes(1,'big')
     return locbytes
+class RawDisk():
+    def __init__(self,disk):
+        self.disk=disk
+    def seek(self,loc):
+        return self.disk.seek(loc)
+    def read(self,amount):
+        loc=self.disk.tell()
+        self.seek(loc//512*512)
+        data=self.disk.read((loc%512+amount+511)//512*512)[loc%512:loc%512+amount]
+        self.seek(loc+amount)
+        return data
+    def write(self,buf):
+        loc=self.disk.tell()
+        self.seek(loc//512*512)
+        p1=self.read(loc%512)
+        self.seek(loc+len(buf))
+        p3=self.read(512-(loc+len(buf))%512)
+        self.seek(loc//512*512)
+        self.disk.write(p1+buf+p3)
+        self.seek(loc+len(buf))
+        return len(buf)
+    def flush(self):
+        return self.disk.flush()
+    def close(self):
+        return self.disk.close()
 class SpaceFS():
     def __init__(self,disk):
+        c=None
         self.diskname=disk
         self.disksize=os.path.getsize(self.diskname)
         if self.disksize==0:
-            self.disksize=shutil.disk_usage(self.diskname)[0]
-        self.disk=open(self.diskname,'rb+')
+            try:
+                self.disksize=shutil.disk_usage(self.diskname)[0]
+            except OSError:
+                import wmi
+                c=wmi.WMI()
+                [drive]=c.Win32_DiskDrive(Index=int(self.diskname[17:]))
+                self.disksize=int(drive.size)
+        if c!=None:
+            self.rawdisk=open(self.diskname,'rb+')
+            self.disk=RawDisk(self.rawdisk)
+        else:
+            self.disk=open(self.diskname,'rb+')
         self.sectorsize=2**(int.from_bytes(self.disk.read(1),'big')+9)
         self.tablesectorcount=int.from_bytes(self.disk.read(4),'big')+1
         self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
