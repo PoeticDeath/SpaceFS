@@ -25,21 +25,21 @@ def encode(locstr):
 class RawDisk():
     def __init__(self,disk):
         self.disk=disk
+        self.loc=0
     def seek(self,loc):
-        return self.disk.seek(loc)
+        self.loc=loc
+        return self.disk.seek(loc//512*512)
     def read(self,amount):
-        loc=self.disk.tell()
-        self.seek(loc//512*512)
-        data=self.disk.read((loc%512+amount+511)//512*512)[loc%512:loc%512+amount]
-        self.seek(loc+amount)
+        data=self.disk.read((self.loc%512+amount+511)//512*512)[self.loc%512:self.loc%512+amount]
+        self.seek(self.loc+amount)
         return data
     def write(self,buf):
-        loc=self.disk.tell()
-        self.seek(loc//512*512)
+        loc=self.loc
+        self.seek(self.loc//512*512)
         p1=self.read(loc%512)
         self.seek(loc+len(buf))
         p3=self.read(512-(loc+len(buf))%512)
-        self.seek(loc//512*512)
+        self.seek(loc)
         self.disk.write(p1+buf+p3)
         self.seek(loc+len(buf))
         return len(buf)
@@ -58,8 +58,20 @@ class SpaceFS():
             except OSError:
                 import wmi
                 c=wmi.WMI()
-                [drive]=c.Win32_DiskDrive(Index=int(self.diskname[17:]))
-                self.disksize=int(drive.size)
+                try:
+                    [drive]=c.Win32_DiskDrive(Index=int(self.diskname[17:]))
+                    self.disksize=int(drive.size)
+                except ValueError:
+                    for i in os.popen('powershell -Command "get-partition | fl -Property AccessPaths,DiskNumber,PartitionNumber"').read().split('\n\n')[1:-2]:
+                        if self.diskname in i:
+                            break
+                    i='\n'.join(i.split('\n')[1:]).replace('Number      : ',' #').replace('\nPartitionNumber : ',', Partition #').split('#')
+                    i[2]=str(int(i[2])-1)
+                    i='#'.join(i)
+                    for o in os.popen('powershell -Command "wmic partition get DeviceID,Size"').read().split('\n\n')[1:-2]:
+                        if i in o:
+                            break
+                    self.disksize=int(o.replace(i,'').strip())
         if c!=None:
             self.rawdisk=open(self.diskname,'rb+')
             self.disk=RawDisk(self.rawdisk)
