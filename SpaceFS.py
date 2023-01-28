@@ -129,10 +129,7 @@ class SpaceFS():
                 u=u.split('-')
                 try:
                     [u[0],u[1]]
-                    try:
-                        tmplstpart+=[int(u[0])]
-                    except ValueError:
-                        tmplstpart+=[u[0]]
+                    tmplstpart+=[int(u[0])]
                     tmplstpart+=list(range(int(u[0].split(';')[0])+1,int(u[1].split(';')[0])))
                     try:
                         tmplstpart+=[int(u[1])]
@@ -146,8 +143,6 @@ class SpaceFS():
                                 tmplstpart+=[int(u[0])]
                             except ValueError:
                                 pass
-                except ValueError:
-                        pass
             tmplst+=[tmplstpart]
         self.oldredtable=tmplst
         return tmplst
@@ -242,60 +237,23 @@ class SpaceFS():
                 rold=i[0]-2
             if len(i)==1:
                 lst+=str(i[0])
-            else:
-                try:
-                    if int(i[0].split(';')[0])+1!=i[1]:
-                        lst+=str(i[0])+','
-                except AttributeError:
-                    if i[0]+1!=i[1]:
-                        lst+=str(i[0])+','
             for o in i[1:]:
                 if type(o)==str:
                     y=int(o.split(';')[0])
                 else:
                     y=o
-                try:
-                    if int(old.split(';')[0])==y-1:
-                        if rold+2!=y:
-                            tmp=str(old)+','
-                            if lst[-len(tmp):]==tmp:
-                                lst=lst[:-len(tmp)]
-                                try:
-                                    if lst[-1]==',':
-                                        lst=lst[:-1]
-                                except IndexError:
-                                    pass
-                            lst+=str(old)+'-'
-                        rold=int(old.split(';')[0])
-                        old=o
-                    else:
-                        if rold+1==old:
-                            lst+=str(old)+','+str(o)+','
-                        else:
-                            lst+=str(o)+','
-                        rold=int(old.split(';')[0])
-                        old=o
-                except AttributeError:
-                    if old==y-1:
-                        if rold+2!=y:
-                            tmp=str(old)+','
-                            if lst[-len(tmp):]==tmp:
-                                lst=lst[:-len(tmp)]
-                                try:
-                                    if lst[-1]==',':
-                                        lst=lst[:-1]
-                                except IndexError:
-                                    pass
-                            lst+=str(old)+'-'
-                        rold=old
-                        old=o
-                    else:
-                        if rold+1==old:
-                            lst+=str(old)+','+str(o)+','
-                        else:
-                            lst+=str(o)+','
-                        rold=old
-                        old=o
+                if old==y-1:
+                    if rold+2!=y:
+                        tmp=str(old)+','
+                        if lst[-len(tmp):]==tmp:
+                            lst=lst[:-len(tmp)]
+                        lst+=str(old)+'-'
+                    rold=old
+                    old=o
+                else:
+                    lst+=str(old)+','+str(o)+','
+                    rold=old
+                    old=o
             try:
                 rold=int(rold.split(';')[0])
             except AttributeError:
@@ -309,6 +267,9 @@ class SpaceFS():
             if lst[-1]==',':
                 lst=lst[:-1]
             lst+='.'
+        self.table=lst
+        if self.readtable()!=tmplst:
+            raise EncodingWarning
         elst=encode(lst)
         filenames=b'\xff'
         guidsmodes=b''
@@ -387,7 +348,7 @@ class SpaceFS():
         del self.modes[filename]
         del self.winattrs[filename]
         for i in enumerate(self.filenameslst[index:]):
-            self.filenamesdic[i[1]]=i[0]+index
+            self.filenamesdic[i[1].split(',')[0]]=i[0]+index
         self.times=self.times[:index*24]+self.times[index*24+24:]
     def renamefile(self,oldfilename,newfilename):
         c=[i for i in self.symlinks if oldfilename.startswith(i+'/')]
@@ -574,7 +535,10 @@ class SpaceFS():
             m=1
         while minblocks>len(lst):
             tlst=self.table.split('.')
-            block=self.findnewblock(pop=True)
+            try:
+                block=self.findnewblock(pop=True)
+            except IndexError:
+                return 0
             if len(lst)==0:
                 tlst[index]=str(block)
             else:
