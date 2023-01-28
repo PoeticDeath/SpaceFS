@@ -201,6 +201,9 @@ class SpaceFS():
                         t+=[i]
                 for i in t:
                     self.part.pop(i)
+        for i in self.missinglst.copy():
+            if i>=self.sectorcount:
+                self.missinglst.remove(i)
         if len(self.missinglst)==0:
             lst=[]
             table=self.table
