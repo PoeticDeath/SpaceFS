@@ -101,7 +101,10 @@ class SpaceFS():
         self.oldreadtable=[]
         self.oldredtable=[]
         self.part={}
-        self.findnewblock(part=True)
+        try:
+            self.findnewblock(part=True)
+        except IndexError:
+            pass
         self.flst=self.readtable()
         self.times=s[:len(self.filenamesdic)*24]
         self.guids={}
@@ -314,7 +317,7 @@ class SpaceFS():
                     i+=','+p
             filenames+=i.encode()+b'\xff'
         filenames+=b'\xfe'+self.times+guidsmodes
-        self.tablesectorcount=(len(elst+filenames)+self.sectorsize-1)//self.sectorsize-1
+        self.tablesectorcount=(len(elst+filenames)+self.sectorsize-1)//self.sectorsize
         self.disk.seek(1)
         self.disk.write(self.tablesectorcount.to_bytes(4,'big')+elst+filenames)
         self.tablesectorcount+=1
@@ -331,6 +334,8 @@ class SpaceFS():
             gid=uid=545
         else:
             gid=uid=1000
+        if self.findnewblock()>=self.sectorcount+1:
+            raise IndexError
         self.guids[filename]=(gid,uid)
         self.modes[filename]=mode
         self.winattrs[filename]=2048
@@ -339,6 +344,7 @@ class SpaceFS():
         self.table+='.'
         self.flst+=[[]]
         self.times+=struct.pack('!d',time())*3
+        self.simptable()
     def deletefile(self,filename,block=False):
         c=[i for i in self.symlinks if filename.startswith(i+'/')]
         if len(c)>0:
@@ -395,6 +401,8 @@ class SpaceFS():
             raise FileNotFoundError
         if newfilename in self.filenamesdic:
             self.deletefile(newfilename)
+        if self.findnewblock()>=self.sectorcount+1:
+            raise IndexError
         oldindex=self.filenamesdic[oldfilename]
         self.filenameslst[oldindex]=newfilename
         del self.filenamesdic[oldfilename]

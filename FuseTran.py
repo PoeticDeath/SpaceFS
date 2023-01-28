@@ -171,7 +171,10 @@ class FuseTran(Operations):
                 old=old.replace(c[0],self.s.symlinks[c[0]],1)
                 new=new.replace(c[0],self.s.symlinks[c[0]],1)
             if old in self.s.symlinks:
-                self.s.renamefile(old,new)
+                try:
+                    self.s.renamefile(old,new)
+                except IndexError:
+                    raise FuseOSError(errno.ENOSPC)
             else:
                 tmp=list(self.s.filenamesdic.keys())
                 if self.s.modes[old]==16877:
@@ -179,8 +182,14 @@ class FuseTran(Operations):
                 if old not in tmp:
                     for i in tmp:
                         if i.startswith(old+'/'):
-                            self.s.renamefile(i,i.replace(old,new,1))
-                self.s.renamefile(old,new)
+                            try:
+                                self.s.renamefile(i,i.replace(old,new,1))
+                            except IndexError:
+                                raise FuseOSError(errno.ENOSPC)
+                try:
+                    self.s.renamefile(old,new)
+                except IndexError:
+                    raise FuseOSError(errno.ENOSPC)
     def link(self,target,name):
         pass
     def utimens(self,path,times=[time()]*2):
@@ -199,6 +208,8 @@ class FuseTran(Operations):
                 self.s.createfile(path,mode)
         except FileExistsError:
             raise FuseOSError(errno.EEXIST)
+        except IndexError:
+            raise FuseOSError(errno.ENOSPC)
         self.fd+=1
         return self.fd
     def read(self,path,length,offset,fh):
