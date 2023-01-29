@@ -12,15 +12,11 @@ for i in charmap:
         dmap[p]=i+o
         p+=1
 def decode(locbytes):
-    locstr=''
-    for i in locbytes:
-        locstr+=dmap[i]
-    return locstr.replace(' ','')
+    return ''.join([dmap[i] for i in locbytes]).replace(' ','')
 def encode(locstr):
-    locbytes=b''
     locstr+=' '*(len(locstr)%2)
-    for i in [locstr[o:o+2] for o in range(0,len(locstr),2)]:
-        locbytes+=emap[i].to_bytes(1,'big')
+    locbytes=bytearray()
+    [locbytes.append(emap[locstr[i:i+2]]) for i in range(0,len(locstr),2)]
     return locbytes
 class RawDisk():
     def __init__(self,disk):
