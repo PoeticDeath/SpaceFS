@@ -51,7 +51,14 @@ class FuseTran(Operations):
             if len(c)>0:
                 path=path.replace(c[0],self.s.symlinks[c[0]],1)
             self.s.guids[path]=(gid,uid)
-    getxattr=None
+    def getxattr(self,path,name,position=0):
+        raise FuseOSError(errno.ENOTSUP)
+    def setxattr(self,path,name,value,options,position=0):
+        raise FuseOSError(errno.ENOTSUP)
+    def listxattr(self,path):
+        return []
+    def removexattr(self,path,name):
+        raise FuseOSError(errno.ENOTSUP)
     def getattr(self,path,fh=None,sym=False):
         c=[i for i in self.s.symlinks if path.startswith(i+'/')]
         if len(c)>0:
@@ -77,7 +84,7 @@ class FuseTran(Operations):
                         gid=uid=1000
                     flags=0
                     mode=16877
-                    if path!='/':
+                    if (path!='/')&(path!='/.'):
                         if not sym:
                             raise FuseOSError(errno.ENOENT)
                         mode=33206
@@ -110,7 +117,10 @@ class FuseTran(Operations):
         for r in dirents:
             yield r
     def readlink(self,path):
-        pass
+        if path in self.s.symlinks:
+            return self.s.symlinks[path]
+        else:
+            return path
     def mknod(self,path,mode,dev):
         with self.rwlock:
             self.s.createfile(path,mode)
@@ -192,6 +202,8 @@ class FuseTran(Operations):
                     raise FuseOSError(errno.ENOSPC)
     def link(self,target,name):
         pass
+    def lock(self,path,fh,cmd,lock):
+        pass
     def utimens(self,path,times=[time()]*2):
         with self.rwlock:
             index=self.s.filenamesdic[path]
@@ -201,7 +213,11 @@ class FuseTran(Operations):
     # ============
     def open(self,path,flags):
         self.fd+=1
-        return self.fd
+        if type(flags)==int:
+            return self.fd
+        else:
+            flags.fh=self.fd
+            return 0
     def create(self,path,mode,fi=None):
         try:
             with self.rwlock:
@@ -211,7 +227,11 @@ class FuseTran(Operations):
         except IndexError:
             raise FuseOSError(errno.ENOSPC)
         self.fd+=1
-        return self.fd
+        if fi==None:
+            return self.fd
+        else:
+            fi.fh=self.fd
+            return 0
     def read(self,path,length,offset,fh):
         try:
             with self.rwlock:
@@ -268,8 +288,8 @@ def main():
         if fg==False:
             os.system('powershell "start \''+argv[0]+'\' -Args \''+argv[1]+' '+argv[2]+'\' -WindowStyle Hidden"')
         else:
-            FUSE(f,mount,nothreads=False,foreground=fg,allow_other=True,big_writes=True,ExactFileSystemName='SpaceFS',SectorSize=512,SectorsPerAllocationUnit=f.s.sectorsize//512)
+            FUSE(f,mount,raw_fi=True,nothreads=False,foreground=fg,allow_other=True,big_writes=True,ExactFileSystemName='SpaceFS',SectorSize=512,SectorsPerAllocationUnit=f.s.sectorsize//512)
     else:
-        FUSE(f,mount,nothreads=False,foreground=fg,allow_other=True,big_writes=True,fsname='SpaceFS')
+        FUSE(f,mount,raw_fi=True,nothreads=False,foreground=fg,allow_other=True,big_writes=True,fsname='SpaceFS')
 if __name__=='__main__':
     main()
