@@ -62,12 +62,23 @@ class SpaceFS():
                         if self.diskname in i:
                             break
                     i='\n'.join(i.split('\n')[1:]).replace('Number      : ',' #').replace('\nPartitionNumber : ',', Partition #').split('#')
-                    i[2]=str(int(i[2])-1)
+                    disk=i[1].split(',')[0]
+                    diskstyle={}
+                    for o in os.popen('powershell -Command "get-disk | fl -Property Number,PartitionStyle"').read().split('\n\n')[1:-2]:
+                        o=o.split(':')
+                        diskstyle[o[1].split('\n')[0].strip()]=o[2].strip()
+                    if diskstyle[disk]=='MBR':
+                        i[2]=str(int(i[2])-1)
+                    elif diskstyle[disk]=='GPT':
+                        i[2]=str(int(i[2])-2)
+                    else:
+                        print('Unsupported Disk Format!')
+                        exit()
                     i='#'.join(i)
-                    for o in os.popen('powershell -Command "wmic partition get DeviceID,Size"').read().split('\n\n')[1:-2]:
-                        if i in o:
+                    for p in os.popen('powershell -Command "wmic partition get DeviceID,Size"').read().split('\n\n')[1:-2]:
+                        if i in p:
                             break
-                    self.disksize=int(o.replace(i,'').strip())
+                    self.disksize=int(p.replace(i,'').strip())
         if c!=None:
             self.rawdisk=open(self.diskname,'rb+')
             self.disk=RawDisk(self.rawdisk)
