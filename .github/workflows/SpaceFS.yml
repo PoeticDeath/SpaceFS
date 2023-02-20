@@ -16,10 +16,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.11.1
+    - name: Set up Python 3.11.2
       uses: actions/setup-python@v4
       with:
-        python-version: "3.11.1"
+        python-version: "3.11.2"
     - name: Install dependencies
       run: |
         choco install winfsp -y --version=1.12.22339
@@ -28,7 +28,7 @@ jobs:
         pip install pyinstaller
         pip install https://github.com/PoeticDeath/refuse/archive/refs/heads/master.zip
     - name: Download winfsp-test
-      uses: engineerd/configurator@v0.0.9
+      uses: engineerd/configurator@v0.0.10
       with:
           name: winfsp-tests-x64.exe
           url: https://github.com/winfsp/winfsp/releases/download/v1.12.22339/winfsp-tests-1.12.22339.zip
@@ -65,10 +65,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.11.1
+    - name: Set up Python 3.11.2
       uses: actions/setup-python@v4
       with:
-        python-version: "3.11.1"
+        python-version: "3.11.2"
     - name: Install dependencies
       run: |
         choco install winfsp -y --version=1.12.22339
@@ -77,7 +77,7 @@ jobs:
         pip install pyinstaller
         pip install winfspy
     - name: Download winfsp-test
-      uses: engineerd/configurator@v0.0.9
+      uses: engineerd/configurator@v0.0.10
       with:
           name: winfsp-tests-x64.exe
           url: https://github.com/winfsp/winfsp/releases/download/v1.12.22339/winfsp-tests-1.12.22339.zip
