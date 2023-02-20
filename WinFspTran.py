@@ -8,7 +8,7 @@ from functools import wraps
 from pathlib import Path
 
 import struct
-from time import time
+from time import sleep,time
 from SpaceFS import SpaceFS,RawDisk
 
 from winfspy import (
@@ -93,6 +93,12 @@ class SpaceFSOperations(BaseFileSystemOperations):
             self.label=self.s.readfile(':',0,self.s.trunfile(':')).decode()
         self.read_only=read_only
         self._thread_lock=threading.Lock()
+        threading.Thread(target=self.autosimp,daemon=True).start()
+    def autosimp(self):
+        while True:
+            with self._thread_lock:
+                self.s.simptable()
+            sleep(60)
     @operation
     def get_volume_info(self):
         avail=len(self.s.findnewblock(whole=True))
@@ -134,11 +140,17 @@ class SpaceFSOperations(BaseFileSystemOperations):
         return file_name
     @operation
     def get_security(self,file_context):
+        if file_context[1:] not in self.s.filenamesdic:
+            self.s.createfile(file_context[1:],448)
+            self.s.writefile(file_context[1:],0,'O:BAG:BAD:P(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;WD)'.encode())
         return SecurityDescriptor.from_string(self.s.readfile(file_context[1:],0,self.s.trunfile(file_context[1:])).decode())
     @operation
     def set_security(self,file_context,security_information,modification_descriptor):
         if self.read_only:
             raise NTStatusMediaWriteProtected()
+        if file_context[1:] not in self.s.filenamesdic:
+            self.s.createfile(file_context[1:],448)
+            self.s.writefile(file_context[1:],0,'O:BAG:BAD:P(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;WD)'.encode())
         SD=SecurityDescriptor.from_string(self.s.readfile(file_context[1:],0,self.s.trunfile(file_context[1:])).decode())
         SD=SD.evolve(security_information,modification_descriptor)
         SD=SD.to_string()
@@ -350,7 +362,7 @@ def create_file_system(path,mountpoint,sectorsize,label='',prefix='',verbose=Tru
         operations,
         sector_size=512,
         sectors_per_allocation_unit=operations.s.sectorsize//512,
-        volume_creation_time=int(time()),
+        volume_creation_time=int(time()*10000000+116444736000000000),
         volume_serial_number=0,
         file_info_timeout=1000,
         case_sensitive_search=1,
@@ -386,7 +398,7 @@ def main(path,mountpoint,sectorsize,label,prefix,verbose,debug):
     finally:
         print('Stopping FS')
         fs.operations.s.deletefile('/')
-        fs.operations.s.simptable()
+        fs.operations.s.simptable(F=True)
         fs.stop()
         print('FS stopped')
 if __name__=='__main__':
