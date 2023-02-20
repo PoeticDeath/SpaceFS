@@ -168,10 +168,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             new_file_name=new_file_name.replace(c[0],self.s.symlinks[c[0]],1)
         if new_file_name in self.s.filenamesdic:
             if self.s.modes[new_file_name]==16877:
-                d=self.read_directory(new_file_name,None)
-                d.remove({'file_name':'.'})
-                d.remove({'file_name':'..'})
-                if d!=[]:
+                if self.read_directory(new_file_name,'..')!=[]:
                     raise NTStatusDirectoryNotEmpty()
         if not replace_if_exists:
             if new_file_name in self.s.filenamesdic:
@@ -246,16 +243,13 @@ class SpaceFSOperations(BaseFileSystemOperations):
     @operation
     def can_delete(self,file_context,file_name):
         if self.s.modes[file_context]==16877:
-            d=self.read_directory(file_context,None)
-            d.remove({'file_name':'.'})
-            d.remove({'file_name':'..'})
-            if d!=[]:
+            if self.read_directory(file_context,'..')!=[]:
                 raise NTStatusDirectoryNotEmpty()
     def read_directory(self,file_context,marker):
         c=[i for i in self.s.symlinks if (file_context.startswith(i+'/'))|(file_context==i)]
         if len(c)>0:
             file_context=file_context.replace(c[0],self.s.symlinks[c[0]],1)
-        dirents=[{'file_name':'.'},{'file_name':'..'}]
+        dirents=[{'file_name':'.',**self.gfi(file_context)},{'file_name':'..',**self.gfi('/'.join(file_context.split('/')[:-2]))}]
         if file_context[-1]!='/':
             file_context+='/'
         for i in list(self.s.filenamesdic.keys())+list(self.s.symlinks.keys()):
@@ -308,10 +302,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if self.read_only:
             raise NTStatusMediaWriteProtected()
         if self.s.modes[file_context]==16877:
-            d=self.read_directory(file_context,None)
-            d.remove({'file_name':'.'})
-            d.remove({'file_name':'..'})
-            if d!=[]:
+            if self.read_directory(file_context,'..')!=[]:
                 raise NTStatusDirectoryNotEmpty()
         else:
             self.s.winattrs[file_context]|=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_ARCHIVE)[2:])
