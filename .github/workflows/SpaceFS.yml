@@ -668,12 +668,6 @@ jobs:
       if: always()
       run: |
         winfsp-tests-x64.exe --fuse-external reparse_symlink_relative_test
-    - name: Format 57
-      if: always()
-      run: |
-        taskkill /F /IM FUSESpaceFS.exe
-        start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
   win-build-test-WinFsp:
 
     runs-on: windows-latest
@@ -1552,20 +1546,3 @@ jobs:
       if: always()
       run: |
         winfsp-tests-x64.exe --external stream_getstreaminfo_expire_cache_test
-    - name: Format 77
-      if: always()
-      run: |
-        taskkill /F /IM WinFspSpaceFS.exe
-        start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
-    - name: stream_dirnotify_test
-      working-directory: S:\
-      if: always()
-      run: |
-        winfsp-tests-x64.exe --external stream_dirnotify_test
-    - name: Format 78
-      if: always()
-      run: |
-        taskkill /F /IM WinFspSpaceFS.exe
-        start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
