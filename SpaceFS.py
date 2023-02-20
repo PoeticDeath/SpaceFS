@@ -85,7 +85,7 @@ class SpaceFS():
         else:
             self.disk=open(self.diskname,'rb+')
         self.sectorsize=2**(int.from_bytes(self.disk.read(1),'big')+9)
-        self.tablesectorcount=int.from_bytes(self.disk.read(4),'big')+1
+        self.tablesectorcount=int.from_bytes(self.disk.read(4),'big')+2
         self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
         s=self.disk.read(self.sectorsize*self.tablesectorcount-5).split(b'\xfe')
         t=s[0].split(b'\xff')
@@ -288,10 +288,10 @@ class SpaceFS():
                     i+=','+p
             filenames+=i.encode()+b'\xff'
         filenames+=b'\xfe'+self.times+guidsmodes
-        self.tablesectorcount=(len(elst+filenames)+self.sectorsize-1)//self.sectorsize
+        self.tablesectorcount=(len(elst+filenames)+self.sectorsize-1)//self.sectorsize-1
         self.disk.seek(1)
         self.disk.write(self.tablesectorcount.to_bytes(4,'big')+elst+filenames)
-        self.tablesectorcount+=1
+        self.tablesectorcount+=2
         self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
         self.disk.flush()
         self.oldsimptable=table
