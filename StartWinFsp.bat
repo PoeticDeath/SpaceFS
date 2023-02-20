@@ -1,1 +1,1 @@
-WinFspSpaceFS.exe D:\SpaceFS.bin S: 0 67108864
+WinFspSpaceFS.exe D:\SpaceFS.bin S: -s 16777216
