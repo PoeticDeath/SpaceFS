@@ -8,3 +8,103 @@ on:
 
 permissions:
   contents: read
+
+jobs:
+  win-build-test-FUSE:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.11.1
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11.1"
+    - name: Install dependencies
+      run: |
+        choco install winfsp -y --version=1.12.22339
+        python -m pip install --upgrade pip
+        pip install wheel
+        pip install pyinstaller
+        pip install https://github.com/PoeticDeath/refuse/archive/refs/heads/master.zip
+    - name: Download winfsp-test
+      uses: engineerd/configurator@v0.0.9
+      with:
+          name: winfsp-tests-x64.exe
+          url: https://github.com/winfsp/winfsp/releases/download/v1.12.22339/winfsp-tests-1.12.22339.zip
+          pathInArchive: winfsp-tests-x64.exe
+    - name: Create Drive File and Compile & Start SpaceFS
+      run: |
+        fsutil file createnew D:\SpaceFS.bin 1073741824
+        pyinstaller -F FuseTran.py
+        copy StartFUSE.bat C:\Users\runneradmin\runneradmin\configurator\bin\StartFUSE.bat
+        copy dist/FuseTran.exe C:\Users\runneradmin\runneradmin\configurator\bin\FUSESpaceFS.exe
+        copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" C:\Users\runneradmin\runneradmin\configurator\bin\winfsp-x64.dll
+        start StartFUSE.bat
+        python -c "from time import sleep; sleep(2)"
+    - name: Upload FUSESpaceFS
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: FUSESpaceFS.exe
+        path: C:\Users\runneradmin\runneradmin\configurator\bin\FUSESpaceFS.exe
+    - name: create_test
+      working-directory: S:\
+      if: always()
+      run: |
+        winfsp-tests-x64.exe --fuse-external create_test
+    - name: Format 1
+      if: always()
+      run: |
+        taskkill /F /IM FUSESpaceFS.exe
+        start StartFUSE.bat
+        python -c "from time import sleep; sleep(2)"
+    ###
+win-build-test-WinFsp:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.11.1
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11.1"
+    - name: Install dependencies
+      run: |
+        choco install winfsp -y --version=1.12.22339
+        python -m pip install --upgrade pip
+        pip install wheel
+        pip install pyinstaller
+        pip install 
+    - name: Download winfsp-test
+      uses: engineerd/configurator@v0.0.9
+      with:
+          name: winfsp-tests-x64.exe
+          url: https://github.com/winfsp/winfsp/releases/download/v1.12.22339/winfsp-tests-1.12.22339.zip
+          pathInArchive: winfsp-tests-x64.exe
+    - name: Create Drive File and Compile & Start SpaceFS
+      run: |
+        fsutil file createnew D:\SpaceFS.bin 1073741824
+        pyinstaller -F WinFspTran.py
+        copy StartWinFsp.bat C:\Users\runneradmin\runneradmin\configurator\bin\StartWinFsp.bat
+        copy dist/WinFspTran.exe C:\Users\runneradmin\runneradmin\configurator\bin\WinFspSpaceFS.exe
+        copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" C:\Users\runneradmin\runneradmin\configurator\bin\winfsp-x64.dll
+        start StartWinFsp.bat
+        python -c "from time import sleep; sleep(2)"
+    - name: Upload WinFspSpaceFS
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: WinFspSpaceFS.exe
+        path: C:\Users\runneradmin\runneradmin\configurator\bin\WinFspSpaceFS.exe
+    - name: create_test
+      working-directory: S:\
+      if: always()
+      run: |
+        winfsp-tests-x64.exe --external create_test
+    - name: Format 1
+      if: always()
+      run: |
+        taskkill /F /IM WinFspSpaceFS.exe
+        start StartWinFsp.bat
+        python -c "from time import sleep; sleep(2)"
+    ###
