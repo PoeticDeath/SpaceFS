@@ -85,7 +85,7 @@ jobs:
     - name: Create Drive File and Compile & Start SpaceFS
       run: |
         fsutil file createnew D:\SpaceFS.bin 1073741824
-        pyinstaller -F WinFspTran.py
+        pyinstaller -F WinFspTran.py --hidden-import=_cffi_backend
         copy StartWinFsp.bat C:\Users\runneradmin\runneradmin\configurator\bin\StartWinFsp.bat
         copy dist/WinFspTran.exe C:\Users\runneradmin\runneradmin\configurator\bin\WinFspSpaceFS.exe
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" C:\Users\runneradmin\runneradmin\configurator\bin\winfsp-x64.dll
