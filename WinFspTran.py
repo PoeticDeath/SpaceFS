@@ -249,9 +249,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
         c=[i for i in self.s.symlinks if (file_context.startswith(i+'/'))|(file_context==i)]
         if len(c)>0:
             file_context=file_context.replace(c[0],self.s.symlinks[c[0]],1)
-        dirents=[{'file_name':'.',**self.gfi(file_context)},{'file_name':'..',**self.gfi('/'.join(file_context.split('/')[:-2]))}]
         if file_context[-1]!='/':
             file_context+='/'
+        dirents=[{'file_name':'.',**self.gfi('/'.join(file_context.split('/')[:-1]))},{'file_name':'..',**self.gfi('/'.join(file_context.split('/')[:-2]))}]
         for i in list(self.s.filenamesdic.keys())+list(self.s.symlinks.keys()):
             if i!='/':
                 if i.startswith(file_context):
