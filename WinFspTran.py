@@ -127,6 +127,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
             raise NTStatusMediaWriteProtected()
         file_name=file_name.replace('\\','/')
         dir_name='/'.join(file_name.split('/')[:-1])
+        if file_name in self.s.filenamesdic:
+            raise NTStatusObjectNameCollision()
         try:
             if bin(file_attributes)[2:].zfill(8)[-5]=='1':
                 self.s.createfile(file_name,16877)
@@ -141,8 +143,6 @@ class SpaceFSOperations(BaseFileSystemOperations):
             self.s.winattrs[file_name]|=attrtoATTR(bin(file_attributes)[2:])
         except IndexError:
             raise NTStatusEndOfFile()
-        except FileExistsError:
-            raise NTStatusObjectNameCollision()
         return file_name
     @operation
     def get_security(self,file_context):
