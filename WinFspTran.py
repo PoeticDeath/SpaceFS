@@ -113,6 +113,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
     @operation
     def get_security_by_name(self,file_name):
         file_name=file_name.replace('\\','/')
+        dir_name='/'.join(file_name.split('/')[:-1])
         if file_name not in self.s.filenamesdic:
             raise NTStatusObjectNameNotFound()
         if file_name[1:] not in self.s.filenamesdic:
@@ -141,6 +142,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         return file_name
     @operation
     def get_security(self,file_context):
+        dir_name='/'.join(file_context.split('/')[:-1])
         if file_context[1:] not in self.s.filenamesdic:
             self.s.createfile(file_context[1:],448)
             self.s.writefile(file_context[1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
@@ -149,6 +151,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def set_security(self,file_context,security_information,modification_descriptor):
         if self.read_only:
             raise NTStatusMediaWriteProtected()
+        dir_name='/'.join(file_context.split('/')[:-1])
         if file_context[1:] not in self.s.filenamesdic:
             self.s.createfile(file_context[1:],448)
             self.s.writefile(file_context[1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
