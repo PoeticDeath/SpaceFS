@@ -133,7 +133,11 @@ class SpaceFSOperations(BaseFileSystemOperations):
             else:
                 self.s.createfile(file_name,448)
             self.s.createfile(file_name[1:],448)
-            self.s.writefile(file_name[1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
+            SD=security_descriptor.to_string()
+            if SD!='O:BAG:S-1-5-21-2476906166-2558978421-3700720144-513D:(A;;FA;;;BA)(A;;FA;;;SY)(A;;0x1200a9;;;S-1-5-5-0-6719155)':
+                self.s.writefile(file_name[1:],0,SD.encode())
+            else:
+                self.s.writefile(file_name[1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
             self.s.winattrs[file_name]|=attrtoATTR(bin(file_attributes)[2:])
         except IndexError:
             raise NTStatusEndOfFile()
