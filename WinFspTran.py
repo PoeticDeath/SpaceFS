@@ -70,7 +70,6 @@ def operation(fn):
 class SpaceFSOperations(BaseFileSystemOperations):
     def __init__(self,disk,sectorsize,label,read_only=False):
         super().__init__()
-        self.perms='O:WDG:WDD:P(A;;FA;;;WD)'.encode()
         if sectorsize!=-1:
             i=0
             while sectorsize>512:
@@ -82,7 +81,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         self.s.winattrs['/']=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_DIRECTORY)[2:])
         if '' not in self.s.filenamesdic:
             self.s.createfile('',448)
-            self.s.writefile('',0,self.perms)
+            self.s.writefile('',0,'O:WDG:WDD:P(A;;FA;;;WD)'.encode())
         if ':' not in self.s.filenamesdic:
             self.s.createfile(':',448)
             self.s.writefile(':',0,b'SpaceFS')
@@ -118,7 +117,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             raise NTStatusObjectNameNotFound()
         if file_name[1:] not in self.s.filenamesdic:
             self.s.createfile(file_name[1:],448)
-            self.s.writefile(file_name[1:],0,self.perms)
+            self.s.writefile(file_name[1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
         SD=SecurityDescriptor.from_string(self.s.readfile(file_name[1:],0,self.s.trunfile(file_name[1:])).decode())
         return (ATTRtoattr(bin(self.s.winattrs[file_name])[2:]),SD.handle,SD.size)
     @operation
@@ -144,7 +143,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def get_security(self,file_context):
         if file_context[1:] not in self.s.filenamesdic:
             self.s.createfile(file_context[1:],448)
-            self.s.writefile(file_context[1:],0,self.perms)
+            self.s.writefile(file_context[1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
         return SecurityDescriptor.from_string(self.s.readfile(file_context[1:],0,self.s.trunfile(file_context[1:])).decode())
     @operation
     def set_security(self,file_context,security_information,modification_descriptor):
@@ -152,7 +151,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             raise NTStatusMediaWriteProtected()
         if file_context[1:] not in self.s.filenamesdic:
             self.s.createfile(file_context[1:],448)
-            self.s.writefile(file_context[1:],0,self.perms)
+            self.s.writefile(file_context[1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
         SD=SecurityDescriptor.from_string(self.s.readfile(file_context[1:],0,self.s.trunfile(file_context[1:])).decode())
         if security_information!=1:
             SD=SD.evolve(security_information,modification_descriptor)
