@@ -126,13 +126,14 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if self.read_only:
             raise NTStatusMediaWriteProtected()
         file_name=file_name.replace('\\','/')
+        dir_name='/'.join(file_name.split('/')[:-1])
         try:
             if bin(file_attributes)[2:].zfill(8)[-5]=='1':
                 self.s.createfile(file_name,16877)
             else:
                 self.s.createfile(file_name,448)
             self.s.createfile(file_name[1:],448)
-            self.s.writefile(file_name[1:],0,security_descriptor.to_string().encode())
+            self.s.writefile(file_name[1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
             self.s.winattrs[file_name]|=attrtoATTR(bin(file_attributes)[2:])
         except IndexError:
             raise NTStatusEndOfFile()
