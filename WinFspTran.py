@@ -374,6 +374,21 @@ class SpaceFSOperations(BaseFileSystemOperations):
     @operation
     def flush(self,file_context):
         pass
+    @operation
+    def resolve_reparse_points(self,file_name,reparse_point_index,resolve_last_path_component,p_io_status,buffer,p_size):
+        pass
+    @operation
+    def get_reparse_point(self,file_context,file_name,buffer,p_size):
+        pass
+    @operation
+    def set_reparse_point(self,file_context,file_name,buffer,size):
+        pass
+    @operation
+    def delete_reparse_point(self,file_context,file_name,buffer,size):
+        pass
+    @operation
+    def get_stream_info(self,file_context,buffer,length,p_bytes_transferred):
+        pass
 def create_file_system(path,mountpoint,sectorsize,label='',prefix='',verbose=True,debug=False,testing=False):
     if debug:
         enable_debug_log()
@@ -399,6 +414,9 @@ def create_file_system(path,mountpoint,sectorsize,label='',prefix='',verbose=Tru
         case_preserved_names=1,
         unicode_on_disk=1,
         persistent_acls=1,
+        reparse_points=1,
+        reparse_points_access_check=1,
+        named_streams=1,
         post_cleanup_when_modified_only=1,
         um_file_context_is_user_context2=1,
         file_system_name='SpaceFS',
