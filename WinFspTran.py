@@ -316,6 +316,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def write(self,file_context,buffer,offset,write_to_end_of_file,constrained_io):
         if self.read_only:
             raise NTStatusMediaWriteProtected()
+        if write_to_end_of_file:
+            offset=self.s.trunfile(file_context)
         if self.s.writefile(file_context,offset,buffer)==0:
             raise NTStatusEndOfFile()
         return len(buffer)
