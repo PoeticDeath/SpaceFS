@@ -182,10 +182,10 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if len(c)>0:
             file_name=file_name.replace(c[0],self.s.symlinks[c[0]],1)
             new_file_name=new_file_name.replace(c[0],self.s.symlinks[c[0]],1)
-        if new_file_name in self.s.filenamesdic:
-            if self.s.modes[new_file_name]==16877:
-                if self.read_directory(new_file_name,'..')!=[]:
-                    raise NTStatusDirectoryNotEmpty()
+        if (new_file_name in self.s.filenamesdic)&(file_name in self.s.filenamesdic):
+            if self.s.modes[file_name]==16877:
+                if self.read_directory(file_name,'..')!=[]:
+                    raise NTStatusAccessDenied()
         if not replace_if_exists:
             if new_file_name in self.s.filenamesdic:
                 raise NTStatusObjectNameCollision()
