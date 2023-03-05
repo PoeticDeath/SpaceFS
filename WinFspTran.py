@@ -94,6 +94,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         self.read_only=read_only
         self._thread_lock=threading.Lock()
         threading.Thread(target=self.autosimp,daemon=True).start()
+        self.allocsizes={}
     def autosimp(self):
         while True:
             with self._thread_lock:
@@ -143,6 +144,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             self.s.winattrs[file_name]|=attrtoATTR(bin(file_attributes)[2:])
         except IndexError:
             raise NTStatusEndOfFile()
+        self.allocsizes[file_name]=allocation_size
         return file_name
     @operation
     def get_security(self,file_context):
@@ -205,11 +207,15 @@ class SpaceFSOperations(BaseFileSystemOperations):
                         try:
                             self.s.renamefile(i,i.replace(file_name,new_file_name,1))
                             self.s.renamefile(i[1:],i[1:].replace(file_name[1:],new_file_name[1:],1))
+                            self.allocsizes[i.replace(file_name,new_file_name,1)]=self.allocsizes[i]
+                            del self.allocsizes[i]
                         except IndexError:
                             raise NTStatusEndOfFile()
             try:
                 self.s.renamefile(file_name,new_file_name)
                 self.s.renamefile(file_name[1:],new_file_name[1:])
+                self.allocsizes[new_file_name]=self.allocsizes[file_name]
+                del self.allocsizes[file_name]
             except IndexError:
                 raise NTStatusEndOfFile()
     @operation
@@ -227,8 +233,10 @@ class SpaceFSOperations(BaseFileSystemOperations):
         t[0]+=2
         t[1]+=2
         t[2]+=2
+        if file_context not in self.allocsizes:
+            self.allocsizes[file_context]=0
         return {'file_attributes':ATTRtoattr(bin(self.s.winattrs[file_context])[2:]),
-                'allocation_size':(self.s.trunfile(file_context)+self.s.sectorsize-1)//self.s.sectorsize*self.s.sectorsize,
+                'allocation_size':self.allocsizes[file_context],
                 'file_size':self.s.trunfile(file_context),
                 'creation_time':t[2],
                 'last_access_time':t[0],
@@ -259,7 +267,11 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def set_file_size(self,file_context,new_size,set_allocation_size):
         if self.read_only:
             raise NTStatusMediaWriteProtected()
-        if not set_allocation_size:
+        if set_allocation_size:
+            self.allocsizes[file_context]=new_size
+            if new_size<self.s.trunfile(file_context):
+                self.s.trunfile(file_context,new_size)
+        else:
             if self.s.trunfile(file_context,new_size)==0:
                 raise NTStatusEndOfFile()
     @operation
@@ -333,12 +345,15 @@ class SpaceFSOperations(BaseFileSystemOperations):
         index=self.s.filenamesdic[file_context]
         t=time()
         FspCleanupDelete=0x01
+        FspCleanupAllocationSize=0x02
         FspCleanupSetLastAccessTime=0x20
         FspCleanupSetLastWriteTime=0x40
         FspCleanupSetChangeTime=0x80
         if flags&FspCleanupDelete:
             self.s.deletefile(file_context)
             self.s.deletefile(file_context[1:])
+        if flags&FspCleanupAllocationSize:
+            self.allocsizes[file_context]=self.s.trunfile(file_context)
         if (flags&FspCleanupSetLastAccessTime)&(not flags&FspCleanupDelete):
             self.s.times=self.s.times[:index*24]+struct.pack('!d',t)+self.s.times[index*24+8:]
         if ((flags&FspCleanupSetLastWriteTime)|(flags&FspCleanupSetChangeTime))&(not flags&FspCleanupDelete):
