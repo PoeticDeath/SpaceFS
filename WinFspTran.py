@@ -331,9 +331,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if flags&FspCleanupDelete:
             self.s.deletefile(file_context)
             self.s.deletefile(file_context[1:])
-        if flags&FspCleanupSetLastAccessTime:
+        if (flags&FspCleanupSetLastAccessTime)&(not flags&FspCleanupDelete):
             self.s.times=self.s.times[:index*24]+struct.pack('!d',t)+self.s.times[index*24+8:]
-        if (flags&FspCleanupSetLastWriteTime)|(flags&FspCleanupSetChangeTime):
+        if ((flags&FspCleanupSetLastWriteTime)|(flags&FspCleanupSetChangeTime))&(not flags&FspCleanupDelete):
             self.s.times=self.s.times[:index*24+8]+struct.pack('!d',t)+self.s.times[index*24+16:]
     @operation
     def overwrite(self,file_context,file_attributes,replace_file_attributes,allocation_size):
