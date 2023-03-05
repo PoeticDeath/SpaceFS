@@ -224,6 +224,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def gfi(self,file_context):
         index=self.s.filenamesdic[file_context]
         t=[int(struct.unpack('!d',self.s.times[index*24:index*24+24][i:i+8])[0]*10000000+116444736000000000) for i in range(0,24,8)]
+        t[0]+=2
+        t[1]+=2
+        t[2]+=2
         return {'file_attributes':ATTRtoattr(bin(self.s.winattrs[file_context])[2:]),
                 'allocation_size':(self.s.trunfile(file_context)+self.s.sectorsize-1)//self.s.sectorsize*self.s.sectorsize,
                 'file_size':self.s.trunfile(file_context),
