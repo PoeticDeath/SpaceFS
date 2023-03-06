@@ -120,7 +120,12 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if file_name[1:] not in self.s.filenamesdic:
             self.s.createfile(file_name[1:],448)
             self.s.writefile(file_name[1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
-        SD=SecurityDescriptor.from_string(self.s.readfile(file_name[1:],0,self.s.trunfile(file_name[1:])).decode())
+        try:
+            SD=SecurityDescriptor.from_string(self.s.readfile(file_name[1:],0,self.s.trunfile(file_name[1:])).decode())
+        except RuntimeError:
+            self.s.trunfile(file_name[1:],0)
+            self.s.writefile(file_name[1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
+            SD=SecurityDescriptor.from_string(self.s.readfile(file_name[1:],0,self.s.trunfile(file_name[1:])).decode())
         return (ATTRtoattr(bin(self.s.winattrs[file_name])[2:]),SD.handle,SD.size)
     @operation
     def create(self,file_name,create_options,granted_access,file_attributes,security_descriptor,allocation_size):
@@ -234,7 +239,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         t[1]+=2
         t[2]+=2
         if file_context not in self.allocsizes:
-            self.allocsizes[file_context]=0
+            self.allocsizes[file_context]=(self.s.trunfile(file_context)+self.s.sectorsize-1)//self.s.sectorsize*self.s.sectorsize
         return {'file_attributes':ATTRtoattr(bin(self.s.winattrs[file_context])[2:]),
                 'allocation_size':self.allocsizes[file_context],
                 'file_size':self.s.trunfile(file_context),
@@ -352,6 +357,10 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if flags&FspCleanupDelete:
             self.s.deletefile(file_context)
             self.s.deletefile(file_context[1:])
+            for i in list(self.s.filenamesdic.keys()):
+                if i.startswith(file_context+':'):
+                    self.s.deletefile(i)
+                    self.s.deletefile(i[1:])
         if flags&FspCleanupAllocationSize:
             self.allocsizes[file_context]=self.s.trunfile(file_context)
         if (flags&FspCleanupSetLastAccessTime)&(not flags&FspCleanupDelete):
