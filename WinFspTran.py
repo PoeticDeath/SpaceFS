@@ -95,6 +95,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         self._thread_lock=threading.Lock()
         threading.Thread(target=self.autosimp,daemon=True).start()
         self.allocsizes={}
+        self.opened=[]
     def autosimp(self):
         while True:
             with self._thread_lock:
@@ -150,6 +151,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         except IndexError:
             raise NTStatusEndOfFile()
         self.allocsizes[file_name]=allocation_size
+        self.opened+=[file_name]
         return file_name
     @operation
     def get_security(self,file_context):
@@ -228,10 +230,11 @@ class SpaceFSOperations(BaseFileSystemOperations):
         file_name=file_name.replace('\\','/')
         if file_name not in self.s.filenamesdic:
             raise NTStatusObjectNameNotFound()
+        self.opened+=[file_name]
         return file_name
     @operation
     def close(self,file_context):
-        pass
+        self.opened.remove(file_context)
     def gfi(self,file_context):
         index=self.s.filenamesdic[file_context]
         t=[int(struct.unpack('!d',self.s.times[index*24:index*24+24][i:i+8])[0]*10000000+116444736000000000) for i in range(0,24,8)]
@@ -371,6 +374,11 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def overwrite(self,file_context,file_attributes,replace_file_attributes,allocation_size):
         if self.read_only:
             raise NTStatusMediaWriteProtected()
+        for i in list(self.s.filenamesdic.keys()):
+            if i.startswith(file_context+':'):
+                if i not in self.opened:
+                    self.s.deletefile(i)
+                    self.s.deletefile(i[1:])
         if replace_file_attributes:
             self.s.winattrs[file_context]=attrtoATTR(bin(file_attributes)[2:])
         else:
