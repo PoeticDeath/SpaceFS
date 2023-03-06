@@ -236,11 +236,15 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def close(self,file_context):
         self.opened.remove(file_context)
     def gfi(self,file_context):
-        index=self.s.filenamesdic[file_context]
+        index=self.s.filenamesdic[file_context.split(':')[0]]
         t=[int(struct.unpack('!d',self.s.times[index*24:index*24+24][i:i+8])[0]*10000000+116444736000000000) for i in range(0,24,8)]
-        t[0]+=2
-        t[1]+=2
-        t[2]+=2
+        for i in range(3):
+            if t[i]>116444736000000000:
+                t[i]+=2
+            elif t[i]==279172874304:
+                t[i]+=1
+            elif t[i]==287762808896:
+                t[i]+=3
         if file_context not in self.allocsizes:
             self.allocsizes[file_context]=(self.s.trunfile(file_context)+self.s.sectorsize-1)//self.s.sectorsize*self.s.sectorsize
         return {'file_attributes':ATTRtoattr(bin(self.s.winattrs[file_context])[2:]),
@@ -261,7 +265,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def set_basic_info(self,file_context,file_attributes,creation_time,last_access_time,last_write_time,change_time,file_info):
         if self.read_only:
             raise NTStatusMediaWriteProtected()
-        index=self.s.filenamesdic[file_context]
+        index=self.s.filenamesdic[file_context.split(':')[0]]
         if file_attributes!=FILE_ATTRIBUTE.INVALID_FILE_ATTRIBUTES:
             self.s.winattrs[file_context]=attrtoATTR(bin(file_attributes)[2:])
         if creation_time:
@@ -350,7 +354,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 raise NTStatusDirectoryNotEmpty()
         else:
             self.s.winattrs[file_context]|=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_ARCHIVE)[2:])
-        index=self.s.filenamesdic[file_context]
+        index=self.s.filenamesdic[file_context.split(':')[0]]
         t=time()
         FspCleanupDelete=0x01
         FspCleanupAllocationSize=0x02
@@ -384,7 +388,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         else:
             self.s.winattrs[file_context]|=attrtoATTR(bin(file_attributes)[2:])
         self.s.trunfile(file_context,allocation_size)
-        index=self.s.filenamesdic[file_context]
+        index=self.s.filenamesdic[file_context.split(':')[0]]
         t=time()
         self.s.times=self.s.times[:index*24]+struct.pack('!d',t)+self.s.times[index*24+8:]
         self.s.times=self.s.times[:index*24+8]+struct.pack('!d',t)+self.s.times[index*24+16:]
