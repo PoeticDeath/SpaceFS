@@ -41,7 +41,7 @@ jobs:
         copy dist/FuseTran.exe C:\Users\runneradmin\runneradmin\configurator\bin\FUSESpaceFS.exe
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" C:\Users\runneradmin\runneradmin\configurator\bin\winfsp-x64.dll
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: Upload FUSESpaceFS
       uses: actions/upload-artifact@v3.1.2
       with:
@@ -57,7 +57,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_fileattr_test
       working-directory: S:\
       if: always()
@@ -68,7 +68,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_readonlydir_test
       working-directory: S:\
       if: always()
@@ -79,7 +79,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_related_test
       working-directory: S:\
       if: always()
@@ -90,7 +90,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_sd_test
       working-directory: S:\
       if: always()
@@ -101,7 +101,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_backup_test
       working-directory: S:\
       if: always()
@@ -112,7 +112,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_restore_test
       working-directory: S:\
       if: always()
@@ -123,7 +123,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_share_test
       working-directory: S:\
       if: always()
@@ -134,7 +134,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_curdir_test
       working-directory: S:\
       if: always()
@@ -145,7 +145,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_namelen_test
       working-directory: S:\
       if: always()
@@ -156,7 +156,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getfileinfo_test
       working-directory: S:\
       if: always()
@@ -167,7 +167,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: setfileinfo_test
       working-directory: S:\
       if: always()
@@ -178,7 +178,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_test
       working-directory: S:\
       if: always()
@@ -189,7 +189,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_access_test
       working-directory: S:\
       if: always()
@@ -200,7 +200,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_pending_test
       working-directory: S:\
       if: always()
@@ -211,7 +211,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_mmap_test
       working-directory: S:\
       if: always()
@@ -222,7 +222,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_standby_test
       working-directory: S:\
       if: always()
@@ -233,7 +233,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_ex_test
       working-directory: S:\
       if: always()
@@ -244,7 +244,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_test
       working-directory: S:\
       if: always()
@@ -255,7 +255,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_backslash_test
       working-directory: S:\
       if: always()
@@ -266,7 +266,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_open_test
       working-directory: S:\
       if: always()
@@ -277,7 +277,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_caseins_test
       working-directory: S:\
       if: always()
@@ -288,7 +288,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_flipflop_test
       working-directory: S:\
       if: always()
@@ -299,7 +299,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_mmap_test
       working-directory: S:\
       if: always()
@@ -310,7 +310,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_standby_test
       working-directory: S:\
       if: always()
@@ -321,7 +321,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_ex_test
       working-directory: S:\
       if: always()
@@ -332,7 +332,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getvolinfo_test
       working-directory: S:\
       if: always()
@@ -343,7 +343,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: setvolinfo_test
       working-directory: S:\
       if: always()
@@ -354,7 +354,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getsecurity_test
       working-directory: S:\
       if: always()
@@ -365,7 +365,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_noncached_test
       working-directory: S:\
       if: always()
@@ -376,7 +376,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_noncached_overlapped_test
       working-directory: S:\
       if: always()
@@ -387,7 +387,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_cached_test
       working-directory: S:\
       if: always()
@@ -398,7 +398,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_cached_append_test
       working-directory: S:\
       if: always()
@@ -409,7 +409,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_cached_overlapped_test
       working-directory: S:\
       if: always()
@@ -420,7 +420,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_writethru_test
       working-directory: S:\
       if: always()
@@ -431,7 +431,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_writethru_append_test
       working-directory: S:\
       if: always()
@@ -442,7 +442,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_writethru_overlapped_test
       working-directory: S:\
       if: always()
@@ -453,7 +453,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_mmap_test
       working-directory: S:\
       if: always()
@@ -464,7 +464,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_mixed_test
       working-directory: S:\
       if: always()
@@ -475,7 +475,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: flush_test
       working-directory: S:\
       if: always()
@@ -486,7 +486,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: flush_volume_test
       working-directory: S:\
       if: always()
@@ -497,7 +497,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_noncached_test
       working-directory: S:\
       if: always()
@@ -508,7 +508,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_noncached_overlapped_test
       working-directory: S:\
       if: always()
@@ -519,7 +519,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_cached_test
       working-directory: S:\
       if: always()
@@ -530,7 +530,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_cached_overlapped_test
       working-directory: S:\
       if: always()
@@ -541,7 +541,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_test
       working-directory: S:\
       if: always()
@@ -552,7 +552,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_expire_cache_test
       working-directory: S:\
       if: always()
@@ -563,7 +563,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_buffer_overflow_test
       working-directory: S:\
       if: always()
@@ -574,7 +574,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_namelen_test
       working-directory: S:\
       if: always()
@@ -585,7 +585,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: dirnotify_test
       working-directory: S:\
       if: always()
@@ -596,7 +596,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_test
       working-directory: S:\
       if: always()
@@ -607,7 +607,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_delete_test
       working-directory: S:\
       if: always()
@@ -618,7 +618,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_rename_test
       working-directory: S:\
       if: always()
@@ -629,7 +629,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_rename_dir_test
       working-directory: S:\
       if: always()
@@ -640,7 +640,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_nfs_test
       working-directory: S:\
       if: always()
@@ -651,7 +651,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_symlink_test
       working-directory: S:\
       if: always()
@@ -662,7 +662,7 @@ jobs:
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_symlink_relative_test
       working-directory: S:\
       if: always()
@@ -699,7 +699,7 @@ jobs:
         copy dist/WinFspTran.exe C:\Users\runneradmin\runneradmin\configurator\bin\WinFspSpaceFS.exe
         copy "C:\Program Files (x86)\WinFsp\bin\winfsp-x64.dll" C:\Users\runneradmin\runneradmin\configurator\bin\winfsp-x64.dll
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: Upload WinFspSpaceFS
       uses: actions/upload-artifact@v3.1.2
       with:
@@ -715,7 +715,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_fileattr_test
       working-directory: S:\
       if: always()
@@ -726,7 +726,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_readonlydir_test
       working-directory: S:\
       if: always()
@@ -737,7 +737,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_related_test
       working-directory: S:\
       if: always()
@@ -748,7 +748,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_allocation_test
       working-directory: S:\
       if: always()
@@ -759,7 +759,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_sd_test
       working-directory: S:\
       if: always()
@@ -770,7 +770,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_notraverse_test
       working-directory: S:\
       if: always()
@@ -781,7 +781,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_backup_test
       working-directory: S:\
       if: always()
@@ -792,7 +792,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_restore_test
       working-directory: S:\
       if: always()
@@ -803,7 +803,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_share_test
       working-directory: S:\
       if: always()
@@ -814,7 +814,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_curdir_test
       working-directory: S:\
       if: always()
@@ -825,7 +825,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_namelen_test
       working-directory: S:\
       if: always()
@@ -836,7 +836,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getfileattr_test
       working-directory: S:\
       if: always()
@@ -847,7 +847,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getfileinfo_test
       working-directory: S:\
       if: always()
@@ -858,7 +858,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getfileinfo_name_test
       working-directory: S:\
       if: always()
@@ -869,7 +869,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: setfileinfo_test
       working-directory: S:\
       if: always()
@@ -880,7 +880,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_test
       working-directory: S:\
       if: always()
@@ -891,7 +891,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_access_test
       working-directory: S:\
       if: always()
@@ -902,7 +902,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_pending_test
       working-directory: S:\
       if: always()
@@ -913,7 +913,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_mmap_test
       working-directory: S:\
       if: always()
@@ -924,7 +924,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_standby_test
       working-directory: S:\
       if: always()
@@ -935,7 +935,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_ex_test
       working-directory: S:\
       if: always()
@@ -946,7 +946,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_test
       working-directory: S:\
       if: always()
@@ -957,7 +957,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_backslash_test
       working-directory: S:\
       if: always()
@@ -968,7 +968,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_open_test
       working-directory: S:\
       if: always()
@@ -979,7 +979,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_caseins_test
       working-directory: S:\
       if: always()
@@ -990,7 +990,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_flipflop_test
       working-directory: S:\
       if: always()
@@ -1001,7 +1001,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_mmap_test
       working-directory: S:\
       if: always()
@@ -1012,7 +1012,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_standby_test
       working-directory: S:\
       if: always()
@@ -1023,7 +1023,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_ex_test
       working-directory: S:\
       if: always()
@@ -1034,7 +1034,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getvolinfo_test
       working-directory: S:\
       if: always()
@@ -1045,7 +1045,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: setvolinfo_test
       working-directory: S:\
       if: always()
@@ -1056,7 +1056,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getsecurity_test
       working-directory: S:\
       if: always()
@@ -1067,7 +1067,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: setsecurity_test
       working-directory: S:\
       if: always()
@@ -1078,7 +1078,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_noncached_test
       working-directory: S:\
       if: always()
@@ -1089,7 +1089,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_noncached_overlapped_test
       working-directory: S:\
       if: always()
@@ -1100,7 +1100,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_cached_test
       working-directory: S:\
       if: always()
@@ -1111,7 +1111,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_cached_append_test
       working-directory: S:\
       if: always()
@@ -1122,7 +1122,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_cached_overlapped_test
       working-directory: S:\
       if: always()
@@ -1133,7 +1133,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_writethru_test
       working-directory: S:\
       if: always()
@@ -1144,7 +1144,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_writethru_append_test
       working-directory: S:\
       if: always()
@@ -1155,7 +1155,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_writethru_overlapped_test
       working-directory: S:\
       if: always()
@@ -1166,7 +1166,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_mmap_test
       working-directory: S:\
       if: always()
@@ -1177,7 +1177,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_mixed_test
       working-directory: S:\
       if: always()
@@ -1188,7 +1188,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: flush_test
       working-directory: S:\
       if: always()
@@ -1199,7 +1199,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: flush_volume_test
       working-directory: S:\
       if: always()
@@ -1210,7 +1210,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_noncached_test
       working-directory: S:\
       if: always()
@@ -1221,7 +1221,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_noncached_overlapped_test
       working-directory: S:\
       if: always()
@@ -1232,7 +1232,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_cached_test
       working-directory: S:\
       if: always()
@@ -1243,7 +1243,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_cached_overlapped_test
       working-directory: S:\
       if: always()
@@ -1254,7 +1254,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_test
       working-directory: S:\
       if: always()
@@ -1265,7 +1265,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_expire_cache_test
       working-directory: S:\
       if: always()
@@ -1276,7 +1276,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_buffer_overflow_test
       working-directory: S:\
       if: always()
@@ -1287,7 +1287,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_namelen_test
       working-directory: S:\
       if: always()
@@ -1298,7 +1298,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: dirnotify_test
       working-directory: S:\
       if: always()
@@ -1309,7 +1309,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_test
       working-directory: S:\
       if: always()
@@ -1320,7 +1320,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_delete_test
       working-directory: S:\
       if: always()
@@ -1331,7 +1331,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_rename_test
       working-directory: S:\
       if: always()
@@ -1342,7 +1342,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_rename_dir_test
       working-directory: S:\
       if: always()
@@ -1353,7 +1353,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_guid_test
       working-directory: S:\
       if: always()
@@ -1364,7 +1364,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_nfs_test
       working-directory: S:\
       if: always()
@@ -1375,7 +1375,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_symlink_test
       working-directory: S:\
       if: always()
@@ -1386,7 +1386,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_symlink_relative_test
       working-directory: S:\
       if: always()
@@ -1397,7 +1397,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_create_test
       working-directory: S:\
       if: always()
@@ -1408,7 +1408,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_create_overwrite_test
       working-directory: S:\
       if: always()
@@ -1419,7 +1419,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_create_related_test
       working-directory: S:\
       if: always()
@@ -1430,7 +1430,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_create_sd_test
       working-directory: S:\
       if: always()
@@ -1441,7 +1441,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_create_share_test
       working-directory: S:\
       if: always()
@@ -1452,7 +1452,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_getfileinfo_test
       working-directory: S:\
       if: always()
@@ -1463,7 +1463,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_setfileinfo_test
       working-directory: S:\
       if: always()
@@ -1474,7 +1474,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_delete_test
       working-directory: S:\
       if: always()
@@ -1485,7 +1485,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_delete_pending_test
       working-directory: S:\
       if: always()
@@ -1496,7 +1496,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_rename_flipflop_test
       working-directory: S:\
       if: always()
@@ -1507,7 +1507,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_getsecurity_test
       working-directory: S:\
       if: always()
@@ -1518,7 +1518,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_setsecurity_test
       working-directory: S:\
       if: always()
@@ -1529,7 +1529,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_getstreaminfo_test
       working-directory: S:\
       if: always()
@@ -1540,7 +1540,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_getstreaminfo_expire_cache_test
       working-directory: S:\
       if: always()
@@ -1551,7 +1551,7 @@ jobs:
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
-        python -c "from time import sleep; sleep(2)"
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_dirnotify_test
       working-directory: S:\
       if: always()
