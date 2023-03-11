@@ -1546,3 +1546,14 @@ jobs:
       if: always()
       run: |
         winfsp-tests-x64.exe --external stream_getstreaminfo_expire_cache_test
+    - name: Format 77
+      if: always()
+      run: |
+        taskkill /F /IM WinFspSpaceFS.exe
+        start StartWinFsp.bat
+        python -c "from time import sleep; sleep(2)"
+    - name: stream_dirnotify_test
+      working-directory: S:\
+      if: always()
+      run: |
+        winfsp-tests-x64.exe --external stream_dirnotify_test
