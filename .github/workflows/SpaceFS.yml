@@ -49,623 +49,623 @@ jobs:
         path: C:\Users\runneradmin\runneradmin\configurator\bin\FUSESpaceFS.exe
     - name: create_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external create_test
     - name: Format 1
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_fileattr_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external create_fileattr_test
     - name: Format 2
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_readonlydir_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external create_readonlydir_test
     - name: Format 3
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_related_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external create_related_test
     - name: Format 4
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_sd_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external create_sd_test
     - name: Format 5
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_backup_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external create_backup_test
     - name: Format 6
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_restore_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external create_restore_test
     - name: Format 7
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_share_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external create_share_test
     - name: Format 8
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_curdir_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external create_curdir_test
     - name: Format 9
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_namelen_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external create_namelen_test
     - name: Format 10
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getfileinfo_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external getfileinfo_test
     - name: Format 11
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: setfileinfo_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external setfileinfo_test
     - name: Format 12
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external delete_test
     - name: Format 13
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_access_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external delete_access_test
     - name: Format 14
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_pending_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external delete_pending_test
     - name: Format 15
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_mmap_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external delete_mmap_test
     - name: Format 16
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_standby_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external delete_standby_test
     - name: Format 17
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_ex_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external delete_ex_test
     - name: Format 18
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_test
     - name: Format 19
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_backslash_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_backslash_test
     - name: Format 20
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_open_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_open_test
     - name: Format 21
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_caseins_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_caseins_test
     - name: Format 22
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_flipflop_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_flipflop_test
     - name: Format 23
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_mmap_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_mmap_test
     - name: Format 24
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_standby_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_standby_test
     - name: Format 25
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_ex_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rename_ex_test
     - name: Format 26
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getvolinfo_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external getvolinfo_test
     - name: Format 27
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: setvolinfo_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external setvolinfo_test
     - name: Format 28
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getsecurity_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external getsecurity_test
     - name: Format 29
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_noncached_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_noncached_test
     - name: Format 30
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_noncached_overlapped_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_noncached_overlapped_test
     - name: Format 31
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_cached_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_cached_test
     - name: Format 32
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_cached_append_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_cached_append_test
     - name: Format 33
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_cached_overlapped_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_cached_overlapped_test
     - name: Format 34
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_writethru_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_writethru_test
     - name: Format 35
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_writethru_append_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_writethru_append_test
     - name: Format 36
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_writethru_overlapped_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_writethru_overlapped_test
     - name: Format 37
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_mmap_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_mmap_test
     - name: Format 38
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_mixed_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_mixed_test
     - name: Format 39
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: flush_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external flush_test
     - name: Format 40
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: flush_volume_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external flush_volume_test
     - name: Format 41
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_noncached_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external lock_noncached_test
     - name: Format 42
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_noncached_overlapped_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external lock_noncached_overlapped_test
     - name: Format 43
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_cached_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external lock_cached_test
     - name: Format 44
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_cached_overlapped_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external lock_cached_overlapped_test
     - name: Format 45
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external querydir_test
     - name: Format 46
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_expire_cache_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external querydir_expire_cache_test
     - name: Format 47
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_buffer_overflow_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external querydir_buffer_overflow_test
     - name: Format 48
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_namelen_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external querydir_namelen_test
     - name: Format 49
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: dirnotify_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external dirnotify_test
     - name: Format 50
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external exec_test
     - name: Format 51
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_delete_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external exec_delete_test
     - name: Format 52
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_rename_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external exec_rename_test
     - name: Format 53
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_rename_dir_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external exec_rename_dir_test
     - name: Format 54
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_nfs_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external reparse_nfs_test
     - name: Format 55
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_symlink_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external reparse_symlink_test
     - name: Format 56
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_symlink_relative_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --fuse-external reparse_symlink_relative_test
   win-build-test-WinFsp:
@@ -707,853 +707,853 @@ jobs:
         path: C:\Users\runneradmin\runneradmin\configurator\bin\WinFspSpaceFS.exe
     - name: create_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external create_test
     - name: Format 1
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_fileattr_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external create_fileattr_test
     - name: Format 2
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_readonlydir_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external create_readonlydir_test
     - name: Format 3
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_related_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external create_related_test
     - name: Format 4
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_allocation_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external create_allocation_test
     - name: Format 5
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_sd_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external create_sd_test
     - name: Format 6
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_notraverse_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external create_notraverse_test
     - name: Format 7
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_backup_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external create_backup_test
     - name: Format 8
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_restore_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external create_restore_test
     - name: Format 9
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_share_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external create_share_test
     - name: Format 10
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_curdir_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external create_curdir_test
     - name: Format 11
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: create_namelen_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external create_namelen_test
     - name: Format 12
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getfileattr_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external getfileattr_test
     - name: Format 13
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getfileinfo_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external getfileinfo_test
     - name: Format 14
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getfileinfo_name_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external getfileinfo_name_test
     - name: Format 15
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: setfileinfo_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external setfileinfo_test
     - name: Format 16
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external delete_test
     - name: Format 17
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_access_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external delete_access_test
     - name: Format 18
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_pending_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external delete_pending_test
     - name: Format 19
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_mmap_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external delete_mmap_test
     - name: Format 20
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_standby_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external delete_standby_test
     - name: Format 21
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: delete_ex_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external delete_ex_test
     - name: Format 22
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rename_test
     - name: Format 23
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_backslash_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rename_backslash_test
     - name: Format 24
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_open_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rename_open_test
     - name: Format 25
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_caseins_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rename_caseins_test
     - name: Format 26
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_flipflop_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rename_flipflop_test
     - name: Format 27
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_mmap_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rename_mmap_test
     - name: Format 28
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_standby_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rename_standby_test
     - name: Format 29
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rename_ex_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rename_ex_test
     - name: Format 30
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getvolinfo_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external getvolinfo_test
     - name: Format 31
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: setvolinfo_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external setvolinfo_test
     - name: Format 32
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: getsecurity_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external getsecurity_test
     - name: Format 33
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: setsecurity_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external setsecurity_test
     - name: Format 34
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_noncached_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rdwr_noncached_test
     - name: Format 35
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_noncached_overlapped_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rdwr_noncached_overlapped_test
     - name: Format 36
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_cached_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rdwr_cached_test
     - name: Format 37
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_cached_append_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rdwr_cached_append_test
     - name: Format 38
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_cached_overlapped_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rdwr_cached_overlapped_test
     - name: Format 39
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_writethru_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rdwr_writethru_test
     - name: Format 40
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_writethru_append_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rdwr_writethru_append_test
     - name: Format 41
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_writethru_overlapped_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rdwr_writethru_overlapped_test
     - name: Format 42
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_mmap_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rdwr_mmap_test
     - name: Format 43
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: rdwr_mixed_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external rdwr_mixed_test
     - name: Format 44
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: flush_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external flush_test
     - name: Format 45
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: flush_volume_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external flush_volume_test
     - name: Format 46
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_noncached_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external lock_noncached_test
     - name: Format 47
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_noncached_overlapped_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external lock_noncached_overlapped_test
     - name: Format 48
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_cached_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external lock_cached_test
     - name: Format 49
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: lock_cached_overlapped_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external lock_cached_overlapped_test
     - name: Format 50
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external querydir_test
     - name: Format 51
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_expire_cache_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external querydir_expire_cache_test
     - name: Format 52
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_buffer_overflow_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external querydir_buffer_overflow_test
     - name: Format 53
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: querydir_namelen_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external querydir_namelen_test
     - name: Format 54
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: dirnotify_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external dirnotify_test
     - name: Format 55
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external exec_test
     - name: Format 56
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_delete_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external exec_delete_test
     - name: Format 57
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_rename_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external exec_rename_test
     - name: Format 58
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: exec_rename_dir_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external exec_rename_dir_test
     - name: Format 59
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_guid_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external reparse_guid_test
     - name: Format 60
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_nfs_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external reparse_nfs_test
     - name: Format 61
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_symlink_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external reparse_symlink_test
     - name: Format 62
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_symlink_relative_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external reparse_symlink_relative_test
     - name: Format 63
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_create_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_create_test
     - name: Format 64
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_create_overwrite_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_create_overwrite_test
     - name: Format 65
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_create_related_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_create_related_test
     - name: Format 66
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_create_sd_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_create_sd_test
     - name: Format 67
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_create_share_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_create_share_test
     - name: Format 68
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_getfileinfo_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_getfileinfo_test
     - name: Format 69
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_setfileinfo_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_setfileinfo_test
     - name: Format 70
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_delete_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_delete_test
     - name: Format 71
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_delete_pending_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_delete_pending_test
     - name: Format 72
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_rename_flipflop_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_rename_flipflop_test
     - name: Format 73
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_getsecurity_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_getsecurity_test
     - name: Format 74
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_setsecurity_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_setsecurity_test
     - name: Format 75
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_getstreaminfo_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_getstreaminfo_test
     - name: Format 76
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_getstreaminfo_expire_cache_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_getstreaminfo_expire_cache_test
     - name: Format 77
-      if: not cancelled()
+      if: !cancelled()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_dirnotify_test
       working-directory: S:\
-      if: not cancelled()
+      if: !cancelled()
       run: |
         winfsp-tests-x64.exe --external stream_dirnotify_test
