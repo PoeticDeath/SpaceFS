@@ -1686,7 +1686,14 @@ jobs:
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: stream_dirnotify_test
+      id: stream_dirnotify_test
       working-directory: S:\
       if: success() || failure()
       run: |
         winfsp-tests-x64.exe --external stream_dirnotify_test
+    - name: Format 78
+      if: failure() && steps.stream_dirnotify_test.outcome == 'failure'
+      run: |
+        taskkill /F /IM WinFspSpaceFS.exe
+        start StartWinFsp.bat
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
