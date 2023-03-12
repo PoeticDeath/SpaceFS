@@ -53,7 +53,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external create_test
     - name: Format 1
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -64,7 +64,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external create_fileattr_test
     - name: Format 2
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -75,7 +75,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external create_readonlydir_test
     - name: Format 3
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -86,7 +86,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external create_related_test
     - name: Format 4
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -97,7 +97,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external create_sd_test
     - name: Format 5
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -108,7 +108,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external create_backup_test
     - name: Format 6
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -119,7 +119,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external create_restore_test
     - name: Format 7
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -130,7 +130,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external create_share_test
     - name: Format 8
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -141,7 +141,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external create_curdir_test
     - name: Format 9
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -152,7 +152,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external create_namelen_test
     - name: Format 10
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -163,7 +163,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external getfileinfo_test
     - name: Format 11
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -174,7 +174,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external setfileinfo_test
     - name: Format 12
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -185,7 +185,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external delete_test
     - name: Format 13
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -196,7 +196,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external delete_access_test
     - name: Format 14
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -207,7 +207,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external delete_pending_test
     - name: Format 15
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -218,7 +218,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external delete_mmap_test
     - name: Format 16
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -229,7 +229,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external delete_standby_test
     - name: Format 17
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -240,7 +240,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external delete_ex_test
     - name: Format 18
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -251,7 +251,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rename_test
     - name: Format 19
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -262,7 +262,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rename_backslash_test
     - name: Format 20
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -273,7 +273,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rename_open_test
     - name: Format 21
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -284,7 +284,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rename_caseins_test
     - name: Format 22
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -295,7 +295,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rename_flipflop_test
     - name: Format 23
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -306,7 +306,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rename_mmap_test
     - name: Format 24
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -317,7 +317,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rename_standby_test
     - name: Format 25
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -328,7 +328,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rename_ex_test
     - name: Format 26
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -339,7 +339,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external getvolinfo_test
     - name: Format 27
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -350,7 +350,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external setvolinfo_test
     - name: Format 28
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -361,7 +361,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external getsecurity_test
     - name: Format 29
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -372,7 +372,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_noncached_test
     - name: Format 30
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -383,7 +383,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_noncached_overlapped_test
     - name: Format 31
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -394,7 +394,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_cached_test
     - name: Format 32
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -405,7 +405,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_cached_append_test
     - name: Format 33
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -416,7 +416,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_cached_overlapped_test
     - name: Format 34
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -427,7 +427,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_writethru_test
     - name: Format 35
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -438,7 +438,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_writethru_append_test
     - name: Format 36
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -449,7 +449,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_writethru_overlapped_test
     - name: Format 37
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -460,7 +460,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_mmap_test
     - name: Format 38
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -471,7 +471,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external rdwr_mixed_test
     - name: Format 39
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -482,7 +482,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external flush_test
     - name: Format 40
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -493,7 +493,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external flush_volume_test
     - name: Format 41
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -504,7 +504,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external lock_noncached_test
     - name: Format 42
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -515,7 +515,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external lock_noncached_overlapped_test
     - name: Format 43
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -526,7 +526,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external lock_cached_test
     - name: Format 44
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -537,7 +537,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external lock_cached_overlapped_test
     - name: Format 45
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -548,7 +548,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external querydir_test
     - name: Format 46
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -559,7 +559,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external querydir_expire_cache_test
     - name: Format 47
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -570,7 +570,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external querydir_buffer_overflow_test
     - name: Format 48
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -581,7 +581,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external querydir_namelen_test
     - name: Format 49
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -592,7 +592,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external dirnotify_test
     - name: Format 50
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -603,7 +603,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external exec_test
     - name: Format 51
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -614,7 +614,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external exec_delete_test
     - name: Format 52
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -625,7 +625,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external exec_rename_test
     - name: Format 53
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -636,7 +636,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external exec_rename_dir_test
     - name: Format 54
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -647,7 +647,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external reparse_nfs_test
     - name: Format 55
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -658,7 +658,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --fuse-external reparse_symlink_test
     - name: Format 56
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM FUSESpaceFS.exe
         start StartFUSE.bat
@@ -711,7 +711,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external create_test
     - name: Format 1
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -722,7 +722,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external create_fileattr_test
     - name: Format 2
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -733,7 +733,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external create_readonlydir_test
     - name: Format 3
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -744,7 +744,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external create_related_test
     - name: Format 4
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -755,7 +755,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external create_allocation_test
     - name: Format 5
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -766,7 +766,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external create_sd_test
     - name: Format 6
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -777,7 +777,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external create_notraverse_test
     - name: Format 7
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -788,7 +788,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external create_backup_test
     - name: Format 8
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -799,7 +799,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external create_restore_test
     - name: Format 9
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -810,7 +810,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external create_share_test
     - name: Format 10
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -821,7 +821,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external create_curdir_test
     - name: Format 11
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -832,7 +832,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external create_namelen_test
     - name: Format 12
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -843,7 +843,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external getfileattr_test
     - name: Format 13
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -854,7 +854,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external getfileinfo_test
     - name: Format 14
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -865,7 +865,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external getfileinfo_name_test
     - name: Format 15
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -876,7 +876,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external setfileinfo_test
     - name: Format 16
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -887,7 +887,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external delete_test
     - name: Format 17
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -898,7 +898,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external delete_access_test
     - name: Format 18
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -909,7 +909,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external delete_pending_test
     - name: Format 19
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -920,7 +920,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external delete_mmap_test
     - name: Format 20
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -931,7 +931,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external delete_standby_test
     - name: Format 21
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -942,7 +942,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external delete_ex_test
     - name: Format 22
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -953,7 +953,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rename_test
     - name: Format 23
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -964,7 +964,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rename_backslash_test
     - name: Format 24
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -975,7 +975,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rename_open_test
     - name: Format 25
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -986,7 +986,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rename_caseins_test
     - name: Format 26
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -997,7 +997,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rename_flipflop_test
     - name: Format 27
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1008,7 +1008,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rename_mmap_test
     - name: Format 28
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1019,7 +1019,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rename_standby_test
     - name: Format 29
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1030,7 +1030,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rename_ex_test
     - name: Format 30
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1041,7 +1041,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external getvolinfo_test
     - name: Format 31
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1052,7 +1052,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external setvolinfo_test
     - name: Format 32
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1063,7 +1063,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external getsecurity_test
     - name: Format 33
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1074,7 +1074,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external setsecurity_test
     - name: Format 34
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1085,7 +1085,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rdwr_noncached_test
     - name: Format 35
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1096,7 +1096,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rdwr_noncached_overlapped_test
     - name: Format 36
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1107,7 +1107,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rdwr_cached_test
     - name: Format 37
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1118,7 +1118,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rdwr_cached_append_test
     - name: Format 38
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1129,7 +1129,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rdwr_cached_overlapped_test
     - name: Format 39
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1140,7 +1140,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rdwr_writethru_test
     - name: Format 40
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1151,7 +1151,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rdwr_writethru_append_test
     - name: Format 41
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1162,7 +1162,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rdwr_writethru_overlapped_test
     - name: Format 42
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1173,7 +1173,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rdwr_mmap_test
     - name: Format 43
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1184,7 +1184,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external rdwr_mixed_test
     - name: Format 44
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1195,7 +1195,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external flush_test
     - name: Format 45
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1206,7 +1206,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external flush_volume_test
     - name: Format 46
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1217,7 +1217,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external lock_noncached_test
     - name: Format 47
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1228,7 +1228,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external lock_noncached_overlapped_test
     - name: Format 48
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1239,7 +1239,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external lock_cached_test
     - name: Format 49
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1250,7 +1250,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external lock_cached_overlapped_test
     - name: Format 50
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1261,7 +1261,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external querydir_test
     - name: Format 51
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1272,7 +1272,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external querydir_expire_cache_test
     - name: Format 52
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1283,7 +1283,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external querydir_buffer_overflow_test
     - name: Format 53
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1294,7 +1294,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external querydir_namelen_test
     - name: Format 54
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1305,7 +1305,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external dirnotify_test
     - name: Format 55
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1316,7 +1316,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external exec_test
     - name: Format 56
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1327,7 +1327,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external exec_delete_test
     - name: Format 57
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1338,7 +1338,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external exec_rename_test
     - name: Format 58
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1349,7 +1349,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external exec_rename_dir_test
     - name: Format 59
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1360,7 +1360,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external reparse_guid_test
     - name: Format 60
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1371,7 +1371,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external reparse_nfs_test
     - name: Format 61
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1382,7 +1382,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external reparse_symlink_test
     - name: Format 62
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1393,7 +1393,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external reparse_symlink_relative_test
     - name: Format 63
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1404,7 +1404,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external stream_create_test
     - name: Format 64
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1415,7 +1415,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external stream_create_overwrite_test
     - name: Format 65
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1426,7 +1426,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external stream_create_related_test
     - name: Format 66
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1437,7 +1437,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external stream_create_sd_test
     - name: Format 67
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1448,7 +1448,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external stream_create_share_test
     - name: Format 68
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1459,7 +1459,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external stream_getfileinfo_test
     - name: Format 69
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1470,7 +1470,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external stream_setfileinfo_test
     - name: Format 70
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1481,7 +1481,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external stream_delete_test
     - name: Format 71
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1492,7 +1492,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external stream_delete_pending_test
     - name: Format 72
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1503,7 +1503,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external stream_rename_flipflop_test
     - name: Format 73
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1514,7 +1514,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external stream_getsecurity_test
     - name: Format 74
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1525,7 +1525,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external stream_setsecurity_test
     - name: Format 75
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1536,7 +1536,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external stream_getstreaminfo_test
     - name: Format 76
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
@@ -1547,7 +1547,7 @@ jobs:
       run: |
         winfsp-tests-x64.exe --external stream_getstreaminfo_expire_cache_test
     - name: Format 77
-      if: success() || failure()
+      if: failure()
       run: |
         taskkill /F /IM WinFspSpaceFS.exe
         start StartWinFsp.bat
