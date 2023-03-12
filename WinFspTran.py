@@ -177,14 +177,14 @@ class SpaceFSOperations(BaseFileSystemOperations):
             self.s.createfile(file_context.split(':')[0][1:],448)
             self.s.writefile(file_context.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
         SD=SecurityDescriptor.from_string(self.s.readfile(file_context.split(':')[0][1:],0,self.s.trunfile(file_context.split(':')[0][1:])).decode())
-        if security_information!=1:
-            SD=SD.evolve(security_information,modification_descriptor)
-            SD=SD.to_string()
+        if security_information%2==0:
+            SD=SD.evolve(security_information,modification_descriptor).to_string()
         else:
             SD=SD.to_string()
             NSD=SecurityDescriptor.from_cpointer(modification_descriptor).to_string()
-            NSD=NSD+NSD.replace('O:','G:')
-            SD=NSD+SD[SD.index('D:'):]
+            if 'D:' not in NSD:
+                NSD+=SD[SD.index('D:'):]
+            SD=NSD
         if 'D:P' not in SD:
             SD=SD.replace('D:','D:P',1)
         self.s.trunfile(file_context.split(':')[0][1:],0)
