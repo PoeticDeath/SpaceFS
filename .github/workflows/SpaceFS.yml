@@ -52,7 +52,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external create_test
+        winfsp-tests-x64.exe --fuse-external --resilient create_test
     - name: Format 1
       if: failure() && steps.fuse_create_test.outcome == 'failure'
       run: |
@@ -64,7 +64,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external create_fileattr_test
+        winfsp-tests-x64.exe --fuse-external --resilient create_fileattr_test
     - name: Format 2
       if: failure() && steps.fuse_create_fileattr_test.outcome == 'failure'
       run: |
@@ -76,7 +76,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external create_readonlydir_test
+        winfsp-tests-x64.exe --fuse-external --resilient create_readonlydir_test
     - name: Format 3
       if: failure() && steps.fuse_create_readonlydir_test.outcome == 'failure'
       run: |
@@ -88,7 +88,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external create_related_test
+        winfsp-tests-x64.exe --fuse-external --resilient create_related_test
     - name: Format 4
       if: failure() && steps.fuse_create_related_test.outcome == 'failure'
       run: |
@@ -100,7 +100,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external create_sd_test
+        winfsp-tests-x64.exe --fuse-external --resilient create_sd_test
     - name: Format 5
       if: failure() && steps.fuse_create_sd_test.outcome == 'failure'
       run: |
@@ -112,7 +112,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external create_backup_test
+        winfsp-tests-x64.exe --fuse-external --resilient create_backup_test
     - name: Format 6
       if: failure() && steps.fuse_create_backup_test.outcome == 'failure'
       run: |
@@ -124,7 +124,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external create_restore_test
+        winfsp-tests-x64.exe --fuse-external --resilient create_restore_test
     - name: Format 7
       if: failure() && steps.fuse_create_restore_test.outcome == 'failure'
       run: |
@@ -136,7 +136,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external create_share_test
+        winfsp-tests-x64.exe --fuse-external --resilient create_share_test
     - name: Format 8
       if: failure() && steps.fuse_create_share_test.outcome == 'failure'
       run: |
@@ -148,7 +148,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external create_curdir_test
+        winfsp-tests-x64.exe --fuse-external --resilient create_curdir_test
     - name: Format 9
       if: failure() && steps.fuse_create_curdir_test.outcome == 'failure'
       run: |
@@ -160,7 +160,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external create_namelen_test
+        winfsp-tests-x64.exe --fuse-external --resilient create_namelen_test
     - name: Format 10
       if: failure() && steps.fuse_create_namelen_test.outcome == 'failure'
       run: |
@@ -172,7 +172,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external getfileinfo_test
+        winfsp-tests-x64.exe --fuse-external --resilient getfileinfo_test
     - name: Format 11
       if: failure() && steps.fuse_getfileinfo_test.outcome == 'failure'
       run: |
@@ -184,7 +184,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external setfileinfo_test
+        winfsp-tests-x64.exe --fuse-external --resilient setfileinfo_test
     - name: Format 12
       if: failure() && steps.fuse_setfileinfo_test.outcome == 'failure'
       run: |
@@ -196,7 +196,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external delete_test
+        winfsp-tests-x64.exe --fuse-external --resilient delete_test
     - name: Format 13
       if: failure() && steps.fuse_delete_test.outcome == 'failure'
       run: |
@@ -208,7 +208,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external delete_access_test
+        winfsp-tests-x64.exe --fuse-external --resilient delete_access_test
     - name: Format 14
       if: failure() && steps.fuse_delete_access_test.outcome == 'failure'
       run: |
@@ -220,7 +220,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external delete_pending_test
+        winfsp-tests-x64.exe --fuse-external --resilient delete_pending_test
     - name: Format 15
       if: failure() && steps.fuse_delete_pending_test.outcome == 'failure'
       run: |
@@ -232,7 +232,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external delete_mmap_test
+        winfsp-tests-x64.exe --fuse-external --resilient delete_mmap_test
     - name: Format 16
       if: failure() && steps.fuse_delete_mmap_test.outcome == 'failure'
       run: |
@@ -244,7 +244,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external delete_standby_test
+        winfsp-tests-x64.exe --fuse-external --resilient delete_standby_test
     - name: Format 17
       if: failure() && steps.fuse_delete_standby_test.outcome == 'failure'
       run: |
@@ -256,7 +256,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external delete_ex_test
+        winfsp-tests-x64.exe --fuse-external --resilient delete_ex_test
     - name: Format 18
       if: failure() && steps.fuse_delete_ex_test.outcome == 'failure'
       run: |
@@ -268,7 +268,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rename_test
+        winfsp-tests-x64.exe --fuse-external --resilient rename_test
     - name: Format 19
       if: failure() && steps.fuse_rename_test.outcome == 'failure'
       run: |
@@ -280,7 +280,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rename_backslash_test
+        winfsp-tests-x64.exe --fuse-external --resilient rename_backslash_test
     - name: Format 20
       if: failure() && steps.fuse_rename_backslash_test.outcome == 'failure'
       run: |
@@ -292,7 +292,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rename_open_test
+        winfsp-tests-x64.exe --fuse-external --resilient rename_open_test
     - name: Format 21
       if: failure() && steps.fuse_rename_open_test.outcome == 'failure'
       run: |
@@ -304,7 +304,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rename_caseins_test
+        winfsp-tests-x64.exe --fuse-external --resilient rename_caseins_test
     - name: Format 22
       if: failure() && steps.fuse_rename_caseins_test.outcome == 'failure'
       run: |
@@ -316,7 +316,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rename_flipflop_test
+        winfsp-tests-x64.exe --fuse-external --resilient rename_flipflop_test
     - name: Format 23
       if: failure() && steps.fuse_rename_flipflop_test.outcome == 'failure'
       run: |
@@ -328,7 +328,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rename_mmap_test
+        winfsp-tests-x64.exe --fuse-external --resilient rename_mmap_test
     - name: Format 24
       if: failure() && steps.fuse_rename_mmap_test.outcome == 'failure'
       run: |
@@ -340,7 +340,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rename_standby_test
+        winfsp-tests-x64.exe --fuse-external --resilient rename_standby_test
     - name: Format 25
       if: failure() && steps.fuse_rename_standby_test.outcome == 'failure'
       run: |
@@ -352,7 +352,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rename_ex_test
+        winfsp-tests-x64.exe --fuse-external --resilient rename_ex_test
     - name: Format 26
       if: failure() && steps.fuse_rename_ex_test.outcome == 'failure'
       run: |
@@ -364,7 +364,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external getvolinfo_test
+        winfsp-tests-x64.exe --fuse-external --resilient getvolinfo_test
     - name: Format 27
       if: failure() && steps.fuse_getvolinfo_test.outcome == 'failure'
       run: |
@@ -376,7 +376,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external setvolinfo_test
+        winfsp-tests-x64.exe --fuse-external --resilient setvolinfo_test
     - name: Format 28
       if: failure() && steps.fuse_setvolinfo_test.outcome == 'failure'
       run: |
@@ -388,7 +388,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external getsecurity_test
+        winfsp-tests-x64.exe --fuse-external --resilient getsecurity_test
     - name: Format 29
       if: failure() && steps.fuse_getsecurity_test.outcome == 'failure'
       run: |
@@ -400,7 +400,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rdwr_noncached_test
+        winfsp-tests-x64.exe --fuse-external --resilient rdwr_noncached_test
     - name: Format 30
       if: failure() && steps.fuse_rdwr_noncached_test.outcome == 'failure'
       run: |
@@ -412,7 +412,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rdwr_noncached_overlapped_test
+        winfsp-tests-x64.exe --fuse-external --resilient rdwr_noncached_overlapped_test
     - name: Format 31
       if: failure() && steps.fuse_rdwr_noncached_overlapped_test.outcome == 'failure'
       run: |
@@ -424,7 +424,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rdwr_cached_test
+        winfsp-tests-x64.exe --fuse-external --resilient rdwr_cached_test
     - name: Format 32
       if: failure() && steps.fuse_rdwr_cached_test.outcome == 'failure'
       run: |
@@ -436,7 +436,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rdwr_cached_append_test
+        winfsp-tests-x64.exe --fuse-external --resilient rdwr_cached_append_test
     - name: Format 33
       if: failure() && steps.fuse_rdwr_cached_append_test.outcome == 'failure'
       run: |
@@ -448,7 +448,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rdwr_cached_overlapped_test
+        winfsp-tests-x64.exe --fuse-external --resilient rdwr_cached_overlapped_test
     - name: Format 34
       if: failure() && steps.fuse_rdwr_cached_overlapped_test.outcome == 'failure'
       run: |
@@ -460,7 +460,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rdwr_writethru_test
+        winfsp-tests-x64.exe --fuse-external --resilient rdwr_writethru_test
     - name: Format 35
       if: failure() && steps.fuse_rdwr_writethru_test.outcome == 'failure'
       run: |
@@ -472,7 +472,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rdwr_writethru_append_test
+        winfsp-tests-x64.exe --fuse-external --resilient rdwr_writethru_append_test
     - name: Format 36
       if: failure() && steps.fuse_rdwr_writethru_append_test.outcome == 'failure'
       run: |
@@ -484,7 +484,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rdwr_writethru_overlapped_test
+        winfsp-tests-x64.exe --fuse-external --resilient rdwr_writethru_overlapped_test
     - name: Format 37
       if: failure() && steps.fuse_rdwr_writethru_overlapped_test.outcome == 'failure'
       run: |
@@ -496,7 +496,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rdwr_mmap_test
+        winfsp-tests-x64.exe --fuse-external --resilient rdwr_mmap_test
     - name: Format 38
       if: failure() && steps.fuse_rdwr_mmap_test.outcome == 'failure'
       run: |
@@ -508,7 +508,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external rdwr_mixed_test
+        winfsp-tests-x64.exe --fuse-external --resilient rdwr_mixed_test
     - name: Format 39
       if: failure() && steps.fuse_rdwr_mixed_test.outcome == 'failure'
       run: |
@@ -520,7 +520,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external flush_test
+        winfsp-tests-x64.exe --fuse-external --resilient flush_test
     - name: Format 40
       if: failure() && steps.fuse_flush_test.outcome == 'failure'
       run: |
@@ -532,7 +532,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external flush_volume_test
+        winfsp-tests-x64.exe --fuse-external --resilient flush_volume_test
     - name: Format 41
       if: failure() && steps.fuse_flush_volume_test.outcome == 'failure'
       run: |
@@ -544,7 +544,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external lock_noncached_test
+        winfsp-tests-x64.exe --fuse-external --resilient lock_noncached_test
     - name: Format 42
       if: failure() && steps.fuse_lock_noncached_test.outcome == 'failure'
       run: |
@@ -556,7 +556,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external lock_noncached_overlapped_test
+        winfsp-tests-x64.exe --fuse-external --resilient lock_noncached_overlapped_test
     - name: Format 43
       if: failure() && steps.fuse_lock_noncached_overlapped_test.outcome == 'failure'
       run: |
@@ -568,7 +568,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external lock_cached_test
+        winfsp-tests-x64.exe --fuse-external --resilient lock_cached_test
     - name: Format 44
       if: failure() && steps.fuse_lock_cached_test.outcome == 'failure'
       run: |
@@ -580,7 +580,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external lock_cached_overlapped_test
+        winfsp-tests-x64.exe --fuse-external --resilient lock_cached_overlapped_test
     - name: Format 45
       if: failure() && steps.fuse_lock_cached_overlapped_test.outcome == 'failure'
       run: |
@@ -592,7 +592,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external querydir_test
+        winfsp-tests-x64.exe --fuse-external --resilient querydir_test
     - name: Format 46
       if: failure() && steps.fuse_querydir_test.outcome == 'failure'
       run: |
@@ -604,7 +604,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external querydir_expire_cache_test
+        winfsp-tests-x64.exe --fuse-external --resilient querydir_expire_cache_test
     - name: Format 47
       if: failure() && steps.fuse_querydir_expire_cache_test.outcome == 'failure'
       run: |
@@ -616,7 +616,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external querydir_buffer_overflow_test
+        winfsp-tests-x64.exe --fuse-external --resilient querydir_buffer_overflow_test
     - name: Format 48
       if: failure() && steps.fuse_querydir_buffer_overflow_test.outcome == 'failure'
       run: |
@@ -628,7 +628,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external querydir_namelen_test
+        winfsp-tests-x64.exe --fuse-external --resilient querydir_namelen_test
     - name: Format 49
       if: failure() && steps.fuse_querydir_namelen_test.outcome == 'failure'
       run: |
@@ -640,7 +640,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external dirnotify_test
+        winfsp-tests-x64.exe --fuse-external --resilient dirnotify_test
     - name: Format 50
       if: failure() && steps.fuse_dirnotify_test.outcome == 'failure'
       run: |
@@ -652,7 +652,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external exec_test
+        winfsp-tests-x64.exe --fuse-external --resilient exec_test
     - name: Format 51
       if: failure() && steps.fuse_exec_test.outcome == 'failure'
       run: |
@@ -664,7 +664,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external exec_delete_test
+        winfsp-tests-x64.exe --fuse-external --resilient exec_delete_test
     - name: Format 52
       if: failure() && steps.fuse_exec_delete_test.outcome == 'failure'
       run: |
@@ -676,7 +676,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external exec_rename_test
+        winfsp-tests-x64.exe --fuse-external --resilient exec_rename_test
     - name: Format 53
       if: failure() && steps.fuse_exec_rename_test.outcome == 'failure'
       run: |
@@ -688,7 +688,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external exec_rename_dir_test
+        winfsp-tests-x64.exe --fuse-external --resilient exec_rename_dir_test
     - name: Format 54
       if: failure() && steps.fuse_exec_rename_dir_test.outcome == 'failure'
       run: |
@@ -700,7 +700,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external reparse_nfs_test
+        winfsp-tests-x64.exe --fuse-external --resilient reparse_nfs_test
     - name: Format 55
       if: failure() && steps.fuse_reparse_nfs_test.outcome == 'failure'
       run: |
@@ -712,7 +712,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external reparse_symlink_test
+        winfsp-tests-x64.exe --fuse-external --resilient reparse_symlink_test
     - name: Format 56
       if: failure() && steps.fuse_reparse_symlink_test.outcome == 'failure'
       run: |
@@ -720,10 +720,17 @@ jobs:
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: reparse_symlink_relative_test
+      id: reparse_symlink_relative_test
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --fuse-external reparse_symlink_relative_test
+        winfsp-tests-x64.exe --fuse-external --resilient reparse_symlink_relative_test
+    - name: Format 57
+      if: failure() && steps.reparse_symlink_relative_test.outcome == 'failure'
+      run: |
+        taskkill /F /IM FUSESpaceFS.exe
+        start StartFUSE.bat
+        python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
   win-build-test-WinFsp:
 
     runs-on: windows-latest
@@ -766,7 +773,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external create_test
+        winfsp-tests-x64.exe --external --resilient create_test
     - name: Format 1
       if: failure() && steps.create_test.outcome == 'failure'
       run: |
@@ -778,7 +785,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external create_fileattr_test
+        winfsp-tests-x64.exe --external --resilient create_fileattr_test
     - name: Format 2
       if: failure() && steps.create_fileattr_test.outcome == 'failure'
       run: |
@@ -790,7 +797,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external create_readonlydir_test
+        winfsp-tests-x64.exe --external --resilient create_readonlydir_test
     - name: Format 3
       if: failure() && steps.create_readonlydir_test.outcome == 'failure'
       run: |
@@ -802,7 +809,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external create_related_test
+        winfsp-tests-x64.exe --external --resilient create_related_test
     - name: Format 4
       if: failure() && steps.create_related_test.outcome == 'failure'
       run: |
@@ -814,7 +821,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external create_allocation_test
+        winfsp-tests-x64.exe --external --resilient create_allocation_test
     - name: Format 5
       if: failure() && steps.create_allocation_test.outcome == 'failure'
       run: |
@@ -826,7 +833,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external create_sd_test
+        winfsp-tests-x64.exe --external --resilient create_sd_test
     - name: Format 6
       if: failure() && steps.create_sd_test.outcome == 'failure'
       run: |
@@ -838,7 +845,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external create_notraverse_test
+        winfsp-tests-x64.exe --external --resilient create_notraverse_test
     - name: Format 7
       if: failure() && steps.create_notraverse_test.outcome == 'failure'
       run: |
@@ -850,7 +857,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external create_backup_test
+        winfsp-tests-x64.exe --external --resilient create_backup_test
     - name: Format 8
       if: failure() && steps.create_backup_test.outcome == 'failure'
       run: |
@@ -862,7 +869,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external create_restore_test
+        winfsp-tests-x64.exe --external --resilient create_restore_test
     - name: Format 9
       if: failure() && steps.create_restore_test.outcome == 'failure'
       run: |
@@ -874,7 +881,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external create_share_test
+        winfsp-tests-x64.exe --external --resilient create_share_test
     - name: Format 10
       if: failure() && steps.create_share_test.outcome == 'failure'
       run: |
@@ -886,7 +893,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external create_curdir_test
+        winfsp-tests-x64.exe --external --resilient create_curdir_test
     - name: Format 11
       if: failure() && steps.create_curdir_test.outcome == 'failure'
       run: |
@@ -898,7 +905,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external create_namelen_test
+        winfsp-tests-x64.exe --external --resilient create_namelen_test
     - name: Format 12
       if: failure() && steps.create_namelen_test.outcome == 'failure'
       run: |
@@ -910,7 +917,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external getfileattr_test
+        winfsp-tests-x64.exe --external --resilient getfileattr_test
     - name: Format 13
       if: failure() && steps.getfileattr_test.outcome == 'failure'
       run: |
@@ -922,7 +929,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external getfileinfo_test
+        winfsp-tests-x64.exe --external --resilient getfileinfo_test
     - name: Format 14
       if: failure() && steps.getfileinfo_test.outcome == 'failure'
       run: |
@@ -934,7 +941,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external getfileinfo_name_test
+        winfsp-tests-x64.exe --external --resilient getfileinfo_name_test
     - name: Format 15
       if: failure() && steps.getfileinfo_name_test.outcome == 'failure'
       run: |
@@ -946,7 +953,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external setfileinfo_test
+        winfsp-tests-x64.exe --external --resilient setfileinfo_test
     - name: Format 16
       if: failure() && steps.setfileinfo_test.outcome == 'failure'
       run: |
@@ -958,7 +965,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external delete_test
+        winfsp-tests-x64.exe --external --resilient delete_test
     - name: Format 17
       if: failure() && steps.delete_test.outcome == 'failure'
       run: |
@@ -970,7 +977,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external delete_access_test
+        winfsp-tests-x64.exe --external --resilient delete_access_test
     - name: Format 18
       if: failure() && steps.delete_access_test.outcome == 'failure'
       run: |
@@ -982,7 +989,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external delete_pending_test
+        winfsp-tests-x64.exe --external --resilient delete_pending_test
     - name: Format 19
       if: failure() && steps.delete_pending_test.outcome == 'failure'
       run: |
@@ -994,7 +1001,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external delete_mmap_test
+        winfsp-tests-x64.exe --external --resilient delete_mmap_test
     - name: Format 20
       if: failure() && steps.delete_mmap_test.outcome == 'failure'
       run: |
@@ -1006,7 +1013,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external delete_standby_test
+        winfsp-tests-x64.exe --external --resilient delete_standby_test
     - name: Format 21
       if: failure() && steps.delete_standby_test.outcome == 'failure'
       run: |
@@ -1018,7 +1025,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external delete_ex_test
+        winfsp-tests-x64.exe --external --resilient delete_ex_test
     - name: Format 22
       if: failure() && steps.delete_ex_test.outcome == 'failure'
       run: |
@@ -1030,7 +1037,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rename_test
+        winfsp-tests-x64.exe --external --resilient rename_test
     - name: Format 23
       if: failure() && steps.rename_test.outcome == 'failure'
       run: |
@@ -1042,7 +1049,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rename_backslash_test
+        winfsp-tests-x64.exe --external --resilient rename_backslash_test
     - name: Format 24
       if: failure() && steps.rename_backslash_test.outcome == 'failure'
       run: |
@@ -1054,7 +1061,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rename_open_test
+        winfsp-tests-x64.exe --external --resilient rename_open_test
     - name: Format 25
       if: failure() && steps.rename_open_test.outcome == 'failure'
       run: |
@@ -1066,7 +1073,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rename_caseins_test
+        winfsp-tests-x64.exe --external --resilient rename_caseins_test
     - name: Format 26
       if: failure() && steps.rename_caseins_test.outcome == 'failure'
       run: |
@@ -1078,7 +1085,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rename_flipflop_test
+        winfsp-tests-x64.exe --external --resilient rename_flipflop_test
     - name: Format 27
       if: failure() && steps.rename_flipflop_test.outcome == 'failure'
       run: |
@@ -1090,7 +1097,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rename_mmap_test
+        winfsp-tests-x64.exe --external --resilient rename_mmap_test
     - name: Format 28
       if: failure() && steps.rename_mmap_test.outcome == 'failure'
       run: |
@@ -1102,7 +1109,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rename_standby_test
+        winfsp-tests-x64.exe --external --resilient rename_standby_test
     - name: Format 29
       if: failure() && steps.rename_standby_test.outcome == 'failure'
       run: |
@@ -1114,7 +1121,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rename_ex_test
+        winfsp-tests-x64.exe --external --resilient rename_ex_test
     - name: Format 30
       if: failure() && steps.rename_ex_test.outcome == 'failure'
       run: |
@@ -1126,7 +1133,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external getvolinfo_test
+        winfsp-tests-x64.exe --external --resilient getvolinfo_test
     - name: Format 31
       if: failure() && steps.getvolinfo_test.outcome == 'failure'
       run: |
@@ -1138,7 +1145,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external setvolinfo_test
+        winfsp-tests-x64.exe --external --resilient setvolinfo_test
     - name: Format 32
       if: failure() && steps.setvolinfo_test.outcome == 'failure'
       run: |
@@ -1150,7 +1157,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external getsecurity_test
+        winfsp-tests-x64.exe --external --resilient getsecurity_test
     - name: Format 33
       if: failure() && steps.getsecurity_test.outcome == 'failure'
       run: |
@@ -1162,7 +1169,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external setsecurity_test
+        winfsp-tests-x64.exe --external --resilient setsecurity_test
     - name: Format 34
       if: failure() && steps.setsecurity_test.outcome == 'failure'
       run: |
@@ -1174,7 +1181,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rdwr_noncached_test
+        winfsp-tests-x64.exe --external --resilient rdwr_noncached_test
     - name: Format 35
       if: failure() && steps.rdwr_noncached_test.outcome == 'failure'
       run: |
@@ -1186,7 +1193,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rdwr_noncached_overlapped_test
+        winfsp-tests-x64.exe --external --resilient rdwr_noncached_overlapped_test
     - name: Format 36
       if: failure() && steps.rdwr_noncached_overlapped_test.outcome == 'failure'
       run: |
@@ -1198,7 +1205,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rdwr_cached_test
+        winfsp-tests-x64.exe --external --resilient rdwr_cached_test
     - name: Format 37
       if: failure() && steps.rdwr_cached_test.outcome == 'failure'
       run: |
@@ -1210,7 +1217,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rdwr_cached_append_test
+        winfsp-tests-x64.exe --external --resilient rdwr_cached_append_test
     - name: Format 38
       if: failure() && steps.rdwr_cached_append_test.outcome == 'failure'
       run: |
@@ -1222,7 +1229,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rdwr_cached_overlapped_test
+        winfsp-tests-x64.exe --external --resilient rdwr_cached_overlapped_test
     - name: Format 39
       if: failure() && steps.rdwr_cached_overlapped_test.outcome == 'failure'
       run: |
@@ -1234,7 +1241,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rdwr_writethru_test
+        winfsp-tests-x64.exe --external --resilient rdwr_writethru_test
     - name: Format 40
       if: failure() && steps.rdwr_writethru_test.outcome == 'failure'
       run: |
@@ -1246,7 +1253,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rdwr_writethru_append_test
+        winfsp-tests-x64.exe --external --resilient rdwr_writethru_append_test
     - name: Format 41
       if: failure() && steps.rdwr_writethru_append_test.outcome == 'failure'
       run: |
@@ -1258,7 +1265,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rdwr_writethru_overlapped_test
+        winfsp-tests-x64.exe --external --resilient rdwr_writethru_overlapped_test
     - name: Format 42
       if: failure() && steps.rdwr_writethru_overlapped_test.outcome == 'failure'
       run: |
@@ -1270,7 +1277,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rdwr_mmap_test
+        winfsp-tests-x64.exe --external --resilient rdwr_mmap_test
     - name: Format 43
       if: failure() && steps.rdwr_mmap_test.outcome == 'failure'
       run: |
@@ -1282,7 +1289,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external rdwr_mixed_test
+        winfsp-tests-x64.exe --external --resilient rdwr_mixed_test
     - name: Format 44
       if: failure() && steps.rdwr_mixed_test.outcome == 'failure'
       run: |
@@ -1294,7 +1301,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external flush_test
+        winfsp-tests-x64.exe --external --resilient flush_test
     - name: Format 45
       if: failure() && steps.flush_test.outcome == 'failure'
       run: |
@@ -1306,7 +1313,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external flush_volume_test
+        winfsp-tests-x64.exe --external --resilient flush_volume_test
     - name: Format 46
       if: failure() && steps.flush_volume_test.outcome == 'failure'
       run: |
@@ -1318,7 +1325,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external lock_noncached_test
+        winfsp-tests-x64.exe --external --resilient lock_noncached_test
     - name: Format 47
       if: failure() && steps.lock_noncached_test.outcome == 'failure'
       run: |
@@ -1330,7 +1337,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external lock_noncached_overlapped_test
+        winfsp-tests-x64.exe --external --resilient lock_noncached_overlapped_test
     - name: Format 48
       if: failure() && steps.lock_noncached_overlapped_test.outcome == 'failure'
       run: |
@@ -1342,7 +1349,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external lock_cached_test
+        winfsp-tests-x64.exe --external --resilient lock_cached_test
     - name: Format 49
       if: failure() && steps.lock_cached_test.outcome == 'failure'
       run: |
@@ -1354,7 +1361,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external lock_cached_overlapped_test
+        winfsp-tests-x64.exe --external --resilient lock_cached_overlapped_test
     - name: Format 50
       if: failure() && steps.lock_cached_overlapped_test.outcome == 'failure'
       run: |
@@ -1366,7 +1373,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external querydir_test
+        winfsp-tests-x64.exe --external --resilient querydir_test
     - name: Format 51
       if: failure() && steps.querydir_test.outcome == 'failure'
       run: |
@@ -1378,7 +1385,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external querydir_expire_cache_test
+        winfsp-tests-x64.exe --external --resilient querydir_expire_cache_test
     - name: Format 52
       if: failure() && steps.querydir_expire_cache_test.outcome == 'failure'
       run: |
@@ -1390,7 +1397,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external querydir_buffer_overflow_test
+        winfsp-tests-x64.exe --external --resilient querydir_buffer_overflow_test
     - name: Format 53
       if: failure() && steps.querydir_buffer_overflow_test.outcome == 'failure'
       run: |
@@ -1402,7 +1409,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external querydir_namelen_test
+        winfsp-tests-x64.exe --external --resilient querydir_namelen_test
     - name: Format 54
       if: failure() && steps.querydir_namelen_test.outcome == 'failure'
       run: |
@@ -1414,7 +1421,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external dirnotify_test
+        winfsp-tests-x64.exe --external --resilient dirnotify_test
     - name: Format 55
       if: failure() && steps.dirnotify_test.outcome == 'failure'
       run: |
@@ -1426,7 +1433,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external exec_test
+        winfsp-tests-x64.exe --external --resilient exec_test
     - name: Format 56
       if: failure() && steps.exec_test.outcome == 'failure'
       run: |
@@ -1438,7 +1445,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external exec_delete_test
+        winfsp-tests-x64.exe --external --resilient exec_delete_test
     - name: Format 57
       if: failure() && steps.exec_delete_test.outcome == 'failure'
       run: |
@@ -1450,7 +1457,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external exec_rename_test
+        winfsp-tests-x64.exe --external --resilient exec_rename_test
     - name: Format 58
       if: failure() && steps.exec_rename_test.outcome == 'failure'
       run: |
@@ -1462,7 +1469,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external exec_rename_dir_test
+        winfsp-tests-x64.exe --external --resilient exec_rename_dir_test
     - name: Format 59
       if: failure() && steps.exec_rename_dir_test.outcome == 'failure'
       run: |
@@ -1474,7 +1481,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external reparse_guid_test
+        winfsp-tests-x64.exe --external --resilient reparse_guid_test
     - name: Format 60
       if: failure() && steps.reparse_guid_test.outcome == 'failure'
       run: |
@@ -1486,7 +1493,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external reparse_nfs_test
+        winfsp-tests-x64.exe --external --resilient reparse_nfs_test
     - name: Format 61
       if: failure() && steps.reparse_nfs_test.outcome == 'failure'
       run: |
@@ -1498,7 +1505,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external reparse_symlink_test
+        winfsp-tests-x64.exe --external --resilient reparse_symlink_test
     - name: Format 62
       if: failure() && steps.reparse_symlink_test.outcome == 'failure'
       run: |
@@ -1510,7 +1517,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external reparse_symlink_relative_test
+        winfsp-tests-x64.exe --external --resilient reparse_symlink_relative_test
     - name: Format 63
       if: failure() && steps.reparse_symlink_relative_test.outcome == 'failure'
       run: |
@@ -1522,7 +1529,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_create_test
+        winfsp-tests-x64.exe --external --resilient stream_create_test
     - name: Format 64
       if: failure() && steps.stream_create_test.outcome == 'failure'
       run: |
@@ -1534,7 +1541,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_create_overwrite_test
+        winfsp-tests-x64.exe --external --resilient stream_create_overwrite_test
     - name: Format 65
       if: failure() && steps.stream_create_overwrite_test.outcome == 'failure'
       run: |
@@ -1546,7 +1553,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_create_related_test
+        winfsp-tests-x64.exe --external --resilient stream_create_related_test
     - name: Format 66
       if: failure() && steps.stream_create_related_test.outcome == 'failure'
       run: |
@@ -1558,7 +1565,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_create_sd_test
+        winfsp-tests-x64.exe --external --resilient stream_create_sd_test
     - name: Format 67
       if: failure() && steps.stream_create_sd_test.outcome == 'failure'
       run: |
@@ -1570,7 +1577,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_create_share_test
+        winfsp-tests-x64.exe --external --resilient stream_create_share_test
     - name: Format 68
       if: failure() && steps.stream_create_share_test.outcome == 'failure'
       run: |
@@ -1582,7 +1589,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_getfileinfo_test
+        winfsp-tests-x64.exe --external --resilient stream_getfileinfo_test
     - name: Format 69
       if: failure() && steps.stream_getfileinfo_test.outcome == 'failure'
       run: |
@@ -1594,7 +1601,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_setfileinfo_test
+        winfsp-tests-x64.exe --external --resilient stream_setfileinfo_test
     - name: Format 70
       if: failure() && steps.stream_setfileinfo_test.outcome == 'failure'
       run: |
@@ -1606,7 +1613,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_delete_test
+        winfsp-tests-x64.exe --external --resilient stream_delete_test
     - name: Format 71
       if: failure() && steps.stream_delete_test.outcome == 'failure'
       run: |
@@ -1618,7 +1625,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_delete_pending_test
+        winfsp-tests-x64.exe --external --resilient stream_delete_pending_test
     - name: Format 72
       if: failure() && steps.stream_delete_pending_test.outcome == 'failure'
       run: |
@@ -1630,7 +1637,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_rename_flipflop_test
+        winfsp-tests-x64.exe --external --resilient stream_rename_flipflop_test
     - name: Format 73
       if: failure() && steps.stream_rename_flipflop_test.outcome == 'failure'
       run: |
@@ -1642,7 +1649,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_getsecurity_test
+        winfsp-tests-x64.exe --external --resilient stream_getsecurity_test
     - name: Format 74
       if: failure() && steps.stream_getsecurity_test.outcome == 'failure'
       run: |
@@ -1654,7 +1661,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_setsecurity_test
+        winfsp-tests-x64.exe --external --resilient stream_setsecurity_test
     - name: Format 75
       if: failure() && steps.stream_setsecurity_test.outcome == 'failure'
       run: |
@@ -1666,7 +1673,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_getstreaminfo_test
+        winfsp-tests-x64.exe --external --resilient stream_getstreaminfo_test
     - name: Format 76
       if: failure() && steps.stream_getstreaminfo_test.outcome == 'failure'
       run: |
@@ -1678,7 +1685,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_getstreaminfo_expire_cache_test
+        winfsp-tests-x64.exe --external --resilient stream_getstreaminfo_expire_cache_test
     - name: Format 77
       if: failure() && steps.stream_getstreaminfo_expire_cache_test.outcome == 'failure'
       run: |
@@ -1690,7 +1697,7 @@ jobs:
       working-directory: S:\
       if: success() || failure()
       run: |
-        winfsp-tests-x64.exe --external stream_dirnotify_test
+        winfsp-tests-x64.exe --external --resilient stream_dirnotify_test
     - name: Format 78
       if: failure() && steps.stream_dirnotify_test.outcome == 'failure'
       run: |
