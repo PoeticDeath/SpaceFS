@@ -133,6 +133,10 @@ class SpaceFSOperations(BaseFileSystemOperations):
         return (ATTRtoattr(bin(self.s.winattrs[file_name])[2:]),SD.handle,SD.size)
     @operation
     def create(self,file_name,create_options,granted_access,file_attributes,security_descriptor,allocation_size):
+        if file_name=='\\Exit':
+            self.s.deletefile('/')
+            self.s.simptable(F=True)
+            raise NTStatusAccessDenied()
         if self.read_only:
             raise NTStatusMediaWriteProtected()
         file_name=file_name.replace('\\','/')
