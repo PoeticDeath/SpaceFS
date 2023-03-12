@@ -79,9 +79,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
         self.s=SpaceFS(disk)
         if '/' not in self.s.filenamesdic:
             self.s.createfile('/',16877)
-            self.s.winattrs['/']=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_DIRECTORY)[2:])
         else:
             print('Careful the disk was unmounted improperly.')
+        self.s.winattrs['/']=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_DIRECTORY)[2:])
         if '' not in self.s.filenamesdic:
             self.s.createfile('',448)
             self.s.writefile('',0,'O:WDG:WDD:P(A;;FA;;;WD)'.encode())
