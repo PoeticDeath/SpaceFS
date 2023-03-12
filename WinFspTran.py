@@ -77,8 +77,11 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 sectorsize=sectorsize>>1
             RawDisk(open(disk,'rb+')).write(i.to_bytes(1,'big')+bytes(4)+b'\xff\xfe')
         self.s=SpaceFS(disk)
-        self.s.createfile('/',16877)
-        self.s.winattrs['/']=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_DIRECTORY)[2:])
+        if '/' not in self.s.filenamesdic:
+            self.s.createfile('/',16877)
+            self.s.winattrs['/']=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_DIRECTORY)[2:])
+        else:
+            print('Careful the disk was unmounted improperly.')
         if '' not in self.s.filenamesdic:
             self.s.createfile('',448)
             self.s.writefile('',0,'O:WDG:WDD:P(A;;FA;;;WD)'.encode())
