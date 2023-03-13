@@ -90,6 +90,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             self.s.writefile(':',0,b'SpaceFS')
         if label!='':
             self.label=label
+            self.s.trunfile(':',len(label.encode()))
             self.s.writefile(':',0,label.encode())
         else:
             self.label=self.s.readfile(':',0,self.s.trunfile(':')).decode()
@@ -112,6 +113,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
     @operation
     def set_volume_label(self,label):
         self.label=label
+        self.s.trunfile(':',len(label.encode()))
         self.s.writefile(':',0,label.encode())
     @operation
     def get_security_by_name(self,file_name):
@@ -125,7 +127,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
         try:
             SD=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
         except RuntimeError:
-            self.s.writefile(file_name.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
+            DSD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
+            self.s.trunfile(file_name.split(':')[0][1:],len(DSD))
+            self.s.writefile(file_name.split(':')[0][1:],0,DSD)
             SD=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
         return (ATTRtoattr(bin(self.s.winattrs[file_name])[2:]),SD.handle,SD.size)
     @operation
@@ -184,6 +188,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             SD=NSD
         if 'D:P' not in SD:
             SD=SD.replace('D:','D:P',1)
+        self.s.trunfile(file_context.split(':')[0][1:],len(SD.encode()))
         self.s.writefile(file_context.split(':')[0][1:],0,SD.encode())
     @operation
     def rename(self,file_context,file_name,new_file_name,replace_if_exists):
