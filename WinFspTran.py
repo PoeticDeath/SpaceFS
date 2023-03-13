@@ -85,17 +85,21 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if '' not in self.s.filenamesdic:
             self.s.createfile('',448)
             D='O:WDG:WDD:P(A;;FA;;;WD)'.encode()
+            self.s.trunfile('',0)
             self.s.trunfile('',len(D))
             self.s.writefile('',0,D)
         if ':' not in self.s.filenamesdic:
             self.s.createfile(':',448)
             N=b'SpaceFS'
+            self.s.trunfile(':',0)
             self.s.trunfile(':',len(N))
             self.s.writefile(':',0,N)
         if label!='':
             self.label=label
-            self.s.trunfile(':',len(label.encode()))
-            self.s.writefile(':',0,label.encode())
+            L=label.encode()
+            self.s.trunfile(':',0)
+            self.s.trunfile(':',len(L))
+            self.s.writefile(':',0,L)
         else:
             self.label=self.s.readfile(':',0,self.s.trunfile(':')).decode()
         self.read_only=read_only
@@ -117,8 +121,10 @@ class SpaceFSOperations(BaseFileSystemOperations):
     @operation
     def set_volume_label(self,label):
         self.label=label
-        self.s.trunfile(':',len(label.encode()))
-        self.s.writefile(':',0,label.encode())
+        L=label.encode()
+        self.s.trunfile(':',0)
+        self.s.trunfile(':',len(L))
+        self.s.writefile(':',0,L)
     @operation
     def get_security_by_name(self,file_name):
         file_name=file_name.replace('\\','/')
@@ -128,12 +134,14 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if file_name.split(':')[0][1:] not in self.s.filenamesdic:
             self.s.createfile(file_name.split(':')[0][1:],448)
             DSD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
+            self.s.trunfile(file_name.split(':')[0][1:],0)
             self.s.trunfile(file_name.split(':')[0][1:],len(DSD))
             self.s.writefile(file_name.split(':')[0][1:],0,DSD)
         try:
             SD=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
         except RuntimeError:
             DSD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
+            self.s.trunfile(file_name.split(':')[0][1:],0)
             self.s.trunfile(file_name.split(':')[0][1:],len(DSD))
             self.s.writefile(file_name.split(':')[0][1:],0,DSD)
             SD=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
@@ -174,6 +182,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if file_context.split(':')[0][1:] not in self.s.filenamesdic:
             self.s.createfile(file_context.split(':')[0][1:],448)
             DSD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
+            self.s.trunfile(file_context.split(':')[0][1:],0)
             self.s.trunfile(file_context.split(':')[0][1:],len(DSD))
             self.s.writefile(file_context.split(':')[0][1:],0,DSD)
         return SecurityDescriptor.from_string(self.s.readfile(file_context.split(':')[0][1:],0,self.s.trunfile(file_context.split(':')[0][1:])).decode())
@@ -185,6 +194,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if file_context.split(':')[0][1:] not in self.s.filenamesdic:
             self.s.createfile(file_context.split(':')[0][1:],448)
             DSD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
+            self.s.trunfile(file_context.split(':')[0][1:],0)
             self.s.trunfile(file_context.split(':')[0][1:],len(DSD))
             self.s.writefile(file_context.split(':')[0][1:],0,DSD)
         SD=SecurityDescriptor.from_string(self.s.readfile(file_context.split(':')[0][1:],0,self.s.trunfile(file_context.split(':')[0][1:])).decode())
@@ -199,6 +209,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if 'D:P' not in SD:
             SD=SD.replace('D:','D:P',1)
         SD=SD.encode()
+        self.s.trunfile(file_context.split(':')[0][1:],0)
         self.s.trunfile(file_context.split(':')[0][1:],len(SD))
         self.s.writefile(file_context.split(':')[0][1:],0,SD)
     @operation
