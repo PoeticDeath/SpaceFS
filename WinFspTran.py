@@ -127,9 +127,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
         try:
             SD=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
         except RuntimeError:
-            DSD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
-            self.s.trunfile(file_name.split(':')[0][1:],len(DSD))
-            self.s.writefile(file_name.split(':')[0][1:],0,DSD)
+            self.s.trunfile(file_name.split(':')[0][1:],0)
+            self.s.writefile(file_name.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
             SD=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
         return (ATTRtoattr(bin(self.s.winattrs[file_name])[2:]),SD.handle,SD.size)
     @operation
