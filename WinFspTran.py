@@ -213,7 +213,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             new_file_name=new_file_name.replace(c[0],self.s.symlinks[c[0]],1)
         if (new_file_name in self.s.filenamesdic)&(file_name in self.s.filenamesdic):
             if self.s.modes[file_name]==16877:
-                if self.read_directory(file_name,'..')!=[]:
+                if self.readdir(file_name,'..')!=[]:
                     raise NTStatusAccessDenied()
         if not replace_if_exists:
             if new_file_name in self.s.filenamesdic:
@@ -311,9 +311,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
     @operation
     def can_delete(self,file_context,file_name):
         if self.s.modes[file_context]==16877:
-            if self.read_directory(file_context,'..')!=[]:
+            if self.readdir(file_context,'..')!=[]:
                 raise NTStatusDirectoryNotEmpty()
-    def read_directory(self,file_context,marker):
+    def readdir(self,file_context,marker):
         c=[i for i in self.s.symlinks if (file_context.startswith(i+'/'))|(file_context==i)]
         if len(c)>0:
             file_context=file_context.replace(c[0],self.s.symlinks[c[0]],1)
@@ -347,6 +347,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
             if dirent['file_name']==marker:
                 return dirents[i+1:]
     @operation
+    def read_directory(self,file_context,marker):
+        return self.readdir(file_context,marker)
+    @operation
     def get_dir_info_by_name(self,file_context,file_name):
         if file_context[-1]!='/':
             file_context+='/'
@@ -373,7 +376,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if self.read_only:
             raise NTStatusMediaWriteProtected()
         if self.s.modes[file_context]==16877:
-            if self.read_directory(file_context,'..')!=[]:
+            if self.readdir(file_context,'..')!=[]:
                 raise NTStatusDirectoryNotEmpty()
         else:
             self.s.winattrs[file_context]|=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_ARCHIVE)[2:])
