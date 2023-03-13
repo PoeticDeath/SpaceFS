@@ -84,10 +84,14 @@ class SpaceFSOperations(BaseFileSystemOperations):
         self.s.winattrs['/']=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_DIRECTORY)[2:])
         if '' not in self.s.filenamesdic:
             self.s.createfile('',448)
-            self.s.writefile('',0,'O:WDG:WDD:P(A;;FA;;;WD)'.encode())
+            D='O:WDG:WDD:P(A;;FA;;;WD)'.encode()
+            self.s.trunfile('',len(D))
+            self.s.writefile('',0,D)
         if ':' not in self.s.filenamesdic:
             self.s.createfile(':',448)
-            self.s.writefile(':',0,b'SpaceFS')
+            N=b'SpaceFS'
+            self.s.trunfile(':',len(N))
+            self.s.writefile(':',0,N)
         if label!='':
             self.label=label
             self.s.trunfile(':',len(label.encode()))
@@ -123,12 +127,15 @@ class SpaceFSOperations(BaseFileSystemOperations):
             raise NTStatusObjectNameNotFound()
         if file_name.split(':')[0][1:] not in self.s.filenamesdic:
             self.s.createfile(file_name.split(':')[0][1:],448)
-            self.s.writefile(file_name.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
+            DSD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
+            self.s.trunfile(file_name.split(':')[0][1:],len(DSD))
+            self.s.writefile(file_name.split(':')[0][1:],0,DSD)
         try:
             SD=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
         except RuntimeError:
-            self.s.trunfile(file_name.split(':')[0][1:],0)
-            self.s.writefile(file_name.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
+            DSD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
+            self.s.trunfile(file_name.split(':')[0][1:],len(DSD))
+            self.s.writefile(file_name.split(':')[0][1:],0,DSD)
             SD=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
         return (ATTRtoattr(bin(self.s.winattrs[file_name])[2:]),SD.handle,SD.size)
     @operation
@@ -166,7 +173,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
         dir_name='/'.join(file_context.split('/')[:-1])
         if file_context.split(':')[0][1:] not in self.s.filenamesdic:
             self.s.createfile(file_context.split(':')[0][1:],448)
-            self.s.writefile(file_context.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
+            DSD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
+            self.s.trunfile(file_context.split(':')[0][1:],len(DSD))
+            self.s.writefile(file_context.split(':')[0][1:],0,DSD)
         return SecurityDescriptor.from_string(self.s.readfile(file_context.split(':')[0][1:],0,self.s.trunfile(file_context.split(':')[0][1:])).decode())
     @operation
     def set_security(self,file_context,security_information,modification_descriptor):
@@ -175,7 +184,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
         dir_name='/'.join(file_context.split('/')[:-1])
         if file_context.split(':')[0][1:] not in self.s.filenamesdic:
             self.s.createfile(file_context.split(':')[0][1:],448)
-            self.s.writefile(file_context.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
+            DSD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
+            self.s.trunfile(file_context.split(':')[0][1:],len(DSD))
+            self.s.writefile(file_context.split(':')[0][1:],0,DSD)
         SD=SecurityDescriptor.from_string(self.s.readfile(file_context.split(':')[0][1:],0,self.s.trunfile(file_context.split(':')[0][1:])).decode())
         if security_information%2==0:
             SD=SD.evolve(security_information,modification_descriptor).to_string()
