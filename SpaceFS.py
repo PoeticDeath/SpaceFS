@@ -315,7 +315,8 @@ class SpaceFS():
         self.table+='.'
         self.flst+=[[]]
         self.times+=struct.pack('!d',time())*3
-        self.simptable()
+        if len(self.part)+self.tablesectorcount>=self.disksize//self.sectorsize-10:
+            self.simptable()
     def deletefile(self,filename,block=False):
         c=[i for i in self.symlinks if filename.startswith(i+'/')]
         if len(c)>0:
