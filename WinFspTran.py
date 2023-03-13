@@ -188,8 +188,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
             SD=NSD
         if 'D:P' not in SD:
             SD=SD.replace('D:','D:P',1)
-        self.s.trunfile(file_context.split(':')[0][1:],len(SD.encode()))
-        self.s.writefile(file_context.split(':')[0][1:],0,SD.encode())
+        SD=SD.encode()
+        self.s.trunfile(file_context.split(':')[0][1:],len(SD))
+        self.s.writefile(file_context.split(':')[0][1:],0,SD)
     @operation
     def rename(self,file_context,file_name,new_file_name,replace_if_exists):
         if self.read_only:
