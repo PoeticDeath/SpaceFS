@@ -90,6 +90,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             self.s.writefile(':',0,b'SpaceFS')
         if label!='':
             self.label=label
+            self.s.trunfile(':',len(label.encode()))
             self.s.writefile(':',0,label.encode())
         else:
             self.label=self.s.readfile(':',0,self.s.trunfile(':')).decode()
@@ -112,6 +113,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
     @operation
     def set_volume_label(self,label):
         self.label=label
+        self.s.trunfile(':',len(label.encode()))
         self.s.writefile(':',0,label.encode())
     @operation
     def get_security_by_name(self,file_name):
