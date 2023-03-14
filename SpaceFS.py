@@ -192,7 +192,7 @@ class SpaceFS():
                             tpt.add(o)
                         else:
                             tmp.remove(o)
-                    self.part[i]=list(tmp)
+                    self.part[i]=sorted(list(tmp))
                     if self.part[i][0]==0:
                         self.part[i].pop(0)
                     else:
