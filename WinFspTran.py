@@ -84,22 +84,13 @@ class SpaceFSOperations(BaseFileSystemOperations):
         self.s.winattrs['/']=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_DIRECTORY)[2:])
         if '' not in self.s.filenamesdic:
             self.s.createfile('',448)
-            D='O:WDG:WDD:P(A;;FA;;;WD)'.encode()
-            if self.s.trunfile('')>len(D):
-                self.s.trunfile('',0)
-            self.s.writefile('',0,D)
+            self.s.writefile('',0,b'O:WDG:WDD:P(A;;FA;;;WD)')
         if ':' not in self.s.filenamesdic:
             self.s.createfile(':',448)
-            N=b'SpaceFS'
-            if self.s.trunfile(':')>len(N):
-                self.s.trunfile(':',0)
-            self.s.writefile(':',0,N)
+            self.s.writefile(':',0,b'SpaceFS')
         if label!='':
             self.label=label
-            L=label.encode()
-            if self.s.trunfile(':')>len(L):
-                self.s.trunfile(':',0)
-            self.s.writefile(':',0,L)
+            self.s.writefile(':',0,label.encode())
         else:
             self.label=self.s.readfile(':',0,self.s.trunfile(':')).decode()
         self.read_only=read_only
@@ -121,10 +112,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
     @operation
     def set_volume_label(self,label):
         self.label=label
-        L=label.encode()
-        if self.s.trunfile(':')>len(L):
-            self.s.trunfile(':',0)
-        self.s.writefile(':',0,L)
+        self.s.writefile(':',0,label.encode())
     @operation
     def get_security_by_name(self,file_name):
         file_name=file_name.replace('\\','/')
@@ -137,10 +125,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
         try:
             SD=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
         except RuntimeError:
-            DSD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
-            if self.s.trunfile(file_name.split(':')[0][1:])>len(DSD):
-                self.s.trunfile(file_name.split(':')[0][1:],0)
-            self.s.writefile(file_name.split(':')[0][1:],0,DSD)
+            self.s.trunfile(file_name.split(':')[0][1:],0)
+            self.s.writefile(file_name.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
             SD=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
         return (ATTRtoattr(bin(self.s.winattrs[file_name])[2:]),SD.handle,SD.size)
     @operation
@@ -187,10 +173,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         dir_name='/'.join(file_context.split('/')[:-1])
         if file_context.split(':')[0][1:] not in self.s.filenamesdic:
             self.s.createfile(file_context.split(':')[0][1:],448)
-            DSD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
-            if self.s.trunfile(file_context.split(':')[0][1:])>len(DSD):
-                self.s.trunfile(file_context.split(':')[0][1:],0)
-            self.s.writefile(file_context.split(':')[0][1:],0,DSD)
+            self.s.writefile(file_context.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
         SD=SecurityDescriptor.from_string(self.s.readfile(file_context.split(':')[0][1:],0,self.s.trunfile(file_context.split(':')[0][1:])).decode())
         if security_information%2==0:
             SD=SD.evolve(security_information,modification_descriptor).to_string()
@@ -202,10 +185,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
             SD=NSD
         if 'D:P' not in SD:
             SD=SD.replace('D:','D:P',1)
-        SD=SD.encode()
-        if self.s.trunfile(file_context.split(':')[0][1:])>len(SD):
-            self.s.trunfile(file_context.split(':')[0][1:],0)
-        self.s.writefile(file_context.split(':')[0][1:],0,SD)
+        self.s.trunfile(file_context.split(':')[0][1:],0)
+        self.s.writefile(file_context.split(':')[0][1:],0,SD.encode())
     @operation
     def rename(self,file_context,file_name,new_file_name,replace_if_exists):
         if self.read_only:
