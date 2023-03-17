@@ -336,9 +336,14 @@ class SpaceFS():
             if type(mlst[-1])==str:
                 m=mlst.pop(-1).split(';')
                 try:
-                    self.part[int(m[0])]+=[int(m[1]),int(m[2])]
+                    for i in range(1,3):
+                        if int(m[i]) in self.part[int(m[0])]:
+                            self.part[int(m[0])].remove(int(m[i]))
+                        else:
+                            self.part[int(m[0])]+=[int(m[i])]
                 except KeyError:
                     self.part[int(m[0])]=[int(m[1]),int(m[2])]
+                self.part[int(m[0])].sort()
         except IndexError:
             pass
         self.missinglst+=mlst
@@ -446,15 +451,21 @@ class SpaceFS():
                 except AttributeError:
                     return s+self.sectorsize
             return 0
-        if size<self.trunfile(filename):
+        s=self.trunfile(filename)
+        if size<s:
             if len(lst)>0:
                 try:
                     if type(lst[-1])==str:
-                        part=lst[-1].split(';')
+                        m=lst[-1].split(';')
                         try:
-                            self.part[int(part[0])]=sorted(self.part[int(part[0])]+[int(part[1]),int(part[2])])
+                            for i in range(1,3):
+                                if int(m[i]) in self.part[int(m[0])]:
+                                    self.part[int(m[0])].remove(int(m[i]))
+                                else:
+                                    self.part[int(m[0])]+=[int(m[i])]
                         except KeyError:
-                            self.part[int(part[0])]=[int(part[1]),int(part[2])]
+                            self.part[int(m[0])]=[int(m[1]),int(m[2])]
+                        self.part[int(m[0])].sort()
                         lst=lst[:-1]
                 except TypeError:
                     pass
@@ -466,8 +477,8 @@ class SpaceFS():
             table[index]=nlst
             self.table='.'.join(table)
             self.missinglst+=newmiss
-        if size>self.trunfile(filename):
-            if self.writefile(filename,self.trunfile(filename),bytes(size-self.trunfile(filename)),True)==0:
+        if size>s:
+            if self.writefile(filename,s,bytes(size-s),True)==0:
                 return 0
         self.times=self.times[:index*24+8]+struct.pack('!d',time())+self.times[index*24+16:]
     def writefile(self,filename,start,data,T=False):
