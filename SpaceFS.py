@@ -222,6 +222,8 @@ class SpaceFS():
                     if int(i.split(';')[0]) not in lst:
                         lst+=[int(i.split(';')[0])]
             self.missinglst+=set(range(0,self.sectorcount)).difference(set(lst))
+        else:
+            self.missinglst.sort()
         if pop:
             return self.missinglst.pop(0)
         if whole:
@@ -344,6 +346,9 @@ class SpaceFS():
                 except KeyError:
                     self.part[int(m[0])]=[int(m[1]),int(m[2])]
                 self.part[int(m[0])].sort()
+                if self.part[int(m[0])]==[0,self.sectorsize]:
+                    del self.part[int(m[0])]
+                    self.missinglst+=[int(m[0])]
         except IndexError:
             pass
         self.missinglst+=mlst
@@ -466,6 +471,9 @@ class SpaceFS():
                         except KeyError:
                             self.part[int(m[0])]=[int(m[1]),int(m[2])]
                         self.part[int(m[0])].sort()
+                        if self.part[int(m[0])]==[0,self.sectorsize]:
+                            del self.part[int(m[0])]
+                            self.missinglst+=[int(m[0])]
                         lst=lst[:-1]
                 except TypeError:
                     pass
