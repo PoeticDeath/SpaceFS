@@ -29,12 +29,11 @@ jobs:
     - name: Compile SpaceFS
       run: |
         pyinstaller -F FuseTran.py
-        cp FuseTran /SpaceFS
     - name: Upload SpaceFS
       uses: actions/upload-artifact@v3.1.2
       with:
         name: SpaceFS
-        path: /SpaceFS
+        path: /home/runner/work/SpaceFS/SpaceFS/dist/FuseTran
 
   win-build-test-FUSE:
 
