@@ -343,12 +343,16 @@ class SpaceFS():
                             self.part[int(m[0])].remove(int(m[i]))
                         else:
                             self.part[int(m[0])]+=[int(m[i])]
+                    self.part[int(m[0])].sort()
+                    if self.part[int(m[0])]==[0,self.sectorsize]:
+                        del self.part[int(m[0])]
+                        self.missinglst+=[int(m[0])]
                 except KeyError:
-                    self.part[int(m[0])]=[int(m[1]),int(m[2])]
-                self.part[int(m[0])].sort()
-                if self.part[int(m[0])]==[0,self.sectorsize]:
-                    del self.part[int(m[0])]
-                    self.missinglst+=[int(m[0])]
+                    u=self.table.count(','+m[0]+';')+self.table.count('.'+m[0]+';')
+                    if u==1:
+                        self.missinglst.append(int(m[0]))
+                    elif u>1:
+                        self.part[int(m[0])]=[int(m[1]),int(m[2])]
         except IndexError:
             pass
         self.missinglst+=mlst
@@ -468,17 +472,36 @@ class SpaceFS():
                                     self.part[int(m[0])].remove(int(m[i]))
                                 else:
                                     self.part[int(m[0])]+=[int(m[i])]
+                            self.part[int(m[0])].sort()
+                            if self.part[int(m[0])]==[0,self.sectorsize]:
+                                del self.part[int(m[0])]
+                                self.missinglst+=[int(m[0])]
                         except KeyError:
-                            self.part[int(m[0])]=[int(m[1]),int(m[2])]
-                        self.part[int(m[0])].sort()
-                        if self.part[int(m[0])]==[0,self.sectorsize]:
-                            del self.part[int(m[0])]
-                            self.missinglst+=[int(m[0])]
-                        lst=lst[:-1]
+                            pass
+                        l=lst.pop(-1)
                 except TypeError:
                     pass
             newmiss=lst[(size+self.sectorsize-1)//self.sectorsize:]
-            lst=lst[:(size+self.sectorsize-1)//self.sectorsize]
+            try:
+                p=lst[(size+self.sectorsize-1)//self.sectorsize-1]
+                m=l.split(';')
+                u=self.table.count(','+m[0]+';')+self.table.count('.'+m[0]+';')
+                if u==1:
+                    newmiss.append(int(m[0]))
+                elif u>1:
+                    if int(m[0]) not in self.part:
+                        self.part[int(m[0])]=[int(m[1]),int(m[2])]
+            except IndexError:
+                p=l
+            lst=lst[:(size+self.sectorsize-1)//self.sectorsize-1]
+            if type(p)==int:
+                o=size%self.sectorsize
+                if o!=0:
+                    lst.append(str(p)+';0;'+str(o))
+                else:
+                    lst.append(p)
+            elif type(p)==str:
+                lst.append(';'.join(p.split(';')[:2])+';'+str(int(p.split(';')[2])-(s%self.sectorsize-size%self.sectorsize)))
             self.flst[index]=lst
             nlst=','.join([str(i) for i in lst])
             table=self.table.split('.')
