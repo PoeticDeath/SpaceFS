@@ -124,12 +124,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if file_name.split(':')[0][1:] not in self.s.filenamesdic:
             self.s.createfile(file_name.split(':')[0][1:],448)
             self.s.writefile(file_name.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
-        try:
-            SD=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
-        except RuntimeError:
-            self.s.trunfile(file_name.split(':')[0][1:],0)
-            self.s.writefile(file_name.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
-            SD=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
+        SD=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
         return (ATTRtoattr(bin(self.s.winattrs[file_name])[2:]),SD.handle,SD.size)
     @operation
     def create(self,file_name,create_options,granted_access,file_attributes,security_descriptor,allocation_size):
@@ -177,18 +172,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
             self.s.createfile(file_context.split(':')[0][1:],448)
             self.s.writefile(file_context.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
         SD=SecurityDescriptor.from_string(self.s.readfile(file_context.split(':')[0][1:],0,self.s.trunfile(file_context.split(':')[0][1:])).decode())
-        if security_information%2==0:
-            SD=SD.evolve(security_information,modification_descriptor).to_string()
-        else:
-            SD=SD.to_string()
-            NSD=SecurityDescriptor.from_cpointer(modification_descriptor).to_string()
-            if 'D:' not in NSD:
-                NSD+=SD[SD.index('D:'):]
-            SD=NSD
-        if 'D:P' not in SD:
-            SD=SD.replace('D:','D:P',1)
+        SD=SD.evolve(security_information>>1<<1,modification_descriptor).to_string().encode()
         self.s.trunfile(file_context.split(':')[0][1:],0)
-        self.s.writefile(file_context.split(':')[0][1:],0,SD.encode())
+        self.s.writefile(file_context.split(':')[0][1:],0,SD)
     @operation
     def rename(self,file_context,file_name,new_file_name,replace_if_exists):
         if self.read_only:
