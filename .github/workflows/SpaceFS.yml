@@ -29,11 +29,12 @@ jobs:
     - name: Compile SpaceFS
       run: |
         pyinstaller -F FuseTran.py
+        mv /home/runner/work/SpaceFS/SpaceFS/dist/FuseTran /home/runner/work/SpaceFS/SpaceFS/dist/SpaceFS
     - name: Upload SpaceFS
       uses: actions/upload-artifact@v3.1.2
       with:
         name: SpaceFS
-        path: /home/runner/work/SpaceFS/SpaceFS/dist/FuseTran
+        path: /home/runner/work/SpaceFS/SpaceFS/dist/SpaceFS
 
   win-build-test-FUSE:
 
@@ -70,7 +71,7 @@ jobs:
     - name: Upload FUSESpaceFS
       uses: actions/upload-artifact@v3.1.2
       with:
-        name: FUSESpaceFS.exe
+        name: FUSESpaceFS
         path: C:\Users\runneradmin\runneradmin\configurator\bin\FUSESpaceFS.exe
     - name: create_test
       id: fuse_create_test
@@ -792,7 +793,7 @@ jobs:
     - name: Upload WinFspSpaceFS
       uses: actions/upload-artifact@v3.1.2
       with:
-        name: WinFspSpaceFS.exe
+        name: WinFspSpaceFS
         path: C:\Users\runneradmin\runneradmin\configurator\bin\WinFspSpaceFS.exe
     - name: create_test
       id: create_test
