@@ -137,7 +137,7 @@ class SpaceFS():
                 try:
                     [u[0],u[1]]
                     tmplstpart.append(int(u[0]))
-                    tmplstpart.append(list(range(int(u[0].split(';')[0])+1,int(u[1].split(';')[0]))))
+                    tmplstpart.extend(list(range(int(u[0].split(';')[0])+1,int(u[1].split(';')[0]))))
                     try:
                         tmplstpart.append(int(u[1]))
                     except ValueError:
@@ -217,7 +217,7 @@ class SpaceFS():
             for i in table:
                 if '-' in i:
                     p=i.split('-')
-                    lst.append(list(range(int(p[0].split(';')[0]),int(p[1].split(';')[0])+1)))
+                    lst.extend(list(range(int(p[0].split(';')[0]),int(p[1].split(';')[0])+1)))
                 else:
                     if int(i.split(';')[0]) not in lst:
                         lst.append(int(i.split(';')[0]))
