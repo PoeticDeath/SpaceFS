@@ -47,7 +47,7 @@ jobs:
         python-version: "3.11.2"
     - name: Install dependencies
       run: |
-        choco install winfsp -y --version=1.12.22339
+        choco install winfsp -y --version=2.0.23075
         python -m pip install --upgrade pip
         pip install wheel
         pip install pyinstaller wmi
@@ -56,7 +56,7 @@ jobs:
       uses: engineerd/configurator@v0.0.10
       with:
           name: winfsp-tests-x64.exe
-          url: https://github.com/winfsp/winfsp/releases/download/v1.12.22339/winfsp-tests-1.12.22339.zip
+          url: https://github.com/winfsp/winfsp/releases/download/v2.0/winfsp-tests-2.0.23075.zip
           pathInArchive: winfsp-tests-x64.exe
     - name: Create Drive File and Compile & Start SpaceFS
       run: |
@@ -769,16 +769,16 @@ jobs:
         python-version: "3.11.2"
     - name: Install dependencies
       run: |
-        choco install winfsp -y --version=1.12.22339
+        choco install winfsp -y --version=2.0.23075
         python -m pip install --upgrade pip
         pip install wheel
         pip install pyinstaller wmi
-        pip install winfspy
+        pip install https://github.com/PoeticDeath/winfspy/archive/refs/heads/master.zip
     - name: Download winfsp-test
       uses: engineerd/configurator@v0.0.10
       with:
           name: winfsp-tests-x64.exe
-          url: https://github.com/winfsp/winfsp/releases/download/v1.12.22339/winfsp-tests-1.12.22339.zip
+          url: https://github.com/winfsp/winfsp/releases/download/v2.0/winfsp-tests-2.0.23075.zip
           pathInArchive: winfsp-tests-x64.exe
     - name: Create Drive File and Compile & Start SpaceFS
       run: |
