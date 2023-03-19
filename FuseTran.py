@@ -103,17 +103,17 @@ class FuseTran(Operations):
                 if path.count('/')==i.count('/'):
                     c=i[1:].split('/')[-1]
                     if c not in dirents:
-                        dirents+=[c]
+                        dirents.append(c)
                 if path.count('/')+1==i.count('/'):
                     if i[1:].split('/')[-2] not in dirents:
                         tmp=i[1:].split('/')[-2]
                         if tmp not in dirents:
-                            dirents+=[tmp]
+                            dirents.append(tmp)
                 if path.count('/')+1<=i.count('/'):
                     tmp=i.split('/')[path.count('/')]
                     if tmp not in dirents:
                         d='/'.join(i.split('/')[:path.count('/')+1])+'/'
-                        dirents+=[tmp]
+                        dirents.append(tmp)
         for r in dirents:
             yield r
     def readlink(self,path):

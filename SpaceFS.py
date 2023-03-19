@@ -136,28 +136,28 @@ class SpaceFS():
                 u=u.split('-')
                 try:
                     [u[0],u[1]]
-                    tmplstpart+=[int(u[0])]
-                    tmplstpart+=list(range(int(u[0].split(';')[0])+1,int(u[1].split(';')[0])))
+                    tmplstpart.append(int(u[0]))
+                    tmplstpart.append(list(range(int(u[0].split(';')[0])+1,int(u[1].split(';')[0]))))
                     try:
-                        tmplstpart+=[int(u[1])]
+                        tmplstpart.append(int(u[1]))
                     except ValueError:
-                        tmplstpart+=[u[1]]
+                        tmplstpart.append(u[1])
                 except IndexError:
                         if ';' in u[0]:
-                            tmplstpart+=[u[0]]
+                            tmplstpart.append(u[0])
                         else:
                             try:
-                                tmplstpart+=[int(u[0])]
+                                tmplstpart.append(int(u[0]))
                             except ValueError:
                                 pass
-            tmplst+=[tmplstpart]
+            tmplst.append(tmplstpart)
         self.oldredtable=tmplst
         return tmplst
     def findnewpart(self,i):
         i=i.split(';')
         try:
             try:
-                self.part[int(i[0])]+=[int(i[1]),int(i[2])]
+                self.part[int(i[0])].extend([int(i[1]),int(i[2])])
             except KeyError:
                 self.part[int(i[0])]=[int(i[1]),int(i[2])]
         except IndexError:
@@ -198,9 +198,9 @@ class SpaceFS():
                     else:
                         self.part[i]=[0]+self.part[i]
                     if len(self.part[i])%2!=0:
-                        self.part[i]+=[self.sectorsize]
+                        self.part[i].append(self.sectorsize)
                     if self.part[i]==[self.sectorsize]*2:
-                        t+=[i]
+                        t.append(i)
                 for i in t:
                     self.part.pop(i)
         for i in self.missinglst.copy():
@@ -217,11 +217,11 @@ class SpaceFS():
             for i in table:
                 if '-' in i:
                     p=i.split('-')
-                    lst+=list(range(int(p[0].split(';')[0]),int(p[1].split(';')[0])+1))
+                    lst.append(list(range(int(p[0].split(';')[0]),int(p[1].split(';')[0])+1)))
                 else:
                     if int(i.split(';')[0]) not in lst:
-                        lst+=[int(i.split(';')[0])]
-            self.missinglst+=set(range(0,self.sectorcount)).difference(set(lst))
+                        lst.append(int(i.split(';')[0]))
+            self.missinglst.extend(set(range(0,self.sectorcount)).difference(set(lst)))
         else:
             self.missinglst.sort()
         if pop:
@@ -312,10 +312,10 @@ class SpaceFS():
         self.guids[filename]=(gid,uid)
         self.modes[filename]=mode
         self.winattrs[filename]=2048
-        self.filenameslst+=[filename]
+        self.filenameslst.append(filename)
         self.filenamesdic[filename]=len(self.filenamesdic)
         self.table+='.'
-        self.flst+=[[]]
+        self.flst.append([])
         self.times+=struct.pack('!d',time())*3
         if len(self.part)+self.tablesectorcount>=self.disksize//self.sectorsize-10:
             self.simptable()
@@ -342,11 +342,11 @@ class SpaceFS():
                         if int(m[i]) in self.part[int(m[0])]:
                             self.part[int(m[0])].remove(int(m[i]))
                         else:
-                            self.part[int(m[0])]+=[int(m[i])]
+                            self.part[int(m[0])].append(int(m[i]))
                     self.part[int(m[0])].sort()
                     if self.part[int(m[0])]==[0,self.sectorsize]:
                         del self.part[int(m[0])]
-                        self.missinglst+=[int(m[0])]
+                        self.missinglst.append(int(m[0]))
                 except KeyError:
                     u=self.table.count(','+m[0]+';')+self.table.count('.'+m[0]+';')
                     if u==1:
@@ -355,7 +355,7 @@ class SpaceFS():
                         self.part[int(m[0])]=[int(m[1]),int(m[2])]
         except IndexError:
             pass
-        self.missinglst+=mlst
+        self.missinglst.extend(mlst)
         self.table=''
         for i in self.flst:
             for o in i:
@@ -471,11 +471,11 @@ class SpaceFS():
                                 if int(m[i]) in self.part[int(m[0])]:
                                     self.part[int(m[0])].remove(int(m[i]))
                                 else:
-                                    self.part[int(m[0])]+=[int(m[i])]
+                                    self.part[int(m[0])].append(int(m[i]))
                             self.part[int(m[0])].sort()
                             if self.part[int(m[0])]==[0,self.sectorsize]:
                                 del self.part[int(m[0])]
-                                self.missinglst+=[int(m[0])]
+                                self.missinglst.append(int(m[0]))
                         except KeyError:
                             pass
                         l=lst.pop(-1)
@@ -507,7 +507,7 @@ class SpaceFS():
             table=self.table.split('.')
             table[index]=nlst
             self.table='.'.join(table)
-            self.missinglst+=newmiss
+            self.missinglst.extend(newmiss)
         if size>s:
             if self.writefile(filename,s,bytes(size-s),True)==0:
                 return 0
@@ -571,11 +571,11 @@ class SpaceFS():
             if ';' in tlst[index].split(',')[-1]:
                 h=self.flst[index].pop()
                 try:
-                    self.part[int(h.split(';')[0])]+=[int(h.split(';')[1])]
+                    self.part[int(h.split(';')[0])].append(int(h.split(';')[1]))
                     try:
                         self.part[int(h.split(';')[0])].remove(int(h.split(';')[2]))
                     except ValueError:
-                        self.part[int(h.split(';')[0])]+=[int(h.split(';')[2])]
+                        self.part[int(h.split(';')[0])].append(int(h.split(';')[2]))
                     self.part[int(h.split(';')[0])].sort()
                 except KeyError:
                     self.part[int(h.split(';')[0])]=[0,self.sectorsize]
@@ -594,7 +594,7 @@ class SpaceFS():
             else:
                 tlst[index]+=','+str(block)
             self.table='.'.join(tlst)
-            self.flst[index]+=[block]
+            self.flst[index].append(block)
             if c!=0:
                 m=1
         if m==1:
@@ -612,7 +612,7 @@ class SpaceFS():
                             for o in [self.part[i][p:p+2] for p in range(0,len(self.part[i]),2)]:
                                 l=True
                                 if len(o)==1:
-                                    o+=[o[0]+1]
+                                    o.append(o[0]+1)
                                     l=False
                                 if o[1]-o[0]>=c:
                                     f=[i,o[0],o[0]+c]
@@ -652,7 +652,7 @@ class SpaceFS():
                     tlst[index]=str(e)
                 else:
                     tlst[index]+=','+str(e)
-                self.flst[index]+=[e]
+                self.flst[index].append(e)
                 self.table='.'.join(tlst)
         st=start-(start//self.sectorsize*self.sectorsize)
         end=(start+len(data)+self.sectorsize-1)//self.sectorsize

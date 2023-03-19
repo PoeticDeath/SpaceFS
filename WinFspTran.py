@@ -154,7 +154,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         except IndexError:
             raise NTStatusEndOfFile()
         self.allocsizes[file_name]=allocation_size
-        self.opened+=[file_name]
+        self.opened.append(file_name)
         return file_name
     @operation
     def get_security(self,file_context):
@@ -226,7 +226,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         file_name=file_name.replace('\\','/')
         if file_name not in self.s.filenamesdic:
             raise NTStatusObjectNameNotFound()
-        self.opened+=[file_name]
+        self.opened.append(file_name)
         return file_name
     @operation
     def close(self,file_context):
@@ -301,19 +301,19 @@ class SpaceFSOperations(BaseFileSystemOperations):
                     if file_context.count('/')==i.count('/'):
                         c=i[1:].split('/')[-1]
                         if {'file_name':c,**o} not in dirents:
-                            dirents+=[{'file_name':c,**o}]
+                            dirents.append({'file_name':c,**o})
                     if i[-1]=='/':
                         if file_context.count('/')+1==i.count('/'):
                             tmp=i[1:].split('/')[-2]
                             if {'file_name':tmp,**o} not in dirents:
                                 tmp=i[1:].split('/')[-2]
                                 if {'file_name':tmp,**o} not in dirents:
-                                    dirents+=[{'file_name':tmp,**o}]
+                                    dirents.append({'file_name':tmp,**o})
                         if file_context.count('/')+1<=i.count('/'):
                             tmp=i.split('/')[file_context.count('/')]
                             if {'file_name':tmp,**o} not in dirents:
                                 d='/'.join(i.split('/')[:file_context.count('/')+1])+'/'
-                                dirents+=[{'file_name':tmp,**o}]
+                                dirents.append({'file_name':tmp,**o})
         dirents=sorted(dirents,key=lambda x:x['file_name'])
         if marker is None:
             return dirents
@@ -398,11 +398,12 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def resolve_reparse_points(self,file_name,reparse_point_index,resolve_last_path_component,p_io_status,buffer,p_size):
         pass
     @operation
-    def get_reparse_point(self,file_context,file_name,buffer,p_size):
-        pass
+    def get_reparse_point(self,file_context,file_name):
+        return self.s.readfile(file_context,0,self.s.trunfile(file_context))
     @operation
-    def set_reparse_point(self,file_context,file_name,buffer,size):
-        pass
+    def set_reparse_point(self,file_context,file_name,buf):
+        self.s.trunfile(file_context,len(buf))
+        self.s.writefile(file_context,0,buf)
     @operation
     def delete_reparse_point(self,file_context,file_name,buffer,size):
         pass
