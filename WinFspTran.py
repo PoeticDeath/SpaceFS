@@ -120,7 +120,12 @@ class SpaceFSOperations(BaseFileSystemOperations):
         file_name=file_name.replace('\\','/')
         dir_name='/'.join(file_name.split('/')[:-1])
         if file_name not in self.s.filenamesdic:
-            raise NTStatusObjectNameNotFound()
+            for i in self.s.filenamesdic:
+                if file_name.lower()==i.lower():
+                    file_name=i
+                    break
+            else:
+                raise NTStatusObjectNameNotFound()
         if file_name.split(':')[0][1:] not in self.s.filenamesdic:
             self.s.createfile(file_name.split(':')[0][1:],448)
             self.s.writefile(file_name.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
@@ -225,7 +230,12 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def open(self,file_name,create_options,granted_access):
         file_name=file_name.replace('\\','/')
         if file_name not in self.s.filenamesdic:
-            raise NTStatusObjectNameNotFound()
+            for i in self.s.filenamesdic:
+                if file_name.lower()==i.lower():
+                    file_name=i
+                    break
+            else:
+                raise NTStatusObjectNameNotFound()
         self.opened.append(file_name)
         return file_name
     @operation
@@ -444,6 +454,7 @@ def create_file_system(path,mountpoint,sectorsize,label='',prefix='',verbose=Tru
         prefix=prefix,
         debug=debug,
         reject_irp_prior_to_transact0=reject_irp_prior_to_transact0,
+        wsl_features=1,
         #security_timeout_valid=1,
         #security_timeout=10000,
     )
