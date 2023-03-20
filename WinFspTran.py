@@ -28,6 +28,9 @@ from winfspy import (
 
 from winfspy.plumbing.security_descriptor import SecurityDescriptor
 
+# Because `encode('UTF16')` appends a BOM a the begining of the output
+_STRING_ENCODING='UTF-16-LE' if sys.byteorder=='little' else 'UTF-16-BE'
+
 def attrtoATTR(attr):
     ATTR=0
     for i in [(-2,32768),(-1,4096),(-3,128),(-6,2048),(-5,8192),(-11,1024)]:
@@ -256,7 +259,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             self.allocsizes[file_context]=(self.s.trunfile(file_context)+self.s.sectorsize-1)//self.s.sectorsize*self.s.sectorsize
         ATTR=ATTRtoattr(bin(self.s.winattrs[file_context])[2:])
         return {'file_attributes':ATTR,
-                'reparse_tag':int.from_bytes(self.s.readfile(file_context,0,4),'little') if bin(ATTR)[2:].zfill(32)[-11]=='1' else 0,
+                'reparse_tag':int.from_bytes(self.s.readfile(file_context,0,4),'big' if 'BE' in _STRING_ENCODING else 'little') if bin(ATTR)[2:].zfill(32)[-11]=='1' else 0,
                 'allocation_size':self.allocsizes[file_context],
                 'file_size':self.s.trunfile(file_context),
                 'creation_time':t[2],
