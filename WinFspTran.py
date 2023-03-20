@@ -30,7 +30,7 @@ from winfspy.plumbing.security_descriptor import SecurityDescriptor
 
 def attrtoATTR(attr):
     ATTR=0
-    for i in [(-2,32768),(-1,4096),(-3,128),(-6,2048),(-5,8192)]:
+    for i in [(-2,32768),(-1,4096),(-3,128),(-6,2048),(-5,8192),(-11,1024)]:
         try:
             if attr[i[0]]=='1':
                 ATTR+=i[1]
@@ -39,7 +39,8 @@ def attrtoATTR(attr):
     return ATTR
 def ATTRtoattr(ATTR):
     attr=0
-    for i in [(-16,FILE_ATTRIBUTE.FILE_ATTRIBUTE_HIDDEN),(-13,FILE_ATTRIBUTE.FILE_ATTRIBUTE_READONLY),(-8,FILE_ATTRIBUTE.FILE_ATTRIBUTE_SYSTEM),(-12,FILE_ATTRIBUTE.FILE_ATTRIBUTE_ARCHIVE),(-14,FILE_ATTRIBUTE.FILE_ATTRIBUTE_DIRECTORY)]:
+    for i in [(-16,FILE_ATTRIBUTE.FILE_ATTRIBUTE_HIDDEN),(-13,FILE_ATTRIBUTE.FILE_ATTRIBUTE_READONLY),(-8,FILE_ATTRIBUTE.FILE_ATTRIBUTE_SYSTEM),
+              (-12,FILE_ATTRIBUTE.FILE_ATTRIBUTE_ARCHIVE),(-14,FILE_ATTRIBUTE.FILE_ATTRIBUTE_DIRECTORY),(-11,FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT)]:
         try:
             if ATTR[i[0]]=='1':
                 attr+=i[1]
@@ -144,7 +145,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if file_name in self.s.filenamesdic:
             raise NTStatusObjectNameCollision()
         try:
-            if bin(file_attributes)[2:].zfill(8)[-5]=='1':
+            if bin(file_attributes)[2:].zfill(32)[-5]=='1':
                 self.s.createfile(file_name,16877)
             else:
                 self.s.createfile(file_name,448)
@@ -253,7 +254,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 t[i]+=3
         if file_context not in self.allocsizes:
             self.allocsizes[file_context]=(self.s.trunfile(file_context)+self.s.sectorsize-1)//self.s.sectorsize*self.s.sectorsize
-        return {'file_attributes':ATTRtoattr(bin(self.s.winattrs[file_context])[2:]),
+        ATTR=ATTRtoattr(bin(self.s.winattrs[file_context])[2:])
+        return {'file_attributes':ATTR,
+                'reparse_tag':int.from_bytes(self.s.readfile(file_context,0,4),'little') if bin(ATTR)[2:].zfill(32)[-11]=='1' else 0,
                 'allocation_size':self.allocsizes[file_context],
                 'file_size':self.s.trunfile(file_context),
                 'creation_time':t[2],
@@ -414,6 +417,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def set_reparse_point(self,file_context,file_name,buf):
         self.s.trunfile(file_context,len(buf))
         self.s.writefile(file_context,0,buf)
+        self.s.winattrs[file_context]|=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT)[2:])
     @operation
     def delete_reparse_point(self,file_context,file_name,buffer,size):
         pass
