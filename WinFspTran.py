@@ -24,6 +24,7 @@ from winfspy import (
     NTStatusAccessDenied,
     NTStatusEndOfFile,
     NTStatusMediaWriteProtected,
+    NTStatusNotAReparsePoint,
 )
 
 from winfspy.plumbing.security_descriptor import SecurityDescriptor
@@ -412,18 +413,22 @@ class SpaceFSOperations(BaseFileSystemOperations):
         pass
     @operation
     def resolve_reparse_points(self,file_name,reparse_point_index,resolve_last_path_component,p_io_status,buffer,p_size):
-        pass
+        file_name=file_name.replace('\\','/')
+        return self.s.readfile(file_name,0,self.s.trunfile(file_name))
     @operation
     def get_reparse_point(self,file_context,file_name):
-        return self.s.readfile(file_context,0,self.s.trunfile(file_context))
+        if self.s.winattrs[file_context]&attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT)[2:]):
+            return self.s.readfile(file_context,0,self.s.trunfile(file_context))
+        raise NTStatusNotAReparsePoint()
     @operation
     def set_reparse_point(self,file_context,file_name,buf):
         self.s.trunfile(file_context,len(buf))
         self.s.writefile(file_context,0,buf)
         self.s.winattrs[file_context]|=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT)[2:])
     @operation
-    def delete_reparse_point(self,file_context,file_name,buffer,size):
-        pass
+    def delete_reparse_point(self,file_context,file_name,buf):
+        self.s.trunfile(file_context,0)
+        self.s.winattrs[file_context]^=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT)[2:])
     @operation
     def get_stream_info(self,file_context,buffer,length,p_bytes_transferred):
         pass
