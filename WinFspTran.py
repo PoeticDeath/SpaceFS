@@ -1,5 +1,6 @@
 #A file system implemented on top of winfspy. Useful for efficiently storing files.
 
+import os
 import sys
 import logging
 import argparse
@@ -25,6 +26,7 @@ from winfspy import (
     NTStatusEndOfFile,
     NTStatusMediaWriteProtected,
     NTStatusNotAReparsePoint,
+    NTStatusReparsePointNotResolved,
 )
 
 from winfspy.plumbing.security_descriptor import SecurityDescriptor
@@ -413,8 +415,29 @@ class SpaceFSOperations(BaseFileSystemOperations):
         pass
     @operation
     def resolve_reparse_points(self,file_name,reparse_point_index,resolve_last_path_component,p_io_status,buffer,p_size):
-        file_name=file_name.replace('\\','/')
-        return self.s.readfile(file_name,0,self.s.trunfile(file_name))
+        file_context=file_name.replace('\\','/')
+        dire='/'.join(file_context.split('/')[:-1])+'/'
+        buf=self.s.readfile(file_context,0,self.s.trunfile(file_context))
+        T=buf[:4]
+        if T==b'\x0c\x00\x00\xa0':
+            SNO=int.from_bytes(buf[4:8],'little')
+            SNL=int.from_bytes(buf[8:10],'little')
+            PNO=int.from_bytes(buf[10:14],'little')
+            PNL=int.from_bytes(buf[14:16],'little')
+            F=int.from_bytes(buf[16:20],'little')
+            SN=buf[-PNO:].decode('UTF-16-LE')
+            PN=buf[-PNO-PNL:-PNO].decode('UTF-16-LE')
+            if '?' not in SN+PN:
+                NSN=os.path.normpath(os.path.join(dire,SN))
+                NPN=os.path.normpath(os.path.join(dire,PN))
+            else:
+                NSN=SN
+                NPN=SN
+            if (NSN==file_name)|(NPN==file_name):
+                raise NTStatusReparsePointNotResolved()
+            return T+len(SNL.to_bytes(2,'little')+PNO.to_bytes(4,'little')+PNL.to_bytes(2,'little')+F.to_bytes(4,'little')+(NPN+NSN).encode('UTF-16-LE')).to_bytes(4,'little')+len(NPN.encode('UTF-16-LE')).to_bytes(2,'little')+len(NSN.encode('UTF-16-LE')).to_bytes(4,'little')+len(NPN.encode('UTF-16-LE')).to_bytes(2,'little')+F.to_bytes(4,'little')+(NPN+NSN).encode('UTF-16-LE')
+        else:
+            return buf
     @operation
     def get_reparse_point(self,file_context,file_name):
         if self.s.winattrs[file_context]&attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT)[2:]):
