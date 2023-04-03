@@ -33,6 +33,7 @@ from winfspy.plumbing.security_descriptor import SecurityDescriptor
 
 # Because `encode('UTF16')` appends a BOM a the begining of the output
 _STRING_ENCODING='UTF-16-LE' if sys.byteorder=='little' else 'UTF-16-BE'
+_BYTE_ENCODING='big' if 'BE' in _STRING_ENCODING else 'little'
 
 def attrtoATTR(attr):
     ATTR=0
@@ -132,6 +133,11 @@ class SpaceFSOperations(BaseFileSystemOperations):
                     file_name=i
                     break
             else:
+                while dir_name not in self.s.filenamesdic:
+                    dir_name='/'.join(dir_name.split('/')[:-1])
+                if self.s.winattrs[dir_name]&FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT:
+                    SD=SecurityDescriptor.from_string(self.s.readfile(dir_name.split(':')[0][1:],0,self.s.trunfile(dir_name.split(':')[0][1:])).decode())
+                    return (ATTRtoattr(bin(self.s.winattrs[dir_name])[2:]),SD.handle,SD.size)
                 raise NTStatusObjectNameNotFound()
         if file_name.split(':')[0][1:] not in self.s.filenamesdic:
             self.s.createfile(file_name.split(':')[0][1:],448)
@@ -262,7 +268,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             self.allocsizes[file_context]=(self.s.trunfile(file_context)+self.s.sectorsize-1)//self.s.sectorsize*self.s.sectorsize
         ATTR=ATTRtoattr(bin(self.s.winattrs[file_context])[2:])
         return {'file_attributes':ATTR,
-                'reparse_tag':int.from_bytes(self.s.readfile(file_context,0,4),'big' if 'BE' in _STRING_ENCODING else 'little') if bin(ATTR)[2:].zfill(32)[-11]=='1' else 0,
+                'reparse_tag':int.from_bytes(self.s.readfile(file_context,0,4),_BYTE_ENCODING) if bin(ATTR)[2:].zfill(32)[-11]=='1' else 0,
                 'allocation_size':self.allocsizes[file_context],
                 'file_size':self.s.trunfile(file_context),
                 'creation_time':t[2],
@@ -416,17 +422,27 @@ class SpaceFSOperations(BaseFileSystemOperations):
     @operation
     def resolve_reparse_points(self,file_name,reparse_point_index,resolve_last_path_component,p_io_status,buffer,p_size):
         file_context=file_name.replace('\\','/')
-        dire='/'.join(file_context.split('/')[:-1])+'/'
-        buf=self.s.readfile(file_context,0,self.s.trunfile(file_context))
+        dir_name='/'.join(file_context.split('/')[:-1])
+        try:
+            buf=self.s.readfile(file_context,0,self.s.trunfile(file_context))
+        except ValueError:
+            while dir_name not in self.s.filenamesdic:
+                dir_name='/'.join(dir_name.split('/')[:-1])
+            buf=self.s.readfile(dir_name,0,self.s.trunfile(dir_name))
+            file_context=file_context.replace(dir_name,'',1)
+        dire=dir_name+'/'
         T=buf[:4]
         if T==b'\x0c\x00\x00\xa0':
-            SNO=int.from_bytes(buf[4:8],'little')
-            SNL=int.from_bytes(buf[8:10],'little')
-            PNO=int.from_bytes(buf[10:14],'little')
-            PNL=int.from_bytes(buf[14:16],'little')
-            F=int.from_bytes(buf[16:20],'little')
-            SN=buf[-PNO:].decode('UTF-16-LE')
-            PN=buf[-PNO-PNL:-PNO].decode('UTF-16-LE')
+            SNO=int.from_bytes(buf[4:8],_BYTE_ENCODING)
+            SNL=int.from_bytes(buf[8:10],_BYTE_ENCODING)
+            PNO=int.from_bytes(buf[10:14],_BYTE_ENCODING)
+            PNL=int.from_bytes(buf[14:16],_BYTE_ENCODING)
+            F=int.from_bytes(buf[16:20],_BYTE_ENCODING)
+            SN=buf[-PNO:].decode(_STRING_ENCODING).replace('..\\','..\\'*dir_name.count('/'))
+            PN=buf[-PNO-PNL:-PNO].decode(_STRING_ENCODING).replace('..\\','..\\'*dir_name.count('/'))
+            if len(file_context)!=len(file_name):
+                SN+='\\'.join(file_context.split('/'))
+                PN+='\\'.join(file_context.split('/'))
             if '?' not in SN+PN:
                 NSN=os.path.normpath(os.path.join(dire,SN))
                 NPN=os.path.normpath(os.path.join(dire,PN))
@@ -435,7 +451,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 NPN=SN
             if (NSN==file_name)|(NPN==file_name):
                 raise NTStatusReparsePointNotResolved()
-            return T+len(SNL.to_bytes(2,'little')+PNO.to_bytes(4,'little')+PNL.to_bytes(2,'little')+F.to_bytes(4,'little')+(NPN+NSN).encode('UTF-16-LE')).to_bytes(4,'little')+len(NPN.encode('UTF-16-LE')).to_bytes(2,'little')+len(NSN.encode('UTF-16-LE')).to_bytes(4,'little')+len(NPN.encode('UTF-16-LE')).to_bytes(2,'little')+F.to_bytes(4,'little')+(NPN+NSN).encode('UTF-16-LE')
+            return T+len(SNL.to_bytes(2,_BYTE_ENCODING)+PNO.to_bytes(4,_BYTE_ENCODING)+PNL.to_bytes(2,_BYTE_ENCODING)+F.to_bytes(4,_BYTE_ENCODING)+(NPN+NSN).encode(_STRING_ENCODING)).to_bytes(4,_BYTE_ENCODING)+len(NPN.encode(_STRING_ENCODING)).to_bytes(2,_BYTE_ENCODING)+len(NSN.encode(_STRING_ENCODING)).to_bytes(4,_BYTE_ENCODING)+len(NPN.encode(_STRING_ENCODING)).to_bytes(2,_BYTE_ENCODING)+F.to_bytes(4,_BYTE_ENCODING)+(NPN+NSN).encode(_STRING_ENCODING)
         else:
             return buf
     @operation
