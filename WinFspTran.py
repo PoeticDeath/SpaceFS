@@ -320,7 +320,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             file_context+='/'
         dirents=[{'file_name':'.',**self.gfi('/'+'/'.join(file_context.split('/')[1:-1]))},{'file_name':'..',**self.gfi('/'+'/'.join(file_context.split('/')[1:-2]))}]
         for i in list(self.s.filenamesdic.keys())+list(self.s.symlinks.keys()):
-            if i!='/':
+            if (i!='/')&(':' not in i):
                 o=self.gfi(i)
                 if i.startswith(file_context):
                     if file_context.count('/')==i.count('/'):
