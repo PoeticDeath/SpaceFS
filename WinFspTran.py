@@ -466,8 +466,10 @@ class SpaceFSOperations(BaseFileSystemOperations):
         self.s.winattrs[file_context]|=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT)[2:])
     @operation
     def delete_reparse_point(self,file_context,file_name,buf):
-        self.s.trunfile(file_context,0)
-        self.s.winattrs[file_context]^=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT)[2:])
+        if self.s.winattrs[file_context]&attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT)[2:]):
+            self.s.trunfile(file_context,0)
+            self.s.winattrs[file_context]^=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT)[2:])
+        raise NTStatusNotAReparsePoint()
     @operation
     def get_stream_info(self,file_context,buffer,length,p_bytes_transferred):
         pass
