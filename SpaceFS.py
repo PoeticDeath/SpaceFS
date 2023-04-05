@@ -107,6 +107,7 @@ class SpaceFS():
         self.oldsimptable=self.table
         self.oldreadtable=[]
         self.oldredtable=[]
+        self.oldsectorcount=self.sectorcount
         self.part={}
         try:
             self.findnewblock(part=True)
@@ -203,9 +204,9 @@ class SpaceFS():
                         t.append(i)
                 for i in t:
                     self.part.pop(i)
-        for i in self.missinglst.copy():
-            if i>=self.sectorcount:
-                self.missinglst.remove(i)
+        if self.sectorcount<self.oldsectorcount:
+            self.missinglst=list(filter(lambda x:x<self.sectorcount,self.missinglst))
+            self.oldsectorcount=self.sectorcount
         if len(self.missinglst)==0:
             lst=[]
             table=self.table
@@ -307,8 +308,9 @@ class SpaceFS():
             gid=uid=545
         else:
             gid=uid=1000
-        if self.findnewblock()>=self.sectorcount+1:
-            raise IndexError
+        if len(self.part)+self.tablesectorcount>=self.disksize//self.sectorsize-10:
+            if self.findnewblock()>=self.sectorcount+1:
+                raise IndexError
         self.guids[filename]=(gid,uid)
         self.modes[filename]=mode
         self.winattrs[filename]=2048
