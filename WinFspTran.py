@@ -6,7 +6,7 @@ import logging
 import argparse
 import threading
 from functools import wraps
-from pathlib import Path,PureWindowsPath
+from pathlib import Path
 
 import struct
 from time import sleep,time
@@ -128,18 +128,12 @@ class SpaceFSOperations(BaseFileSystemOperations):
         file_name=file_name.replace('\\','/')
         dir_name='/'.join(file_name.split('/')[:-1])
         if file_name not in self.s.filenamesdic:
-            if PureWindowsPath(file_name) in self.s.filenamesdic:
-                for i in self.s.filenamesdic:
-                    if file_name.lower()==i.lower():
-                        file_name=i
-                        break
-            else:
-                while dir_name not in self.s.filenamesdic:
-                    dir_name='/'.join(dir_name.split('/')[:-1])
-                if self.s.winattrs[dir_name]&FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT:
-                    SD=SecurityDescriptor.from_string(self.s.readfile(dir_name.split(':')[0][1:],0,self.s.trunfile(dir_name.split(':')[0][1:])).decode())
-                    return (ATTRtoattr(bin(self.s.winattrs[dir_name])[2:]),SD.handle,SD.size)
-                raise NTStatusObjectNameNotFound()
+            while dir_name not in self.s.filenamesdic:
+                dir_name='/'.join(dir_name.split('/')[:-1])
+            if self.s.winattrs[dir_name]&FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT:
+                SD=SecurityDescriptor.from_string(self.s.readfile(dir_name.split(':')[0][1:],0,self.s.trunfile(dir_name.split(':')[0][1:])).decode())
+                return (ATTRtoattr(bin(self.s.winattrs[dir_name])[2:]),SD.handle,SD.size)
+            raise NTStatusObjectNameNotFound()
         if file_name.split(':')[0][1:] not in self.s.filenamesdic:
             self.s.createfile(file_name.split(':')[0][1:],448)
             self.s.writefile(file_name.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
