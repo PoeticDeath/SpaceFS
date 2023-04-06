@@ -6,7 +6,7 @@ import logging
 import argparse
 import threading
 from functools import wraps
-from pathlib import Path
+from pathlib import Path,PureWindowsPath
 
 import struct
 from time import sleep,time
@@ -114,7 +114,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             sleep(60)
     @operation
     def get_volume_info(self):
-        avail=len(self.s.findnewblock(whole=True))
+        avail=len(self.s.missinglst)
         if avail<0:
             avail=0
         return {'total_size':self.s.sectorcount*self.s.sectorsize,'free_size':avail*self.s.sectorsize,'volume_label':self.label}
@@ -128,10 +128,11 @@ class SpaceFSOperations(BaseFileSystemOperations):
         file_name=file_name.replace('\\','/')
         dir_name='/'.join(file_name.split('/')[:-1])
         if file_name not in self.s.filenamesdic:
-            for i in self.s.filenamesdic:
-                if file_name.lower()==i.lower():
-                    file_name=i
-                    break
+            if PureWindowsPath(file_name) in self.s.filenamesdic:
+                for i in self.s.filenamesdic:
+                    if file_name.lower()==i.lower():
+                        file_name=i
+                        break
             else:
                 while dir_name not in self.s.filenamesdic:
                     dir_name='/'.join(dir_name.split('/')[:-1])
@@ -242,13 +243,6 @@ class SpaceFSOperations(BaseFileSystemOperations):
     @operation
     def open(self,file_name,create_options,granted_access):
         file_name=file_name.replace('\\','/')
-        if file_name not in self.s.filenamesdic:
-            for i in self.s.filenamesdic:
-                if file_name.lower()==i.lower():
-                    file_name=i
-                    break
-            else:
-                raise NTStatusObjectNameNotFound()
         self.opened.append(file_name)
         return file_name
     @operation
