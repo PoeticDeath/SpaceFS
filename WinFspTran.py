@@ -362,10 +362,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def cleanup(self,file_context,file_name,flags):
         if self.read_only:
             raise NTStatusMediaWriteProtected()
-        if self.s.modes[file_context]==16877:
-            if self.readdir(file_context,'..')!=[]:
-                raise NTStatusDirectoryNotEmpty()
-        else:
+        if self.s.modes[file_context]!=16877:
             self.s.winattrs[file_context]|=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_ARCHIVE)[2:])
         index=self.s.filenamesdic[file_context.split(':')[0]]
         t=time()
@@ -375,6 +372,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
         FspCleanupSetLastWriteTime=0x40
         FspCleanupSetChangeTime=0x80
         if flags&FspCleanupDelete:
+            if self.s.modes[file_context]==16877:
+                if self.readdir(file_context,'..')!=[]:
+                    raise NTStatusDirectoryNotEmpty()
             self.s.deletefile(file_context)
             if ':' not in file_context:
                 self.s.deletefile(file_context[1:])
