@@ -495,13 +495,13 @@ class SpaceFS():
                         self.part[int(m[0])]=[int(m[1]),int(m[2])]
             except IndexError:
                 p=l
+            except UnboundLocalError:
+                newmiss.append(lst[-1])
             lst=lst[:(size+self.sectorsize-1)//self.sectorsize-1]
             if type(p)==int:
                 o=size%self.sectorsize
                 if o!=0:
                     lst.append(str(p)+';0;'+str(o))
-                else:
-                    lst.append(p)
             elif type(p)==str:
                 lst.append(';'.join(p.split(';')[:2])+';'+str(int(p.split(';')[2])-(s%self.sectorsize-size%self.sectorsize)))
             self.flst[index]=lst
