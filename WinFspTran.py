@@ -382,7 +382,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                     if i.startswith(file_context+':'):
                         self.s.deletefile(i)
         if flags&FspCleanupAllocationSize:
-            self.allocsizes[file_context]=self.s.trunfile(file_context)
+            self.allocsizes[file_context]=(self.s.trunfile(file_context)+self.s.sectorsize-1)//self.s.sectorsize*self.s.sectorsize
         if (flags&FspCleanupSetLastAccessTime)&(not flags&FspCleanupDelete):
             self.s.times=self.s.times[:index*24]+struct.pack('!d',t)+self.s.times[index*24+8:]
         if ((flags&FspCleanupSetLastWriteTime)|(flags&FspCleanupSetChangeTime))&(not flags&FspCleanupDelete):
@@ -402,8 +402,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         self.s.trunfile(file_context,allocation_size)
         index=self.s.filenamesdic[file_context.split(':')[0]]
         t=time()
-        self.s.times=self.s.times[:index*24]+struct.pack('!d',t)+self.s.times[index*24+8:]
-        self.s.times=self.s.times[:index*24+8]+struct.pack('!d',t)+self.s.times[index*24+16:]
+        self.s.times=self.s.times[:index*24]+struct.pack('!d',t)*2+self.s.times[index*24+16:]
     @operation
     def flush(self,file_context):
         pass
