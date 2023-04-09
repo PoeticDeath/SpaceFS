@@ -4,9 +4,10 @@ Note: (NoWindow) was added during release V1.1.1 don't specifiy it on earlier re
 Use (NoWindow) as 1 or 0, 1 will hide the running FS window while 0 will leave the FS window in the foreground.  
 Only Specifiy (BlockSize) when formatting the file or drive, or else you will lose all of your data.  
 The blocksize will be rounded to the next highest power of 2 at or after 512 automatically.  
-Mode can be either FUSE or WinFsp.  
+The Fuse version has better space savings and compatiblilty between Linux and Windows, while the WinFsp version has more funcational features such as Full Permissions and Reparse Support.  
   Windows:  
-    (Mode)SpaceFS.exe "C:\Space FS.bin" "C:\Space FS" (NoWindow) (BlockSize)  
+    FuseSpaceFS.exe "C:\Space FS.bin" "C:\Space FS" (NoWindow) (BlockSize)  
+    WinFspSpaceFS.exe "C:\Space FS.bin" S: (-s BlockSize) (-h For additional help)  
   Linux:  
     ./SpaceFS /Space\ FS.bin /mnt/Space\ FS (NoWindow) (BlockSize)  
 As of Version 1.6.5:  
