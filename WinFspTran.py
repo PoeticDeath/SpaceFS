@@ -5,6 +5,7 @@ import sys
 import logging
 import argparse
 import threading
+import multiprocessing
 from functools import wraps
 from pathlib import Path
 
@@ -108,9 +109,15 @@ class SpaceFSOperations(BaseFileSystemOperations):
         self.allocsizes={}
         self.opened=[]
     def autosimp(self):
+        ofc=len(self.s.filenamesdic)
+        omc=len(self.s.missinglst)
         while True:
-            with self._thread_lock:
-                self.s.simptable()
+            if (abs(len(self.s.filenamesdic)-ofc)>10000)|(abs(len(self.s.missinglst)-omc)>10):
+                P=multiprocessing.Process(target=self.s.simptable())
+                P.start()
+                P.join()
+                ofc=len(self.s.filenamesdic)
+                omc=len(self.s.missinglst)
             sleep(60)
     @operation
     def get_volume_info(self):
