@@ -531,6 +531,7 @@ def main(path,mountpoint,sectorsize,label,prefix,verbose,debug):
         fs.stop()
         print('FS stopped')
 if __name__=='__main__':
+    multiprocessing.freeze_support()
     parser=argparse.ArgumentParser()
     parser.add_argument('path')
     parser.add_argument('mountpoint')
