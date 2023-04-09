@@ -315,25 +315,26 @@ class SpaceFSOperations(BaseFileSystemOperations):
             file_context+='/'
         dirents=[{'file_name':'.',**self.gfi('/'+'/'.join(file_context.split('/')[1:-1]))},{'file_name':'..',**self.gfi('/'+'/'.join(file_context.split('/')[1:-2]))}]
         for i in list(self.s.filenamesdic.keys())+list(self.s.symlinks.keys()):
-            if (i!='/')&(':' not in i):
-                o=self.gfi(i)
-                if i.startswith(file_context):
-                    if file_context.count('/')==i.count('/'):
-                        c=i[1:].split('/')[-1]
-                        if {'file_name':c,**o} not in dirents:
-                            dirents.append({'file_name':c,**o})
-                    if i[-1]=='/':
-                        if file_context.count('/')+1==i.count('/'):
+            if (i!='/')&(':' not in i)&(i.startswith(file_context)):
+                if file_context.count('/')==i.count('/'):
+                    c=i[1:].split('/')[-1]
+                    o=self.gfi(i)
+                    if {'file_name':c,**o} not in dirents:
+                        dirents.append({'file_name':c,**o})
+                if i[-1]=='/':
+                    if file_context.count('/')+1==i.count('/'):
+                        tmp=i[1:].split('/')[-2]
+                        o=self.gfi(i)
+                        if {'file_name':tmp,**o} not in dirents:
                             tmp=i[1:].split('/')[-2]
                             if {'file_name':tmp,**o} not in dirents:
-                                tmp=i[1:].split('/')[-2]
-                                if {'file_name':tmp,**o} not in dirents:
-                                    dirents.append({'file_name':tmp,**o})
-                        if file_context.count('/')+1<=i.count('/'):
-                            tmp=i.split('/')[file_context.count('/')]
-                            if {'file_name':tmp,**o} not in dirents:
-                                d='/'.join(i.split('/')[:file_context.count('/')+1])+'/'
                                 dirents.append({'file_name':tmp,**o})
+                    if file_context.count('/')+1<=i.count('/'):
+                        tmp=i.split('/')[file_context.count('/')]
+                        o=self.gfi(i)
+                        if {'file_name':tmp,**o} not in dirents:
+                            d='/'.join(i.split('/')[:file_context.count('/')+1])+'/'
+                            dirents.append({'file_name':tmp,**o})
         dirents=sorted(dirents,key=lambda x:x['file_name'])
         if marker is None:
             return dirents
