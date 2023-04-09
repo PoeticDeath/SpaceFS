@@ -289,7 +289,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if self.read_only:
             raise NTStatusMediaWriteProtected()
         if set_allocation_size:
-            self.allocsizes[file_context]=new_size
+            self.allocsizes[file_context]=(new_size+self.s.sectorsize-1)//self.s.sectorsize*self.s.sectorsize
             if new_size<self.s.trunfile(file_context):
                 self.s.trunfile(file_context,new_size)
         else:
