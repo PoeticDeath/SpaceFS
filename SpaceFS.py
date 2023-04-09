@@ -642,6 +642,7 @@ class SpaceFS():
                         self.missinglst.pop(self.missinglst.index(f))
                     except ValueError:
                         pass
+                    self.part[f]=[c,self.sectorsize]
                     f=[f,0,c]
                 tlst=self.table.split('.')
                 if len(lst)==minblocks:
