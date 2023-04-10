@@ -315,8 +315,8 @@ class SpaceFS():
         self.guids[filename]=(gid,uid)
         self.modes[filename]=mode
         self.winattrs[filename]=2048
-        self.filenameslst.append(filename)
         self.filenamesdic[filename]=len(self.filenamesdic)
+        self.filenameslst.append(filename)
         self.table+='.'
         self.flst.append([])
         self.times+=struct.pack('!d',time())*3
