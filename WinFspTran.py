@@ -192,9 +192,15 @@ class SpaceFSOperations(BaseFileSystemOperations):
             self.s.createfile(file_context.split(':')[0][1:],448)
             self.s.writefile(file_context.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
         SD=SecurityDescriptor.from_string(self.s.readfile(file_context.split(':')[0][1:],0,self.s.trunfile(file_context.split(':')[0][1:])).decode())
-        SD=SD.evolve(security_information>>1<<1,modification_descriptor).to_string().encode()
+        SD=SD.evolve(security_information>>1<<1,modification_descriptor).to_string()
+        if security_information%2!=0:
+            S=SecurityDescriptor.from_cpointer(modification_descriptor).to_string()
+            if 'G:' not in S:
+                SD=S+SD[SD.index('G:'):]
+            else:
+                SD=S[:S.index('G:')]+SD[SD.index('G:'):]
         self.s.trunfile(file_context.split(':')[0][1:],0)
-        self.s.writefile(file_context.split(':')[0][1:],0,SD)
+        self.s.writefile(file_context.split(':')[0][1:],0,SD.encode())
     @operation
     def rename(self,file_context,file_name,new_file_name,replace_if_exists):
         if self.read_only:
