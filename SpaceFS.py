@@ -81,9 +81,12 @@ class SpaceFS():
                     self.disksize=int(p.replace(i,'').strip())
         if c!=None:
             self.rawdisk=open(self.diskname,'rb+')
+            self.flushdisk=open(self.diskname,'rb+')
             self.disk=RawDisk(self.rawdisk)
+            self.fdisk=RawDisk(self.flushdisk)
         else:
             self.disk=open(self.diskname,'rb+')
+            self.fdisk=open(self.diskname,'rb+')
         self.sectorsize=2**(int.from_bytes(self.disk.read(1),'big')+9)
         self.tablesectorcount=int.from_bytes(self.disk.read(4),'big')+2
         self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
@@ -293,11 +296,11 @@ class SpaceFS():
             filenames+=i.encode()+b'\xff'
         filenames+=b'\xfe'+self.times+guidsmodes
         self.tablesectorcount=(len(elst+filenames)+self.sectorsize-1)//self.sectorsize-1
-        self.disk.seek(1)
-        self.disk.write(self.tablesectorcount.to_bytes(4,'big')+elst+filenames)
+        self.fdisk.seek(1)
+        self.fdisk.write(self.tablesectorcount.to_bytes(4,'big')+elst+filenames)
         self.tablesectorcount+=2
         self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
-        self.disk.flush()
+        self.fdisk.flush()
         self.oldsimptable=table
     def createfile(self,filename,mode):
         c=[i for i in self.symlinks if filename.startswith(i+'/')]
