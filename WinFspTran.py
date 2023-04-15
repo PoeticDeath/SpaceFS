@@ -478,10 +478,11 @@ class SpaceFSOperations(BaseFileSystemOperations):
 def create_file_system(path,mountpoint,sectorsize,label='',prefix='',verbose=True,debug=False,testing=False):
     if debug:
         enable_debug_log()
-    logging.root.level=logging.NOTSET
+    logging.basicConfig(stream=sys.stdout,level=logging.INFO)
     if verbose:
-        logging.basicConfig(stream=sys.stdout,level=logging.INFO)
         logging.root.level=logging.INFO
+    else:
+        logging.root.level=logging.NOTSET
     #The avast workaround is not necessary with drives
     #Also, it is not compatible with winfsp-tests
     mountpoint=Path(mountpoint)
@@ -521,13 +522,19 @@ def main(path,mountpoint,sectorsize,label,prefix,verbose,debug):
         fs.start()
         print('FS started, keep it running forever')
         while True:
-            result=input('Set read-only flag (y/n/q)?: ').lower()
-            if result=='y':
-                fs.operations.read_only=True
-                fs.restart(read_only_volume=True)
-            elif result=='n':
-                fs.operations.read_only=False
-                fs.restart(read_only_volume=False)
+            result=input('Toggle read-only flag (r) Toggle Verbose (v) Quit (q)?: ').lower()
+            if result=='r':
+                if fs.operations.read_only==True:
+                    fs.operations.read_only=False
+                    fs.restart(read_only_volume=False)
+                else:
+                    fs.operations.read_only=True
+                    fs.restart(read_only_volume=True)
+            elif result=='v':
+                if logging.root.level!=logging.NOTSET:
+                    logging.root.level=logging.NOTSET
+                else:
+                    logging.root.level=logging.INFO
             elif result=='q':
                 break
     finally:
