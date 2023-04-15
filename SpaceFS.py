@@ -281,9 +281,6 @@ class SpaceFS():
             if lst[-1]==',':
                 lst=lst[:-1]
             lst+='.'
-        self.table=lst
-        if self.readtable()!=tmplst:
-            raise EncodingWarning
         elst=encode(lst)
         filenames=b'\xff'
         guidsmodes=b''
