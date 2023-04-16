@@ -359,7 +359,7 @@ class SpaceFS():
         except IndexError:
             pass
         self.missinglst.extend(mlst)
-        self.table='.'.join([','.join(i)+',' for i in self.flst])+'.'
+        self.table='.'.join([','.join([str(o) if type(o)==int else o for o in i])+',' for i in self.flst])+'.'
         self.filenameslst.pop(index)
         del self.filenamesdic[filename]
         del self.guids[filename]

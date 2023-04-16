@@ -290,12 +290,15 @@ class SpaceFSOperations(BaseFileSystemOperations):
         index=self.s.filenamesdic[file_context.split(':')[0]]
         if file_attributes!=FILE_ATTRIBUTE.INVALID_FILE_ATTRIBUTES:
             self.s.winattrs[file_context]=attrtoATTR(bin(file_attributes)[2:])
-        if creation_time:
-            self.s.times=self.s.times[:index*24+16]+struct.pack('!d',(creation_time-116444736000000000)/10000000)+self.s.times[index*24+24:]
-        if last_access_time:
-            self.s.times=self.s.times[:index*24]+struct.pack('!d',(last_access_time-116444736000000000)/10000000)+self.s.times[index*24+8:]
-        if (last_write_time)|(change_time):
-            self.s.times=self.s.times[:index*24+8]+struct.pack('!d',(last_write_time-116444736000000000)/10000000)+self.s.times[index*24+16:]
+        if last_access_time&last_write_time&creation_time:
+            self.s.times=self.s.times[:index*24]+struct.pack('!d',(last_access_time-116444736000000000)/10000000)+struct.pack('!d',(last_write_time-116444736000000000)/10000000)+struct.pack('!d',(creation_time-116444736000000000)/10000000)+self.s.times[index*24+24:]
+        else:
+            if last_access_time:
+                self.s.times=self.s.times[:index*24]+struct.pack('!d',(last_access_time-116444736000000000)/10000000)+self.s.times[index*24+8:]
+            if last_write_time:
+                self.s.times=self.s.times[:index*24+8]+struct.pack('!d',(last_write_time-116444736000000000)/10000000)+self.s.times[index*24+16:]
+            if creation_time:
+                self.s.times=self.s.times[:index*24+16]+struct.pack('!d',(creation_time-116444736000000000)/10000000)+self.s.times[index*24+24:]
         return self.gfi(file_context)
     @operation
     def set_file_size(self,file_context,new_size,set_allocation_size):
