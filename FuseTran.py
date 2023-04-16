@@ -207,7 +207,7 @@ class FuseTran(Operations):
     def utimens(self,path,times=[time()]*2):
         with self.rwlock:
             index=self.s.filenamesdic[path]
-            self.s.times=self.s.times[:index*24]+struct.pack('!d',times[0])+struct.pack('!d',times[1])+self.s.times[index*24+16:]
+            self.s.times[index*24:index*24+16]=struct.pack('!d',times[0])+struct.pack('!d',times[1])
         return 0
     # File methods
     # ============
@@ -250,12 +250,12 @@ class FuseTran(Operations):
     def setchgtime(self,path,time):
         with self.rwlock:
             index=self.s.filenamesdic[path]
-            self.s.times=self.s.times[:index*24+8]+struct.pack('!d',time)+self.s.times[index*24+16:]
+            self.s.times[index*24+8:index*24+16]=struct.pack('!d',time)
         return 0
     def setcrtime(self,path,time):
         with self.rwlock:
             index=self.s.filenamesdic[path]
-            self.s.times=self.s.times[:index*24+16]+struct.pack('!d',time)+self.s.times[index*24+24:]
+            self.s.times[index*24+16:index*24+24]=struct.pack('!d',time)
         return 0
     def destroy(self,path):
         with self.rwlock:

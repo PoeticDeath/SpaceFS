@@ -291,14 +291,14 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if file_attributes!=FILE_ATTRIBUTE.INVALID_FILE_ATTRIBUTES:
             self.s.winattrs[file_context]=attrtoATTR(bin(file_attributes)[2:])
         if last_access_time&last_write_time&creation_time:
-            self.s.times=self.s.times[:index*24]+struct.pack('!d',(last_access_time-116444736000000000)/10000000)+struct.pack('!d',(last_write_time-116444736000000000)/10000000)+struct.pack('!d',(creation_time-116444736000000000)/10000000)+self.s.times[index*24+24:]
+            self.s.times[index*24:index*24+24]=struct.pack('!d',(last_access_time-116444736000000000)/10000000)+struct.pack('!d',(last_write_time-116444736000000000)/10000000)+struct.pack('!d',(creation_time-116444736000000000)/10000000)
         else:
             if last_access_time:
-                self.s.times=self.s.times[:index*24]+struct.pack('!d',(last_access_time-116444736000000000)/10000000)+self.s.times[index*24+8:]
+                self.s.times[index*24:index*24+8]=struct.pack('!d',(last_access_time-116444736000000000)/10000000)
             if last_write_time:
-                self.s.times=self.s.times[:index*24+8]+struct.pack('!d',(last_write_time-116444736000000000)/10000000)+self.s.times[index*24+16:]
+                self.s.times[index*24+8:index*24+16]=struct.pack('!d',(last_write_time-116444736000000000)/10000000)
             if creation_time:
-                self.s.times=self.s.times[:index*24+16]+struct.pack('!d',(creation_time-116444736000000000)/10000000)+self.s.times[index*24+24:]
+                self.s.times[index*24+16:index*24+24]=struct.pack('!d',(creation_time-116444736000000000)/10000000)
         return self.gfi(file_context)
     @operation
     def set_file_size(self,file_context,new_size,set_allocation_size):
@@ -401,9 +401,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if flags&FspCleanupAllocationSize:
             self.allocsizes[file_context]=(self.s.trunfile(file_context)+self.s.sectorsize-1)//self.s.sectorsize*self.s.sectorsize
         if (flags&FspCleanupSetLastAccessTime)&(not flags&FspCleanupDelete):
-            self.s.times=self.s.times[:index*24]+struct.pack('!d',t)+self.s.times[index*24+8:]
+            self.s.times[index*24:index*24+8]=struct.pack('!d',t)
         if ((flags&FspCleanupSetLastWriteTime)|(flags&FspCleanupSetChangeTime))&(not flags&FspCleanupDelete):
-            self.s.times=self.s.times[:index*24+8]+struct.pack('!d',t)+self.s.times[index*24+16:]
+            self.s.times[index*24+8:index*24+16]=struct.pack('!d',t)
     @operation
     def overwrite(self,file_context,file_attributes,replace_file_attributes,allocation_size):
         if self.read_only:
@@ -419,7 +419,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         self.s.trunfile(file_context,allocation_size)
         index=self.s.filenamesdic[file_context.split(':')[0]]
         t=time()
-        self.s.times=self.s.times[:index*24]+struct.pack('!d',t)*2+self.s.times[index*24+16:]
+        self.s.times[index*24:index*24+16]=struct.pack('!d',t)*2
     @operation
     def flush(self,file_context):
         pass

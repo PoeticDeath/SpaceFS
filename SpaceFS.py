@@ -117,7 +117,7 @@ class SpaceFS():
         except IndexError:
             pass
         self.flst=self.readtable()
-        self.times=s[:len(self.filenamesdic)*24]
+        self.times=bytearray(s[:len(self.filenamesdic)*24])
         self.guids={}
         self.modes={}
         self.winattrs={}
@@ -319,7 +319,7 @@ class SpaceFS():
         self.filenameslst.append(filename)
         self.table+='.'
         self.flst.append([])
-        self.times+=struct.pack('!d',time())*3
+        self.times.extend(struct.pack('!d',time())*3)
         if len(self.part)+self.tablesectorcount>=self.disksize//self.sectorsize-10:
             self.simptable()
     def deletefile(self,filename,block=False):
@@ -367,7 +367,7 @@ class SpaceFS():
         del self.winattrs[filename]
         for i in enumerate(self.filenameslst[index:]):
             self.filenamesdic[i[1].split(',')[0]]=i[0]+index
-        self.times=self.times[:index*24]+self.times[index*24+24:]
+        del self.times[index*24:index*24+24]
     def renamefile(self,oldfilename,newfilename):
         c=[i for i in self.symlinks if oldfilename.startswith(i+'/')]
         if oldfilename in self.symlinks:
@@ -428,7 +428,7 @@ class SpaceFS():
             else:
                 self.disk.seek(self.disksize-(int(i.split(';')[0])*self.sectorsize-int(i.split(';')[1])+self.sectorsize))
                 data+=self.disk.read(min(int(i.split(';')[2])-int(i.split(';')[1]),amount))
-        self.times=self.times[:index*24]+struct.pack('!d',time())+self.times[index*24+8:]
+        self.times[index*24:index*24+8]=struct.pack('!d',time())
         return data[:amount]
     def trunfile(self,filename,size=None):
         c=[i for i in self.symlinks if filename.startswith(i+'/')]
@@ -507,7 +507,7 @@ class SpaceFS():
         if size>s:
             if self.writefile(filename,s,bytes(size-s),True)==0:
                 return 0
-        self.times=self.times[:index*24+8]+struct.pack('!d',time())+self.times[index*24+16:]
+        self.times[index*24+8:index*24+16]=struct.pack('!d',time())
     def writefile(self,filename,start,data,T=False):
         c=[i for i in self.symlinks if filename.startswith(i+'/')]
         if len(c)>0:
@@ -684,5 +684,5 @@ class SpaceFS():
                         self.disk.seek(self.disksize-(i[1]*self.sectorsize+self.sectorsize-u))
                 for o in range(0,(len(data[i[0]])+16777215)//16777216):
                     self.disk.write(data[i[0]][o*16777216:o*16777216+16777216])
-        self.times=self.times[:index*24+8]+struct.pack('!d',time())+self.times[index*24+16:]
+        self.times[index*24+8:index*24+16]=struct.pack('!d',time())
         self.disk.flush()
