@@ -539,9 +539,9 @@ def main(path,mountpoint,sectorsize,label,prefix,verbose,debug):
                 break
     finally:
         print('Stopping FS')
+        fs.stop()
         fs.operations.s.deletefile('/')
         fs.operations.s.simptable(F=True)
-        fs.stop()
         print('FS stopped')
 if __name__=='__main__':
     multiprocessing.freeze_support()
