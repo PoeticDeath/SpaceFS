@@ -282,22 +282,23 @@ class SpaceFS():
                 lst=lst[:-1]
             lst+='.'
         elst=encode(lst)
-        filenames=b'\xff'
-        guidsmodes=b''
+        filenames=bytearray(b'\xff')
+        guidsmodes=bytearray()
         for i in self.filenameslst:
             i=i.split(',')[0]
-            guidsmodes+=self.guids[i][0].to_bytes(3,'big')+self.guids[i][1].to_bytes(2,'big')+self.modes[i].to_bytes(2,'big')+self.winattrs[i].to_bytes(4,'big')
+            guidsmodes.extend(self.guids[i][0].to_bytes(3,'big')+self.guids[i][1].to_bytes(2,'big')+self.modes[i].to_bytes(2,'big')+self.winattrs[i].to_bytes(4,'big'))
             for p in self.symlinks:
                 if self.symlinks[p]==i.split(',')[0]:
                     i+=','+p
-            filenames+=i.encode()+b'\xff'
-        filenames+=b'\xfe'+self.times+guidsmodes
+            filenames.extend(i.encode()+b'\xff')
+        filenames.extend(b'\xfe'+self.times+guidsmodes)
         self.tablesectorcount=(len(elst+filenames)+self.sectorsize-1)//self.sectorsize-1
         self.fdisk.seek(1)
         self.fdisk.write(self.tablesectorcount.to_bytes(4,'big')+elst+filenames)
         self.tablesectorcount+=2
         self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
         self.fdisk.flush()
+        self.disk.flush()
         self.oldsimptable=table
     def createfile(self,filename,mode):
         c=[i for i in self.symlinks if filename.startswith(i+'/')]
@@ -685,4 +686,3 @@ class SpaceFS():
                 for o in range(0,(len(data[i[0]])+16777215)//16777216):
                     self.disk.write(data[i[0]][o*16777216:o*16777216+16777216])
         self.times[index*24+8:index*24+16]=struct.pack('!d',time())
-        self.disk.flush()
