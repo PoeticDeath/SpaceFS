@@ -234,11 +234,9 @@ class SpaceFS():
         if whole:
             return self.missinglst
         return self.missinglst[0]
-    def simptable(self,F=False):
-        table=self.table
-        if (self.oldsimptable==table)&(not F):
-            return
-        tmplst=self.readtable()
+    @classmethod
+    def smptable(self,args):
+        table,tmplst,filenameslst,guids,modes,winattrs,symlinks,times=args
         lst=''
         for i in tmplst:
             if len(i)==0:
@@ -284,14 +282,20 @@ class SpaceFS():
         elst=encode(lst)
         filenames=bytearray(b'\xff')
         guidsmodes=bytearray()
-        for i in self.filenameslst:
+        for i in filenameslst:
             i=i.split(',')[0]
-            guidsmodes.extend(self.guids[i][0].to_bytes(3,'big')+self.guids[i][1].to_bytes(2,'big')+self.modes[i].to_bytes(2,'big')+self.winattrs[i].to_bytes(4,'big'))
-            for p in self.symlinks:
-                if self.symlinks[p]==i.split(',')[0]:
+            guidsmodes.extend(guids[i][0].to_bytes(3,'big')+guids[i][1].to_bytes(2,'big')+modes[i].to_bytes(2,'big')+winattrs[i].to_bytes(4,'big'))
+            for p in symlinks:
+                if symlinks[p]==i.split(',')[0]:
                     i+=','+p
             filenames.extend(i.encode()+b'\xff')
-        filenames.extend(b'\xfe'+self.times+guidsmodes)
+        filenames.extend(b'\xfe'+times+guidsmodes)
+        return elst,filenames
+    def simptable(self,F=False,elst=None,filenames=None):
+        if (elst==None)|(filenames==None):
+            if (self.oldsimptable==self.table)&(not F):
+                return
+            elst,filenames=self.smptable([self.table,self.readtable(),self.filenameslst,self.guids,self.modes,self.winattrs,self.symlinks,self.times])
         self.tablesectorcount=(len(elst+filenames)+self.sectorsize-1)//self.sectorsize-1
         self.fdisk.seek(1)
         self.fdisk.write(self.tablesectorcount.to_bytes(4,'big')+elst+filenames)
@@ -299,7 +303,7 @@ class SpaceFS():
         self.sectorcount=self.disksize//self.sectorsize-self.tablesectorcount
         self.fdisk.flush()
         self.disk.flush()
-        self.oldsimptable=table
+        self.oldsimptable=self.table
     def createfile(self,filename,mode):
         c=[i for i in self.symlinks if filename.startswith(i+'/')]
         if len(c)>0:

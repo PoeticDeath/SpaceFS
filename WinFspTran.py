@@ -113,9 +113,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
         omc=len(self.s.missinglst)
         while True:
             if (abs(len(self.s.filenamesdic)-ofc)>10000)|(abs(len(self.s.missinglst)-omc)>10):
-                P=multiprocessing.Process(target=self.s.simptable())
-                P.start()
-                P.join()
+                with multiprocessing.Pool(1) as P:
+                    S=P.map(self.s.smptable,[[self.s.table,self.s.readtable(),self.s.filenameslst,self.s.guids,self.s.modes,self.s.winattrs,self.s.symlinks,self.s.times]])[0]
+                    self.s.simptable(elst=S[0],filenames=S[1])
                 ofc=len(self.s.filenamesdic)
                 omc=len(self.s.missinglst)
             sleep(60)
