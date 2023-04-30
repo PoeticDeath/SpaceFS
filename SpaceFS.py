@@ -212,21 +212,20 @@ class SpaceFS():
             self.missinglst=list(filter(lambda x:x<self.sectorcount,self.missinglst))
             self.oldsectorcount=self.sectorcount
         if len(self.missinglst)==0:
-            lst=[]
+            lst=set()
             table=self.table
             table=[i for i in table.replace(',','.').split('.') if i]
             if len(table)==0:
                 if not whole:
                     return 0
-                lst=[-1]
             for i in table:
                 if '-' in i:
                     p=i.split('-')
-                    lst.extend(list(range(int(p[0].split(';')[0]),int(p[1].split(';')[0])+1)))
+                    [lst.add(i) for i in list(range(int(p[0].split(';')[0]),int(p[1].split(';')[0])+1))]
                 else:
                     if int(i.split(';')[0]) not in lst:
-                        lst.append(int(i.split(';')[0]))
-            self.missinglst.extend(set(range(0,self.sectorcount)).difference(set(lst)))
+                        lst.add(int(i.split(';')[0]))
+            self.missinglst.extend(set(range(0,self.sectorcount)).difference(lst))
         else:
             self.missinglst.sort()
         if pop:
