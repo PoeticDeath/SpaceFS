@@ -525,7 +525,7 @@ def main(path,mountpoint,sectorsize,label,prefix,verbose,debug):
         fs.start()
         print('FS started, keep it running forever')
         while True:
-            result=input('Toggle read-only flag (r) Toggle Verbose (v) Quit (q)?: ').lower()
+            result=input('Toggle read-only flag (r) Toggle Verbose (v) Change MountPoint (m) Quit (q)?: ').lower()
             if result=='r':
                 if fs.operations.read_only==True:
                     fs.operations.read_only=False
@@ -538,6 +538,9 @@ def main(path,mountpoint,sectorsize,label,prefix,verbose,debug):
                     logging.root.level=logging.NOTSET
                 else:
                     logging.root.level=logging.INFO
+            elif result=='m':
+                fs.mountpoint=input('New MountPoint: ')
+                fs.restart()
             elif result=='q':
                 break
     finally:
