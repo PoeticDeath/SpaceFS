@@ -6,8 +6,8 @@ import logging
 import argparse
 import threading
 import multiprocessing
-from functools import wraps
 from pathlib import Path
+from functools import wraps
 
 import struct
 from time import sleep,time
@@ -108,6 +108,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         threading.Thread(target=self.autosimp,daemon=True).start()
         self.allocsizes={}
         self.opened=[]
+        self.lowerfilenamesdic=dict([[i.lower(),self.s.filenamesdic[i]] for i in self.s.filenameslst])
     def autosimp(self):
         ofc=len(self.s.filenamesdic)
         omc=len(self.s.missinglst)
@@ -135,12 +136,15 @@ class SpaceFSOperations(BaseFileSystemOperations):
         file_name=file_name.replace('\\','/')
         dir_name='/'.join(file_name.split('/')[:-1])
         if file_name not in self.s.filenamesdic:
-            while dir_name not in self.s.filenamesdic:
-                dir_name='/'.join(dir_name.split('/')[:-1])
-            if self.s.winattrs[dir_name]&FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT:
-                SD=SecurityDescriptor.from_string(self.s.readfile(dir_name.split(':')[0][1:],0,self.s.trunfile(dir_name.split(':')[0][1:])).decode())
-                return (ATTRtoattr(bin(self.s.winattrs[dir_name])[2:]),SD.handle,SD.size)
-            raise NTStatusObjectNameNotFound()
+            try:
+                file_name=self.s.filenameslst[self.lowerfilenamesdic[file_name.lower()]]
+            except KeyError:
+                while dir_name not in self.s.filenamesdic:
+                    dir_name='/'.join(dir_name.split('/')[:-1])
+                if self.s.winattrs[dir_name]&FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT:
+                    SD=SecurityDescriptor.from_string(self.s.readfile(dir_name.split(':')[0][1:],0,self.s.trunfile(dir_name.split(':')[0][1:])).decode())
+                    return (ATTRtoattr(bin(self.s.winattrs[dir_name])[2:]),SD.handle,SD.size)
+                raise NTStatusObjectNameNotFound()
         if file_name.split(':')[0][1:] not in self.s.filenamesdic:
             self.s.createfile(file_name.split(':')[0][1:],448)
             self.s.writefile(file_name.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
@@ -163,6 +167,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 self.s.createfile(file_name,16877)
             else:
                 self.s.createfile(file_name,448)
+            self.lowerfilenamesdic[file_name.lower()]=self.s.filenamesdic[file_name]
             if file_name.split(':')[0][1:] not in self.s.filenamesdic:
                 self.s.createfile(file_name.split(':')[0][1:],448)
                 SD=security_descriptor.to_string()
@@ -178,19 +183,11 @@ class SpaceFSOperations(BaseFileSystemOperations):
         return file_name
     @operation
     def get_security(self,file_context):
-        dir_name='/'.join(file_context.split('/')[:-1])
-        if file_context.split(':')[0][1:] not in self.s.filenamesdic:
-            self.s.createfile(file_context.split(':')[0][1:],448)
-            self.s.writefile(file_context.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
         return SecurityDescriptor.from_string(self.s.readfile(file_context.split(':')[0][1:],0,self.s.trunfile(file_context.split(':')[0][1:])).decode())
     @operation
     def set_security(self,file_context,security_information,modification_descriptor):
         if self.read_only:
             raise NTStatusMediaWriteProtected()
-        dir_name='/'.join(file_context.split('/')[:-1])
-        if file_context.split(':')[0][1:] not in self.s.filenamesdic:
-            self.s.createfile(file_context.split(':')[0][1:],448)
-            self.s.writefile(file_context.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
         SD=SecurityDescriptor.from_string(self.s.readfile(file_context.split(':')[0][1:],0,self.s.trunfile(file_context.split(':')[0][1:])).decode())
         SD=SD.evolve(security_information>>1<<1,modification_descriptor).to_string()
         if security_information%2!=0:
@@ -235,6 +232,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
                             self.s.renamefile(i,i.replace(file_name,new_file_name,1))
                             if ':' not in i:
                                 self.s.renamefile(i[1:],i[1:].replace(file_name[1:],new_file_name[1:],1))
+                            self.lowerfilenamesdic[i.replace(file_name,new_file_name,1)]=self.filenamesdic[i]
+                            del self.lowerfilenamesdic[i]
                             self.allocsizes[i.replace(file_name,new_file_name,1)]=self.allocsizes[i]
                             del self.allocsizes[i]
                         except IndexError:
@@ -243,6 +242,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 self.s.renamefile(file_name,new_file_name)
                 if ':' not in file_name:
                     self.s.renamefile(file_name[1:],new_file_name[1:])
+                self.lowerfilenamesdic[new_file_name]=self.filenamesdic[file_name]
+                del self.lowerfilenamesdic[file_name]
                 self.allocsizes[new_file_name]=self.allocsizes[file_name]
                 del self.allocsizes[file_name]
             except IndexError:
@@ -250,6 +251,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
     @operation
     def open(self,file_name,create_options,granted_access):
         file_name=file_name.replace('\\','/')
+        if file_name not in self.s.filenamesdic:
+            file_name=self.s.filenameslst[self.lowerfilenamesdic[file_name.lower()]]
         self.opened.append(file_name)
         return file_name
     @operation
@@ -357,9 +360,13 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def get_dir_info_by_name(self,file_context,file_name):
         if file_context[-1]!='/':
             file_context+='/'
-        if file_context+file_name not in self.s.filenamesdic:
-            raise NTStatusObjectNameNotFound()
-        return {'file_name':file_context+file_name,**self.gfi(file_context+file_name)}
+        file=file_context+file_name
+        if file not in self.s.filenamesdic:
+            try:
+                file=self.s.filenameslst[self.lowerfilenamesdic[file.lower()]]
+            except KeyError:
+                raise NTStatusObjectNameNotFound()
+        return {'file_name':file,**self.gfi(file)}
     @operation
     def read(self,file_context,offset,length):
         try:
@@ -393,6 +400,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 if self.readdir(file_context,'..')!=[]:
                     raise NTStatusDirectoryNotEmpty()
             self.s.deletefile(file_context)
+            del self.lowerfilenamesdic[file_context]
+            for i in enumerate(self.filenameslst[index:]):
+                self.lowerfilenamesdic[i[1].split(',')[0].lower()]=i[0]+index
             if ':' not in file_context:
                 self.s.deletefile(file_context[1:])
                 for i in list(self.s.filenamesdic.keys()):
