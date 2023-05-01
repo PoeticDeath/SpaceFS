@@ -108,7 +108,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         threading.Thread(target=self.autosimp,daemon=True).start()
         self.allocsizes={}
         self.opened=[]
-        self.lowerfilenamesdic=dict([[i.lower(),self.s.filenamesdic[i]] for i in self.s.filenameslst])
+        self.lowerfilenamesdic=dict([[i.lower(),self.s.filenamesdic[i]] for i in self.s.filenameslst if i.startswith('/')])
     def autosimp(self):
         ofc=len(self.s.filenamesdic)
         omc=len(self.s.missinglst)
@@ -232,8 +232,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
                             self.s.renamefile(i,i.replace(file_name,new_file_name,1))
                             if ':' not in i:
                                 self.s.renamefile(i[1:],i[1:].replace(file_name[1:],new_file_name[1:],1))
-                            self.lowerfilenamesdic[i.replace(file_name,new_file_name,1).lower()]=self.filenamesdic[i.replace(file_name,new_file_name,1)]
                             del self.lowerfilenamesdic[i.lower()]
+                            self.lowerfilenamesdic[i.replace(file_name,new_file_name,1).lower()]=self.s.filenamesdic[i.replace(file_name,new_file_name,1)]
                             self.allocsizes[i.replace(file_name,new_file_name,1)]=self.allocsizes[i]
                             del self.allocsizes[i]
                         except IndexError:
@@ -242,8 +242,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 self.s.renamefile(file_name,new_file_name)
                 if ':' not in file_name:
                     self.s.renamefile(file_name[1:],new_file_name[1:])
-                self.lowerfilenamesdic[new_file_name.lower()]=self.filenamesdic[new_file_name]
                 del self.lowerfilenamesdic[file_name.lower()]
+                self.lowerfilenamesdic[new_file_name.lower()]=self.s.filenamesdic[new_file_name]
                 self.allocsizes[new_file_name]=self.allocsizes[file_name]
                 del self.allocsizes[file_name]
             except IndexError:
@@ -401,13 +401,19 @@ class SpaceFSOperations(BaseFileSystemOperations):
                     raise NTStatusDirectoryNotEmpty()
             self.s.deletefile(file_context)
             del self.lowerfilenamesdic[file_context.lower()]
-            for i in enumerate(self.filenameslst[index:]):
-                self.lowerfilenamesdic[i[1].split(',')[0].lower()]=i[0]+index
+            for i in enumerate(self.s.filenameslst[index:]):
+                if i[1].startswith('/'):
+                    self.lowerfilenamesdic[i[1].split(',')[0].lower()]=i[0]+index
             if ':' not in file_context:
                 self.s.deletefile(file_context[1:])
                 for i in list(self.s.filenamesdic.keys()):
                     if i.startswith(file_context+':'):
+                        rindex=self.s.filenamesdic[i]
                         self.s.deletefile(i)
+                        del self.lowerfilenamesdic[i.lower()]
+                        for i in enumerate(self.s.filenameslst[rindex:]):
+                            if i[1].startswith('/'):
+                                self.lowerfilenamesdic[i[1].split(',')[0].lower()]=i[0]+index
         if flags&FspCleanupAllocationSize:
             self.allocsizes[file_context]=(self.s.trunfile(file_context)+self.s.sectorsize-1)//self.s.sectorsize*self.s.sectorsize
         if (flags&FspCleanupSetLastAccessTime)&(not flags&FspCleanupDelete):
@@ -421,7 +427,12 @@ class SpaceFSOperations(BaseFileSystemOperations):
         for i in list(self.s.filenamesdic.keys()):
             if i.startswith(file_context+':'):
                 if i not in self.opened:
+                    rindex=self.s.filenamesdic[i]
                     self.s.deletefile(i)
+                    del self.lowerfilenamesdic[i.lower()]
+                    for i in enumerate(self.s.filenameslst[rindex:]):
+                        if i[1].startswith('/'):
+                            self.lowerfilenamesdic[i[1].split(',')[0].lower()]=i[0]+rindex
         if replace_file_attributes:
             self.s.winattrs[file_context]=attrtoATTR(bin(file_attributes)[2:])
         else:
