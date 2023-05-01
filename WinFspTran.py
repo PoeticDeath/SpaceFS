@@ -232,7 +232,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                             self.s.renamefile(i,i.replace(file_name,new_file_name,1))
                             if ':' not in i:
                                 self.s.renamefile(i[1:],i[1:].replace(file_name[1:],new_file_name[1:],1))
-                            self.lowerfilenamesdic[i.replace(file_name,new_file_name,1).lower()]=self.filenamesdic[i]
+                            self.lowerfilenamesdic[i.replace(file_name,new_file_name,1).lower()]=self.filenamesdic[i.replace(file_name,new_file_name,1)]
                             del self.lowerfilenamesdic[i.lower()]
                             self.allocsizes[i.replace(file_name,new_file_name,1)]=self.allocsizes[i]
                             del self.allocsizes[i]
@@ -242,7 +242,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 self.s.renamefile(file_name,new_file_name)
                 if ':' not in file_name:
                     self.s.renamefile(file_name[1:],new_file_name[1:])
-                self.lowerfilenamesdic[new_file_name.lower()]=self.filenamesdic[file_name]
+                self.lowerfilenamesdic[new_file_name.lower()]=self.filenamesdic[new_file_name]
                 del self.lowerfilenamesdic[file_name.lower()]
                 self.allocsizes[new_file_name]=self.allocsizes[file_name]
                 del self.allocsizes[file_name]
