@@ -389,6 +389,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if self.s.modes[file_context]!=16877:
             self.s.winattrs[file_context]|=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_ARCHIVE)[2:])
         index=self.s.filenamesdic[file_context.split(':')[0]]
+        rindex=self.s.filenamesdic[file_context]
         t=time()
         FspCleanupDelete=0x01
         FspCleanupAllocationSize=0x02
@@ -401,9 +402,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
                     raise NTStatusDirectoryNotEmpty()
             self.s.deletefile(file_context)
             del self.lowerfilenamesdic[file_context.lower()]
-            for i in enumerate(self.s.filenameslst[index:]):
+            for i in enumerate(self.s.filenameslst[rindex:]):
                 if i[1].startswith('/'):
-                    self.lowerfilenamesdic[i[1].split(',')[0].lower()]=i[0]+index
+                    self.lowerfilenamesdic[i[1].split(',')[0].lower()]=i[0]+rindex
             if ':' not in file_context:
                 self.s.deletefile(file_context[1:])
                 for i in list(self.s.filenamesdic.keys()):
@@ -413,7 +414,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                         del self.lowerfilenamesdic[i.lower()]
                         for i in enumerate(self.s.filenameslst[rindex:]):
                             if i[1].startswith('/'):
-                                self.lowerfilenamesdic[i[1].split(',')[0].lower()]=i[0]+index
+                                self.lowerfilenamesdic[i[1].split(',')[0].lower()]=i[0]+rindex
         if flags&FspCleanupAllocationSize:
             self.allocsizes[file_context]=(self.s.trunfile(file_context)+self.s.sectorsize-1)//self.s.sectorsize*self.s.sectorsize
         if (flags&FspCleanupSetLastAccessTime)&(not flags&FspCleanupDelete):
