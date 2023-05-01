@@ -400,7 +400,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 if self.readdir(file_context,'..')!=[]:
                     raise NTStatusDirectoryNotEmpty()
             self.s.deletefile(file_context)
-            del self.lowerfilenamesdic[file_context]
+            del self.lowerfilenamesdic[file_context.lower()]
             for i in enumerate(self.filenameslst[index:]):
                 self.lowerfilenamesdic[i[1].split(',')[0].lower()]=i[0]+index
             if ':' not in file_context:
