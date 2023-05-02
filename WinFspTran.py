@@ -86,14 +86,16 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 sectorsize=sectorsize>>1
             RawDisk(open(disk,'rb+')).write(i.to_bytes(1,'big')+bytes(4)+b'\xff\xfe')
         self.s=SpaceFS(disk)
-        if '/' not in self.s.filenamesdic:
-            self.s.createfile('/',16877)
-        else:
-            print('Careful the disk was unmounted improperly.')
-        self.s.winattrs['/']=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_DIRECTORY)[2:])
         if '' not in self.s.filenamesdic:
             self.s.createfile('',448)
             self.s.writefile('',0,b'O:WDG:WDD:P(A;;FA;;;WD)')
+        self.perms=dict([[file_name.split(':')[0],SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())] for file_name in self.s.filenameslst if file_name.startswith('/')])
+        if '/' not in self.s.filenamesdic:
+            self.s.createfile('/',16877)
+            self.perms['/']=SecurityDescriptor.from_string(self.s.readfile('',0,self.s.trunfile('')).decode())
+        else:
+            print('Careful the disk was unmounted improperly.')
+        self.s.winattrs['/']=attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_DIRECTORY)[2:])
         if ':' not in self.s.filenamesdic:
             self.s.createfile(':',448)
             self.s.writefile(':',0,b'SpaceFS')
@@ -142,13 +144,15 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 while dir_name not in self.s.filenamesdic:
                     dir_name='/'.join(dir_name.split('/')[:-1])
                 if self.s.winattrs[dir_name]&FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT:
-                    SD=SecurityDescriptor.from_string(self.s.readfile(dir_name.split(':')[0][1:],0,self.s.trunfile(dir_name.split(':')[0][1:])).decode())
+                    SD=self.perms[dir_name.split(':')[0]]
                     return (ATTRtoattr(bin(self.s.winattrs[dir_name])[2:]),SD.handle,SD.size)
                 raise NTStatusObjectNameNotFound()
         if file_name.split(':')[0][1:] not in self.s.filenamesdic:
             self.s.createfile(file_name.split(':')[0][1:],448)
-            self.s.writefile(file_name.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
-        SD=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
+            SD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
+            self.s.writefile(file_name.split(':')[0][1:],0,SD)
+            self.perms[file_name.split(':')[0]]=SecurityDescriptor.from_string(SD.decode())
+        SD=self.perms[file_name]
         return (ATTRtoattr(bin(self.s.winattrs[file_name])[2:]),SD.handle,SD.size)
     @operation
     def create(self,file_name,create_options,granted_access,file_attributes,security_descriptor,allocation_size):
@@ -173,8 +177,11 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 SD=security_descriptor.to_string()
                 if 'D:P' in SD:
                     self.s.writefile(file_name.split(':')[0][1:],0,SD.encode())
+                    self.perms[file_name.split(':')[0]]=security_descriptor
                 else:
-                    self.s.writefile(file_name.split(':')[0][1:],0,self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:])))
+                    SD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
+                    self.s.writefile(file_name.split(':')[0][1:],0,SD)
+                    self.perms[file_name.split(':')[0]]=SecurityDescriptor.from_string(SD.decode())
             self.s.winattrs[file_name]|=attrtoATTR(bin(file_attributes)[2:])
         except IndexError:
             raise NTStatusEndOfFile()
@@ -183,13 +190,13 @@ class SpaceFSOperations(BaseFileSystemOperations):
         return file_name
     @operation
     def get_security(self,file_context):
-        return SecurityDescriptor.from_string(self.s.readfile(file_context.split(':')[0][1:],0,self.s.trunfile(file_context.split(':')[0][1:])).decode())
+        return self.perms[file_context.split(':')[0]]
     @operation
     def set_security(self,file_context,security_information,modification_descriptor):
         if self.read_only:
             raise NTStatusMediaWriteProtected()
-        SD=SecurityDescriptor.from_string(self.s.readfile(file_context.split(':')[0][1:],0,self.s.trunfile(file_context.split(':')[0][1:])).decode())
-        SD=SD.evolve(security_information>>1<<1,modification_descriptor).to_string()
+        SD=self.perms[file_context.split(':')[0]]=self.perms[file_context.split(':')[0]].evolve(security_information>>1<<1,modification_descriptor)
+        SD=SD.to_string()
         if security_information%2!=0:
             S=SecurityDescriptor.from_cpointer(modification_descriptor).to_string()
             if 'G:' not in S:
@@ -232,6 +239,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
                             self.s.renamefile(i,i.replace(file_name,new_file_name,1))
                             if ':' not in i:
                                 self.s.renamefile(i[1:],i[1:].replace(file_name[1:],new_file_name[1:],1))
+                                self.perms[i.replace(file_name,new_file_name,1)]=self.perms[i]
+                                del self.perms[i]
                             del self.lowerfilenamesdic[i.lower()]
                             self.lowerfilenamesdic[i.replace(file_name,new_file_name,1).lower()]=self.s.filenamesdic[i.replace(file_name,new_file_name,1)]
                             self.allocsizes[i.replace(file_name,new_file_name,1)]=self.allocsizes[i]
@@ -242,6 +251,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 self.s.renamefile(file_name,new_file_name)
                 if ':' not in file_name:
                     self.s.renamefile(file_name[1:],new_file_name[1:])
+                    self.perms[new_file_name]=self.perms[file_name]
+                    del self.perms[file_name]
                 del self.lowerfilenamesdic[file_name.lower()]
                 self.lowerfilenamesdic[new_file_name.lower()]=self.s.filenamesdic[new_file_name]
                 self.allocsizes[new_file_name]=self.allocsizes[file_name]
@@ -407,6 +418,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                     self.lowerfilenamesdic[i[1].split(',')[0].lower()]=i[0]+rindex
             if ':' not in file_context:
                 self.s.deletefile(file_context[1:])
+                del self.perms[file_context]
                 for i in list(self.s.filenamesdic.keys()):
                     if i.startswith(file_context+':'):
                         rindex=self.s.filenamesdic[i]
