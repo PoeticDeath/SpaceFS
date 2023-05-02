@@ -164,7 +164,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             raise NTStatusMediaWriteProtected()
         file_name=file_name.replace('\\','/')
         dir_name='/'.join(file_name.split('/')[:-1])
-        if file_name in self.s.filenamesdic:
+        if file_name.lower() in self.lowerfilenamesdic:
             raise NTStatusObjectNameCollision()
         try:
             if bin(file_attributes)[2:].zfill(32)[-5]=='1':
