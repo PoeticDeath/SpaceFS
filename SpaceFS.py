@@ -80,8 +80,8 @@ class SpaceFS():
                             break
                     self.disksize=int(p.replace(i,'').strip())
         if c!=None:
-            self.rawdisk=open(self.diskname,'rb+')
-            self.flushdisk=open(self.diskname,'rb+')
+            self.rawdisk=open(self.diskname,'rb+',buffering=512)
+            self.flushdisk=open(self.diskname,'rb+',buffering=512)
             self.disk=RawDisk(self.rawdisk)
             self.fdisk=RawDisk(self.flushdisk)
         else:
