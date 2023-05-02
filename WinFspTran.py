@@ -152,7 +152,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             SD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
             self.s.writefile(file_name.split(':')[0][1:],0,SD)
             self.perms[file_name.split(':')[0]]=SecurityDescriptor.from_string(SD.decode())
-        SD=self.perms[file_name]
+        SD=self.perms[file_name.split(':')[0]]
         return (ATTRtoattr(bin(self.s.winattrs[file_name])[2:]),SD.handle,SD.size)
     @operation
     def create(self,file_name,create_options,granted_access,file_attributes,security_descriptor,allocation_size):
