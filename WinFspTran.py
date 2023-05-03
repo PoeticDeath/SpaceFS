@@ -263,7 +263,10 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def open(self,file_name,create_options,granted_access):
         file_name=file_name.replace('\\','/')
         if file_name not in self.s.filenamesdic:
-            file_name=self.s.filenameslst[self.lowerfilenamesdic[file_name.lower()]]
+            try:
+                file_name=self.s.filenameslst[self.lowerfilenamesdic[file_name.lower()]]
+            except KeyError:
+                raise NTStatusObjectNameNotFound()
         self.opened.append(file_name)
         return file_name
     @operation
@@ -364,6 +367,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         for i,dirent in enumerate(dirents):
             if dirent['file_name']==marker:
                 return dirents[i+1:]
+        raise NTStatusNotADirectory()
     @operation
     def read_directory(self,file_context,marker):
         return self.readdir(file_context,marker)
