@@ -89,7 +89,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if '' not in self.s.filenamesdic:
             self.s.createfile('',448)
             self.s.writefile('',0,b'O:WDG:WDD:P(A;;FA;;;WD)')
-        self.perms=dict([[file_name.split(':')[0],SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())] for file_name in self.s.filenameslst if file_name.startswith('/')])
+        self.perms=dict([[file_name.split(':')[0],SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())] for file_name in self.s.filenameslst if (file_name.startswith('/'))&(file_name[1:] in self.s.filenamesdic)])
         if '/' not in self.s.filenamesdic:
             self.s.createfile('/',16877)
             self.perms['/']=SecurityDescriptor.from_string(self.s.readfile('',0,self.s.trunfile('')).decode())
@@ -412,10 +412,6 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 if self.readdir(file_context,'..')!=[]:
                     raise NTStatusDirectoryNotEmpty()
             self.s.deletefile(file_context)
-            del self.lowerfilenamesdic[file_context.lower()]
-            for i in enumerate(self.s.filenameslst[rindex:]):
-                if i[1].startswith('/'):
-                    self.lowerfilenamesdic[i[1].split(',')[0].lower()]=i[0]+rindex
             if ':' not in file_context:
                 self.s.deletefile(file_context[1:])
                 del self.perms[file_context]
@@ -424,9 +420,13 @@ class SpaceFSOperations(BaseFileSystemOperations):
                         rindex=self.s.filenamesdic[i]
                         self.s.deletefile(i)
                         del self.lowerfilenamesdic[i.lower()]
-                        for i in enumerate(self.s.filenameslst[rindex:]):
-                            if i[1].startswith('/'):
-                                self.lowerfilenamesdic[i[1].split(',')[0].lower()]=i[0]+rindex
+                        for i in self.s.filenameslst[rindex:]:
+                            if i.startswith('/'):
+                                self.lowerfilenamesdic[i.split(',')[0].lower()]=self.s.filenamesdic[i.split(',')[0]]
+            del self.lowerfilenamesdic[file_context.lower()]
+            for i in self.s.filenameslst[rindex:]:
+                if i.startswith('/'):
+                    self.lowerfilenamesdic[i.split(',')[0].lower()]=self.s.filenamesdic[i.split(',')[0]]
         if flags&FspCleanupAllocationSize:
             self.allocsizes[file_context]=(self.s.trunfile(file_context)+self.s.sectorsize-1)//self.s.sectorsize*self.s.sectorsize
         if (flags&FspCleanupSetLastAccessTime)&(not flags&FspCleanupDelete):
@@ -443,9 +443,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
                     rindex=self.s.filenamesdic[i]
                     self.s.deletefile(i)
                     del self.lowerfilenamesdic[i.lower()]
-                    for i in enumerate(self.s.filenameslst[rindex:]):
-                        if i[1].startswith('/'):
-                            self.lowerfilenamesdic[i[1].split(',')[0].lower()]=i[0]+rindex
+                    for i in self.s.filenameslst[rindex:]:
+                        if i.startswith('/'):
+                            self.lowerfilenamesdic[i.split(',')[0].lower()]=self.s.filenamesdic[i.split(',')[0]]
         if replace_file_attributes:
             self.s.winattrs[file_context]=attrtoATTR(bin(file_attributes)[2:])
         else:
