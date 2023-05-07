@@ -18,6 +18,8 @@ def encode(locstr):
     locbytes=bytearray()
     [locbytes.append(emap[locstr[i:i+2]]) for i in range(0,len(locstr),2)]
     return locbytes
+def isint(i):
+    return type(i)==int
 class RawDisk():
     def __init__(self,disk):
         self.disk=disk
@@ -227,6 +229,7 @@ class SpaceFS():
                         lst.add(int(i.split(';')[0]))
             self.missinglst.extend(set(range(0,self.sectorcount)).difference(lst))
         else:
+            self.missinglst=list(filter(isint,self.missinglst))
             self.missinglst.sort()
         if pop:
             return self.missinglst.pop(0)
