@@ -229,8 +229,10 @@ class SpaceFS():
                         lst.add(int(i.split(';')[0]))
             self.missinglst.extend(set(range(0,self.sectorcount)).difference(lst))
         else:
-            self.missinglst=list(filter(isint,self.missinglst))
-            self.missinglst.sort()
+            try:
+                self.missinglst.sort()
+            except TypeError:
+                self.missinglst=sorted(list(filter(isint,self.missinglst)))
         if pop:
             return self.missinglst.pop(0)
         if whole:
