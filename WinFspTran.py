@@ -275,6 +275,11 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def close(self,file_context):
         self.opened.remove(file_context)
     def gfi(self,file_context):
+        if file_context not in self.s.filenamesdic:
+            try:
+                file_context=self.s.filenameslst[self.lowerfilenamesdic[file_context.lower()]]
+            except KeyError:
+                raise NTStatusObjectNameNotFound()
         index=self.s.filenamesdic[file_context.split(':')[0]]
         t=[int(struct.unpack('!d',self.s.times[index*24:index*24+24][i:i+8])[0]*10000000+116444736000000000) for i in range(0,24,8)]
         for i in range(3):
