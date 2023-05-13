@@ -147,6 +147,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
                     SD=self.perms[dir_name]
                     return (ATTRtoattr(bin(self.s.winattrs[dir_name])[2:]),SD.handle,SD.size)
                 raise NTStatusObjectNameNotFound()
+        if dir_name=='':
+            dir_name='/'
         if file_name.split(':')[0][1:] not in self.s.filenamesdic:
             self.perms[file_name.split(':')[0]]=self.perms[dir_name]
             self.s.createfile(file_name.split(':')[0][1:],448)
