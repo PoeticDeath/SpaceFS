@@ -372,6 +372,11 @@ class SpaceFSOperations(BaseFileSystemOperations):
         raise NTStatusNotADirectory()
     @operation
     def read_directory(self,file_context,marker):
+        if file_context not in self.s.filenamesdic:
+            try:
+                file_context=self.s.filenameslst[self.lowerfilenamesdic[file_context.lower()]]
+            except KeyError:
+                pass
         return self.readdir(file_context,marker)
     @operation
     def get_dir_info_by_name(self,file_context,file_name):
