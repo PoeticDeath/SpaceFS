@@ -144,14 +144,13 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 while dir_name not in self.s.filenamesdic:
                     dir_name='/'.join(dir_name.split('/')[:-1])
                 if self.s.winattrs[dir_name]&FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT:
-                    SD=self.perms[dir_name.split(':')[0]]
+                    SD=self.perms[dir_name]
                     return (ATTRtoattr(bin(self.s.winattrs[dir_name])[2:]),SD.handle,SD.size)
                 raise NTStatusObjectNameNotFound()
         if file_name.split(':')[0][1:] not in self.s.filenamesdic:
+            self.perms[file_name.split(':')[0]]=self.perms[dir_name]
             self.s.createfile(file_name.split(':')[0][1:],448)
-            SD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
-            self.s.writefile(file_name.split(':')[0][1:],0,SD)
-            self.perms[file_name.split(':')[0]]=SecurityDescriptor.from_string(SD.decode())
+            self.s.writefile(file_name.split(':')[0][1:],0,self.perms[file_name.split(':')[0]].to_string().encode())
         SD=self.perms[file_name.split(':')[0]]
         return (ATTRtoattr(bin(self.s.winattrs[file_name])[2:]),SD.handle,SD.size)
     @operation
@@ -166,6 +165,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
         dir_name='/'.join(file_name.split('/')[:-1])
         while dir_name not in self.s.filenamesdic:
             dir_name='/'.join(dir_name.split('/')[:-1])
+        if dir_name=='':
+            dir_name='/'
         if file_name.lower() in self.lowerfilenamesdic:
             raise NTStatusObjectNameCollision()
         try:
@@ -181,9 +182,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
                     self.s.writefile(file_name.split(':')[0][1:],0,SD.encode())
                     self.perms[file_name.split(':')[0]]=security_descriptor
                 else:
-                    SD=self.s.readfile(dir_name[1:],0,self.s.trunfile(dir_name[1:]))
-                    self.s.writefile(file_name.split(':')[0][1:],0,SD)
-                    self.perms[file_name.split(':')[0]]=SecurityDescriptor.from_string(SD.decode())
+                    self.perms[file_name.split(':')[0]]=self.perms[dir_name]
+                    self.s.writefile(file_name.split(':')[0][1:],0,self.perms[file_name.split(':')[0]].to_string().encode())
             self.s.winattrs[file_name]|=attrtoATTR(bin(file_attributes)[2:])
         except IndexError:
             raise NTStatusEndOfFile()
