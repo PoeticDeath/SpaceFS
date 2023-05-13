@@ -100,7 +100,7 @@ class SpaceFS():
         self.filenamesdic={}
         self.symlinks={}
         for i in enumerate(self.filenameslst):
-            filename=i[1].split(',')
+            filename=i[1].split('*')
             self.filenamesdic[filename[0]]=i[0]
             for o in filename[1:]:
                 self.symlinks[o]=filename[0]
@@ -125,7 +125,7 @@ class SpaceFS():
         self.winattrs={}
         for i in enumerate(self.filenameslst):
             ofs=(len(self.filenamesdic)*24)+(i[0]*11)
-            filename=i[1].split(',')[0]
+            filename=i[1].split('*')[0]
             self.guids[filename]=(int.from_bytes(s[ofs:ofs+3],'big'),int.from_bytes(s[ofs+3:ofs+5],'big'))
             self.modes[filename]=int.from_bytes(s[ofs+5:ofs+7],'big')
             self.winattrs[filename]=int.from_bytes(s[ofs+7:ofs+11],'big')
@@ -287,11 +287,11 @@ class SpaceFS():
         filenames=bytearray(b'\xff')
         guidsmodes=bytearray()
         for i in filenameslst:
-            i=i.split(',')[0]
+            i=i.split('*')[0]
             guidsmodes.extend(guids[i][0].to_bytes(3,'big')+guids[i][1].to_bytes(2,'big')+modes[i].to_bytes(2,'big')+winattrs[i].to_bytes(4,'big'))
             for p in symlinks:
-                if symlinks[p]==i.split(',')[0]:
-                    i+=','+p
+                if symlinks[p]==i.split('*')[0]:
+                    i+='*'+p
             filenames.extend(i.encode()+b'\xff')
         filenames.extend(b'\xfe'+times+guidsmodes)
         return elst,filenames
@@ -375,7 +375,7 @@ class SpaceFS():
         del self.modes[filename]
         del self.winattrs[filename]
         for i in enumerate(self.filenameslst[index:]):
-            self.filenamesdic[i[1].split(',')[0]]=i[0]+index
+            self.filenamesdic[i[1].split('*')[0]]=i[0]+index
         del self.times[index*24:index*24+24]
     def renamefile(self,oldfilename,newfilename):
         c=[i for i in self.symlinks if oldfilename.startswith(i+'/')]
