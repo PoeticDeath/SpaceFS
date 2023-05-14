@@ -557,7 +557,7 @@ def create_file_system(path,mountpoint,sectorsize,label='',prefix='',verbose=Tru
         unicode_on_disk=1,
         persistent_acls=1,
         reparse_points=1,
-        reparse_points_access_check=1,
+        #reparse_points_access_check=1,
         named_streams=1,
         post_cleanup_when_modified_only=1,
         um_file_context_is_user_context2=1,
