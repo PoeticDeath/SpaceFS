@@ -18,7 +18,6 @@ from winfspy import (
     BaseFileSystemOperations,
     enable_debug_log,
     FILE_ATTRIBUTE,
-    CREATE_FILE_CREATE_OPTIONS,
     NTStatusObjectNameNotFound,
     NTStatusDirectoryNotEmpty,
     NTStatusNotADirectory,
@@ -117,7 +116,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         while True:
             if (abs(len(self.s.filenamesdic)-ofc)>10000)|(abs(len(self.s.missinglst)-omc)>10):
                 with multiprocessing.Pool(1) as P:
-                    S=P.map(self.s.smptable,[[self.s.table,self.s.readtable(),self.s.filenameslst,self.s.guids,self.s.modes,self.s.winattrs,self.s.symlinks,self.s.times]])[0]
+                    S=P.map(self.s.smptable,[[self.s.readtable(),self.s.filenameslst,self.s.guids,self.s.modes,self.s.winattrs,self.s.symlinks,self.s.times]])[0]
                     self.s.simptable(elst=S[0],filenames=S[1])
                 ofc=len(self.s.filenamesdic)
                 omc=len(self.s.missinglst)
@@ -368,7 +367,6 @@ class SpaceFSOperations(BaseFileSystemOperations):
                         tmp=i.split('/')[file_context.count('/')]
                         o=self.gfi(i)
                         if {'file_name':tmp,**o} not in dirents:
-                            d='/'.join(i.split('/')[:file_context.count('/')+1])+'/'
                             dirents.append({'file_name':tmp,**o})
         dirents=sorted(dirents,key=lambda x:x['file_name'])
         if marker is None:
@@ -489,7 +487,6 @@ class SpaceFSOperations(BaseFileSystemOperations):
         dire=dir_name+'/'
         T=buf[:4]
         if T==b'\x0c\x00\x00\xa0':
-            SNO=int.from_bytes(buf[4:8],_BYTE_ENCODING)
             SNL=int.from_bytes(buf[8:10],_BYTE_ENCODING)
             PNO=int.from_bytes(buf[10:14],_BYTE_ENCODING)
             PNL=int.from_bytes(buf[14:16],_BYTE_ENCODING)
@@ -565,7 +562,6 @@ def create_file_system(path,mountpoint,sectorsize,label='',prefix='',verbose=Tru
         unicode_on_disk=1,
         persistent_acls=1,
         reparse_points=1,
-        #reparse_points_access_check=1,
         named_streams=1,
         post_cleanup_when_modified_only=1,
         um_file_context_is_user_context2=1,
@@ -574,8 +570,6 @@ def create_file_system(path,mountpoint,sectorsize,label='',prefix='',verbose=Tru
         debug=debug,
         reject_irp_prior_to_transact0=reject_irp_prior_to_transact0,
         wsl_features=1,
-        #security_timeout_valid=1,
-        #security_timeout=10000,
     )
     return fs
 def main(path,mountpoint,sectorsize,label,prefix,verbose,debug):

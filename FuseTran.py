@@ -112,7 +112,6 @@ class FuseTran(Operations):
                 if path.count('/')+1<=i.count('/'):
                     tmp=i.split('/')[path.count('/')]
                     if tmp not in dirents:
-                        d='/'.join(i.split('/')[:path.count('/')+1])+'/'
                         dirents.append(tmp)
         for r in dirents:
             yield r

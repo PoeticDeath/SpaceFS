@@ -240,7 +240,7 @@ class SpaceFS():
         return self.missinglst[0]
     @classmethod
     def smptable(self,args):
-        table,tmplst,filenameslst,guids,modes,winattrs,symlinks,times=args
+        tmplst,filenameslst,guids,modes,winattrs,symlinks,times=args
         lst=''
         for i in tmplst:
             if len(i)==0:
@@ -299,7 +299,7 @@ class SpaceFS():
         if (elst==None)|(filenames==None):
             if (self.oldsimptable==self.table)&(not F):
                 return
-            elst,filenames=self.smptable([self.table,self.readtable(),self.filenameslst,self.guids,self.modes,self.winattrs,self.symlinks,self.times])
+            elst,filenames=self.smptable([self.readtable(),self.filenameslst,self.guids,self.modes,self.winattrs,self.symlinks,self.times])
         self.tablesectorcount=(len(elst+filenames)+self.sectorsize-1)//self.sectorsize-1
         self.fdisk.seek(1)
         self.fdisk.write(self.tablesectorcount.to_bytes(4,'big')+elst+filenames)
