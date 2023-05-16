@@ -529,7 +529,15 @@ class SpaceFSOperations(BaseFileSystemOperations):
             raise NTStatusNotAReparsePoint()
     @operation
     def get_stream_info(self,file_context,buffer,length,p_bytes_transferred):
-        pass
+        buf=b''
+        for i in self.s.filenameslst:
+            if (file_context==i)|(i.startswith(file_context+':')):
+                if file_context!=i:
+                    o=i.replace(file_context+':','',1)
+                else:
+                    o=''
+                buf+=(len(o.encode(_STRING_ENCODING))+24).to_bytes(8,_BYTE_ENCODING)+self.s.trunfile(i).to_bytes(8,_BYTE_ENCODING)+self.allocsizes[i].to_bytes(8,_BYTE_ENCODING)+o.encode(_STRING_ENCODING)
+        return buf
 def create_file_system(path,mountpoint,sectorsize,label='',prefix='',verbose=True,debug=False,testing=False):
     if debug:
         enable_debug_log()
