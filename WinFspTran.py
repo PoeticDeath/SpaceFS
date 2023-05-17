@@ -88,7 +88,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
         if '' not in self.s.filenamesdic:
             self.s.createfile('',448)
             self.s.writefile('',0,b'O:WDG:WDD:P(A;;FA;;;WD)')
-        self.perms=dict([[file_name.split(':')[0],SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())] for file_name in self.s.filenameslst if (file_name.startswith('/'))&(file_name[1:] in self.s.filenamesdic)])
+        self.perms=dict([[file_name.split(':')[0],self.perm] for file_name in self.s.filenameslst if (file_name.startswith('/'))&self.chk_or_del(file_name)])
+        del self.perm
         if '/' not in self.s.filenamesdic:
             self.s.createfile('/',16877)
             self.perms['/']=SecurityDescriptor.from_string(self.s.readfile('',0,self.s.trunfile('')).decode())
@@ -121,6 +122,14 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 ofc=len(self.s.filenamesdic)
                 omc=len(self.s.missinglst)
             sleep(60)
+    def chk_or_del(self,file_name):
+        if file_name.split(':')[0][1:] in self.s.filenamesdic:
+            try:
+                self.perm=SecurityDescriptor.from_string(self.s.readfile(file_name.split(':')[0][1:],0,self.s.trunfile(file_name.split(':')[0][1:])).decode())
+                return True
+            except (RuntimeError,UnicodeDecodeError):
+                self.s.deletefile(file_name.split(':')[0][1:])
+        return False
     @operation
     def get_volume_info(self):
         avail=len(self.s.missinglst)
@@ -526,15 +535,16 @@ class SpaceFSOperations(BaseFileSystemOperations):
             raise NTStatusNotAReparsePoint()
     @operation
     def get_stream_info(self,file_context,buffer,length,p_bytes_transferred):
-        buf=b''
+        file_context=file_context.split(':')[0]
+        buf=bytearray()
         for i in self.s.filenameslst:
             if (file_context==i)|(i.startswith(file_context+':')):
                 if file_context!=i:
                     o=i.replace(file_context+':','',1)
                 else:
                     o=''
-                buf+=(len(o.encode(_STRING_ENCODING))+24).to_bytes(8,_BYTE_ENCODING)+self.s.trunfile(i).to_bytes(8,_BYTE_ENCODING)+self.allocsizes[i].to_bytes(8,_BYTE_ENCODING)+o.encode(_STRING_ENCODING)
-        return buf
+                buf.extend((len(o.encode(_STRING_ENCODING))+24).to_bytes(8,_BYTE_ENCODING)+self.s.trunfile(i).to_bytes(8,_BYTE_ENCODING)+self.allocsizes[i].to_bytes(8,_BYTE_ENCODING)+o.encode(_STRING_ENCODING))
+        return bytes(buf)
 def create_file_system(path,mountpoint,sectorsize,label='',prefix='',verbose=True,debug=False,testing=False):
     if debug:
         enable_debug_log()
