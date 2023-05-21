@@ -85,7 +85,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 sectorsize=sectorsize>>1
             RawDisk(open(disk,'rb+')).write(i.to_bytes(1,'big')+bytes(4)+b'\xff\xfe')
         self.s=SpaceFS(disk)
-        self.perms=dict([[file_name.split(':')[0],self.perm] for file_name in self.s.filenameslst if (file_name.startswith('/'))&self.chk_or_del(file_name)])
+        self.perms=dict([[file_name.split(':')[0],self.perm] for file_name in self.s.filenameslst if (file_name.startswith('/')|file_name=='')&self.chk_or_del(file_name)])
         del self.perm
         if '' not in self.s.filenamesdic:
             self.s.createfile('',448)
