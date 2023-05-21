@@ -447,11 +447,11 @@ class SpaceFSOperations(BaseFileSystemOperations):
                         del self.lowerfilenamesdic[i.lower()]
                         for i in self.s.filenameslst[rindex:]:
                             if i.startswith('/'):
-                                self.lowerfilenamesdic[i.split(',')[0].lower()]=self.s.filenamesdic[i.split(',')[0]]
+                                self.lowerfilenamesdic[i.split('*')[0].lower()]=self.s.filenamesdic[i.split('*')[0]]
             del self.lowerfilenamesdic[file_context.lower()]
             for i in self.s.filenameslst[rindex:]:
                 if i.startswith('/'):
-                    self.lowerfilenamesdic[i.split(',')[0].lower()]=self.s.filenamesdic[i.split(',')[0]]
+                    self.lowerfilenamesdic[i.split('*')[0].lower()]=self.s.filenamesdic[i.split('*')[0]]
         if flags&FspCleanupAllocationSize:
             self.allocsizes[file_context]=(self.s.trunfile(file_context)+self.s.sectorsize-1)//self.s.sectorsize*self.s.sectorsize
         if (flags&FspCleanupSetLastAccessTime)&(not flags&FspCleanupDelete):
