@@ -153,7 +153,7 @@ class SpaceFS:
             self.table[-1] = ""
         self.table = ".".join(self.table)
         self.disk.seek(0)
-        self.missinglst = []
+        self.missinglst = set()
         self.oldsimptable = self.table
         self.oldreadtable = []
         self.oldredtable = []
@@ -262,36 +262,33 @@ class SpaceFS:
                 for i in t:
                     self.part.pop(i)
         if self.sectorcount < self.oldsectorcount:
-            self.missinglst = list(
+            self.missinglst = set(
                 filter(lambda x: x < self.sectorcount, self.missinglst)
             )
             self.oldsectorcount = self.sectorcount
         if len(self.missinglst) == 0:
-            lst = set()
             table = self.table
             table = [i for i in table.replace(",", ".").split(".") if i]
             if not table and not whole:
                 return 0
+            lst = set()
             for i in table:
                 if "-" in i:
                     p = i.split("-")
                     [
                         lst.add(i)
-                        for i in list(
+                        for i in set(
                             range(int(p[0].split(";")[0]), int(p[1].split(";")[0]) + 1)
                         )
                     ]
                 elif int(i.split(";")[0]) not in lst:
                     lst.add(int(i.split(";")[0]))
-            self.missinglst.extend(set(range(self.sectorcount)).difference(lst))
-        else:
-            try:
-                self.missinglst.sort()
-            except TypeError:
-                self.missinglst = sorted(list(filter(isint, self.missinglst)))
+            self.missinglst = set(range(self.sectorcount)).difference(lst)
+        elif type(next(iter(self.missinglst))) == str:
+            self.missinglst = set(filter(isint, self.missinglst))
         if pop:
-            return self.missinglst.pop(0)
-        return self.missinglst if whole else self.missinglst[0]
+            return self.missinglst.pop()
+        return self.missinglst if whole else next(iter(self.missinglst))
 
     @classmethod
     def smptable(cls, args):
@@ -432,16 +429,16 @@ class SpaceFS:
                     self.part[int(m[0])].sort()
                     if self.part[int(m[0])] == [0, self.sectorsize]:
                         del self.part[int(m[0])]
-                        self.missinglst.append(int(m[0]))
+                        self.missinglst.add(int(m[0]))
                 except KeyError:
                     u = self.table.count(f",{m[0]};") + self.table.count(f".{m[0]};")
                     if u == 1:
-                        self.missinglst.append(int(m[0]))
+                        self.missinglst.add(int(m[0]))
                     elif u > 1:
                         self.part[int(m[0])] = [int(m[1]), int(m[2])]
         except IndexError:
             pass
-        self.missinglst.extend(mlst)
+        [self.missinglst.add(i) for i in mlst]
         self.table = (
             ".".join(
                 [
@@ -589,7 +586,7 @@ class SpaceFS:
                             self.part[int(m[0])].sort()
                             if self.part[int(m[0])] == [0, self.sectorsize]:
                                 del self.part[int(m[0])]
-                                self.missinglst.append(int(m[0]))
+                                self.missinglst.add(int(m[0]))
                         except KeyError:
                             pass
                         l = lst.pop(-1)
@@ -629,7 +626,7 @@ class SpaceFS:
             table = self.table.split(".")
             table[index] = nlst
             self.table = ".".join(table)
-            self.missinglst.extend(newmiss)
+            [self.missinglst.add(i) for i in newmiss]
         if size > s and self.writefile(filename, s, bytes(size - s), True) == 0:
             return 0
         self.times[index * 24 + 8 : index * 24 + 16] = struct.pack("!d", time())
@@ -718,8 +715,8 @@ class SpaceFS:
             f = self.findnewblock(part=True)
             if c == 0:
                 try:
-                    self.missinglst.pop(self.missinglst.index(f))
-                except ValueError:
+                    self.missinglst.remove(f)
+                except KeyError:
                     pass
                 f = [f, 0, self.sectorsize]
             else:
@@ -768,8 +765,8 @@ class SpaceFS:
                     pass
             if type(f) != list:
                 try:
-                    self.missinglst.pop(self.missinglst.index(f))
-                except ValueError:
+                    self.missinglst.remove(f)
+                except KeyError:
                     pass
                 self.part[f] = [c, self.sectorsize]
                 f = [f, 0, c]
