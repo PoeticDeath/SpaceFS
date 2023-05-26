@@ -144,7 +144,7 @@ class SpaceFS:
         self.filenamesdic = {}
         self.symlinks = {}
         for i in t[1:-1]:
-            i=i.decode()
+            i = i.decode()
             filename = i[1].split("*")
             self.filenamesdic[filename[0]] = i[0]
             for o in filename[1:]:
@@ -333,8 +333,10 @@ class SpaceFS:
         elst = encode(lst)
         filenames = bytearray(b"\xff")
         guidsmodes = bytearray()
+
         def s(filename):
             return filenamesdic[filename]
+
         for i in sorted(filenamesdic.keys(), key=s):
             i = i.split("*")[0]
             guidsmodes.extend(

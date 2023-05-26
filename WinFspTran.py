@@ -143,11 +143,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         self.allocsizes = {}
         self.opened = []
         self.lowerfilenamesdic = dict(
-            [
-                [i.lower(), i]
-                for i in self.s.filenamesdic
-                if i.startswith("/")
-            ]
+            [[i.lower(), i] for i in self.s.filenamesdic if i.startswith("/")]
         )
 
     def autosimp(self):
@@ -630,9 +626,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             del self.lowerfilenamesdic[file_context.lower()]
             for i in self.s.filenamesdic:
                 if (self.s.filenamesdic[i] >= rindex) & i.startswith("/"):
-                    self.lowerfilenamesdic[
-                        i.split("*")[0].lower()
-                    ] = i.split("*")[0]
+                    self.lowerfilenamesdic[i.split("*")[0].lower()] = i.split("*")[0]
         if flags & FspCleanupAllocationSize:
             self.allocsizes[file_context] = (
                 (self.s.trunfile(file_context) + self.s.sectorsize - 1)
@@ -659,9 +653,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 del self.lowerfilenamesdic[i.lower()]
                 for i in self.s.filenamesdic:
                     if (self.s.filenamesdic[i] >= rindex) & i.startswith("/"):
-                        self.lowerfilenamesdic[
-                            i.split("*")[0].lower()
-                        ] = i.split("*")[0]
+                        self.lowerfilenamesdic[i.split("*")[0].lower()] = i.split("*")[
+                            0
+                        ]
         if replace_file_attributes:
             self.s.winattrs[file_context] = attrtoATTR(bin(file_attributes)[2:])
         else:
