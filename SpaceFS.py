@@ -141,10 +141,10 @@ class SpaceFS:
         t = s[0].split(b"\xff")
         s = b"\xfe".join(s[1:]) + b"\xfe"
         self.table = decode(t[0]).split(".")
-        self.filenameslst = [i.decode() for i in t[1:-1]]
         self.filenamesdic = {}
         self.symlinks = {}
-        for i in enumerate(self.filenameslst):
+        for i in t[1:-1]:
+            i=i.decode()
             filename = i[1].split("*")
             self.filenamesdic[filename[0]] = i[0]
             for o in filename[1:]:
@@ -168,7 +168,7 @@ class SpaceFS:
         self.guids = {}
         self.modes = {}
         self.winattrs = {}
-        for i in enumerate(self.filenameslst):
+        for i in enumerate(self.filenamesdic):
             ofs = (len(self.filenamesdic) * 24) + (i[0] * 11)
             filename = i[1].split("*")[0]
             self.guids[filename] = (
@@ -292,7 +292,7 @@ class SpaceFS:
 
     @classmethod
     def smptable(cls, args):
-        tmplst, filenameslst, guids, modes, winattrs, symlinks, times = args
+        tmplst, filenamesdic, guids, modes, winattrs, symlinks, times = args
         lst = ""
         for i in tmplst:
             if len(i) == 0:
@@ -333,7 +333,9 @@ class SpaceFS:
         elst = encode(lst)
         filenames = bytearray(b"\xff")
         guidsmodes = bytearray()
-        for i in filenameslst:
+        def s(filename):
+            return filenamesdic[filename]
+        for i in sorted(filenamesdic.keys(), key=s):
             i = i.split("*")[0]
             guidsmodes.extend(
                 guids[i][0].to_bytes(3, "big")
@@ -355,7 +357,7 @@ class SpaceFS:
             elst, filenames = self.smptable(
                 [
                     self.readtable(),
-                    self.filenameslst,
+                    self.filenamesdic,
                     self.guids,
                     self.modes,
                     self.winattrs,
@@ -393,7 +395,6 @@ class SpaceFS:
         self.modes[filename] = mode
         self.winattrs[filename] = 2048
         self.filenamesdic[filename] = len(self.filenamesdic)
-        self.filenameslst.append(filename)
         self.table += "."
         self.flst.append([])
         self.times.extend(struct.pack("!d", time()) * 3)
@@ -448,13 +449,13 @@ class SpaceFS:
             )
             + "."
         )
-        self.filenameslst.pop(index)
         del self.filenamesdic[filename]
         del self.guids[filename]
         del self.modes[filename]
         del self.winattrs[filename]
-        for i in enumerate(self.filenameslst[index:]):
-            self.filenamesdic[i[1].split("*")[0]] = i[0] + index
+        for i in self.filenamesdic:
+            if self.filenamesdic[i] >= index:
+                self.filenamesdic[i.split("*")[0]] -= 1
         del self.times[index * 24 : index * 24 + 24]
 
     def renamefile(self, oldfilename, newfilename):
@@ -475,7 +476,6 @@ class SpaceFS:
         if self.findnewblock() >= self.sectorcount + 1:
             raise IndexError
         oldindex = self.filenamesdic[oldfilename]
-        self.filenameslst[oldindex] = newfilename
         del self.filenamesdic[oldfilename]
         self.filenamesdic[newfilename] = oldindex
         self.guids[newfilename] = self.guids[oldfilename]

@@ -110,7 +110,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         self.perms = dict(
             [
                 [file_name.split(":")[0], self.perm]
-                for file_name in self.s.filenameslst
+                for file_name in self.s.filenamesdic
                 if (file_name.startswith("/")) & self.chk_or_del(file_name)
             ]
         )
@@ -144,8 +144,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
         self.opened = []
         self.lowerfilenamesdic = dict(
             [
-                [i.lower(), self.s.filenamesdic[i]]
-                for i in self.s.filenameslst
+                [i.lower(), i]
+                for i in self.s.filenamesdic
                 if i.startswith("/")
             ]
         )
@@ -163,7 +163,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                         [
                             [
                                 self.s.readtable(),
-                                self.s.filenameslst,
+                                self.s.filenamesdic,
                                 self.s.guids,
                                 self.s.modes,
                                 self.s.winattrs,
@@ -214,9 +214,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         dir_name = "/".join(file_name.split("/")[:-1])
         if file_name not in self.s.filenamesdic:
             try:
-                file_name = self.s.filenameslst[
-                    self.lowerfilenamesdic[file_name.lower()]
-                ]
+                file_name = self.lowerfilenamesdic[file_name.lower()]
             except KeyError as e:
                 while dir_name not in self.s.filenamesdic:
                     dir_name = "/".join(dir_name.split("/")[:-1])
@@ -273,7 +271,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 self.s.createfile(file_name, 16877)
             else:
                 self.s.createfile(file_name, 448)
-            self.lowerfilenamesdic[file_name.lower()] = self.s.filenamesdic[file_name]
+            self.lowerfilenamesdic[file_name.lower()] = file_name
             if file_name.split(":")[0][1:] not in self.s.filenamesdic:
                 self.s.createfile(file_name.split(":")[0][1:], 448)
                 SD = security_descriptor.to_string()
@@ -359,9 +357,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                             del self.lowerfilenamesdic[i.lower()]
                             self.lowerfilenamesdic[
                                 i.replace(file_name, new_file_name, 1).lower()
-                            ] = self.s.filenamesdic[
-                                i.replace(file_name, new_file_name, 1)
-                            ]
+                            ] = i.replace(file_name, new_file_name, 1)
                             self.allocsizes[
                                 i.replace(file_name, new_file_name, 1)
                             ] = self.allocsizes[i]
@@ -375,9 +371,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                     self.perms[new_file_name] = self.perms[file_name]
                     del self.perms[file_name]
                 del self.lowerfilenamesdic[file_name.lower()]
-                self.lowerfilenamesdic[new_file_name.lower()] = self.s.filenamesdic[
-                    new_file_name
-                ]
+                self.lowerfilenamesdic[new_file_name.lower()] = new_file_name
                 self.allocsizes[new_file_name] = self.allocsizes[file_name]
                 del self.allocsizes[file_name]
             except IndexError as exc:
@@ -388,9 +382,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         file_name = file_name.replace("\\", "/")
         if file_name not in self.s.filenamesdic:
             try:
-                file_name = self.s.filenameslst[
-                    self.lowerfilenamesdic[file_name.lower()]
-                ]
+                file_name = self.lowerfilenamesdic[file_name.lower()]
             except KeyError as e:
                 raise NTStatusObjectNameNotFound() from e
         self.opened.append(file_name)
@@ -403,9 +395,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def gfi(self, file_context):
         if file_context not in self.s.filenamesdic:
             try:
-                file_context = self.s.filenameslst[
-                    self.lowerfilenamesdic[file_context.lower()]
-                ]
+                file_context = self.lowerfilenamesdic[file_context.lower()]
             except KeyError as e:
                 raise NTStatusObjectNameNotFound() from e
         index = self.s.filenamesdic[file_context.split(":")[0]]
@@ -567,9 +557,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def read_directory(self, file_context, marker):
         if file_context not in self.s.filenamesdic:
             try:
-                file_context = self.s.filenameslst[
-                    self.lowerfilenamesdic[file_context.lower()]
-                ]
+                file_context = self.lowerfilenamesdic[file_context.lower()]
             except KeyError:
                 pass
         return self.readdir(file_context, marker)
@@ -581,7 +569,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         file = file_context + file_name
         if file not in self.s.filenamesdic:
             try:
-                file = self.s.filenameslst[self.lowerfilenamesdic[file.lower()]]
+                file = self.lowerfilenamesdic[file.lower()]
             except KeyError as e:
                 raise NTStatusObjectNameNotFound() from e
         return {"file_name": file, **self.gfi(file)}
@@ -634,17 +622,17 @@ class SpaceFSOperations(BaseFileSystemOperations):
                         rindex = self.s.filenamesdic[i]
                         self.s.deletefile(i)
                         del self.lowerfilenamesdic[i.lower()]
-                        for i in self.s.filenameslst[rindex:]:
-                            if i.startswith("/"):
+                        for i in self.s.filenamesdic:
+                            if (self.s.filenamesdic[i] >= rindex) & i.startswith("/"):
                                 self.lowerfilenamesdic[
                                     i.split("*")[0].lower()
-                                ] = self.s.filenamesdic[i.split("*")[0]]
+                                ] = i.split("*")[0]
             del self.lowerfilenamesdic[file_context.lower()]
-            for i in self.s.filenameslst[rindex:]:
-                if i.startswith("/"):
+            for i in self.s.filenamesdic:
+                if (self.s.filenamesdic[i] >= rindex) & i.startswith("/"):
                     self.lowerfilenamesdic[
                         i.split("*")[0].lower()
-                    ] = self.s.filenamesdic[i.split("*")[0]]
+                    ] = i.split("*")[0]
         if flags & FspCleanupAllocationSize:
             self.allocsizes[file_context] = (
                 (self.s.trunfile(file_context) + self.s.sectorsize - 1)
@@ -669,11 +657,11 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 rindex = self.s.filenamesdic[i]
                 self.s.deletefile(i)
                 del self.lowerfilenamesdic[i.lower()]
-                for i in self.s.filenameslst[rindex:]:
-                    if i.startswith("/"):
+                for i in self.s.filenamesdic:
+                    if (self.s.filenamesdic[i] >= rindex) & i.startswith("/"):
                         self.lowerfilenamesdic[
                             i.split("*")[0].lower()
-                        ] = self.s.filenamesdic[i.split("*")[0]]
+                        ] = i.split("*")[0]
         if replace_file_attributes:
             self.s.winattrs[file_context] = attrtoATTR(bin(file_attributes)[2:])
         else:
@@ -783,7 +771,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
     def get_stream_info(self, file_context, buffer, length, p_bytes_transferred):
         file_context = file_context.split(":")[0]
         buf = bytearray()
-        for i in self.s.filenameslst:
+        for i in self.s.filenamesdic:
             if (file_context == i) | i.startswith(f"{file_context}:"):
                 o = i.replace(f"{file_context}:", "", 1) if file_context != i else ""
                 buf.extend(
