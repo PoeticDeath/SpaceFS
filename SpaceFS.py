@@ -143,9 +143,8 @@ class SpaceFS:
         self.table = decode(t[0]).split(".")
         self.filenamesdic = {}
         self.symlinks = {}
-        for i in t[1:-1]:
-            i = i.decode()
-            filename = i[1].split("*")
+        for i in enumerate(t[1:-1]):
+            filename = i[1].decode().split("*")
             self.filenamesdic[filename[0]] = i[0]
             for o in filename[1:]:
                 self.symlinks[o] = filename[0]
