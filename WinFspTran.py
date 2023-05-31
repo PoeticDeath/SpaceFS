@@ -71,9 +71,9 @@ def operation(fn):
 
     @wraps(fn)
     def wrapper(self, *args, **kwargs):
-        head = args[0] if args else None
-        tail = args[1:] if args else ()
         if logging.root.level >= logging.INFO:
+            head = args[0] if args else None
+            tail = args[1:] if args else ()
             try:
                 with self._thread_lock:
                     result = fn(self, *args, **kwargs)

@@ -500,19 +500,16 @@ class SpaceFS:
         amount = min(filesize, amount + start) - start
         end = (start + amount + self.sectorsize - 1) // self.sectorsize
         lst = self.flst[self.filenamesdic[filename]][start // self.sectorsize : end]
-        data = bytearray()
-        try:
-            i = lst[0]
-        except IndexError:
+        if len(lst) == 0:
             return
+        data = bytearray(amount)
+        i = lst[0]
         if type(i) == int:
             self.disk.seek(
                 self.disksize
                 - (i * self.sectorsize - (start % self.sectorsize) + self.sectorsize)
             )
-            data.extend(
-                self.disk.read(min(self.sectorsize - (start % self.sectorsize), amount))
-            )
+            st = self.sectorsize - (start % self.sectorsize)
         else:
             self.disk.seek(
                 self.disksize
@@ -523,26 +520,36 @@ class SpaceFS:
                     + self.sectorsize
                 )
             )
-            data.extend(
-                self.disk.read(min(int(i.split(";")[2]) - int(i.split(";")[1]), amount))
-            )
-        for i in lst[1:]:
-            if type(i) == int:
-                self.disk.seek(self.disksize - (i * self.sectorsize + self.sectorsize))
-                data.extend(self.disk.read(min(self.sectorsize, amount)))
+            st = int(i.split(";")[2]) - int(i.split(";")[1])
+        data[:st] = self.disk.read(min(st, amount))
+        for i in enumerate(lst[1:]):
+            if type(i[1]) == int:
+                self.disk.seek(
+                    self.disksize - (i[1] * self.sectorsize + self.sectorsize)
+                )
+                data[
+                    self.sectorsize * i[0]
+                    + st : self.sectorsize * i[0]
+                    + self.sectorsize
+                    + st
+                ] = self.disk.read(min(self.sectorsize, amount))
             else:
                 self.disk.seek(
                     self.disksize
                     - (
-                        int(i.split(";")[0]) * self.sectorsize
-                        - int(i.split(";")[1])
+                        int(i[1].split(";")[0]) * self.sectorsize
+                        - int(i[1].split(";")[1])
                         + self.sectorsize
                     )
                 )
-                data.extend(
-                    self.disk.read(
-                        min(int(i.split(";")[2]) - int(i.split(";")[1]), amount)
-                    )
+                data[
+                    self.sectorsize * i[0]
+                    + st : self.sectorsize * i[0]
+                    + int(i.split(";")[2])
+                    - int(i.split(";")[1])
+                    + st
+                ] = self.disk.read(
+                    min(int(i.split(";")[2]) - int(i.split(";")[1]), amount)
                 )
         self.times[index * 24 : index * 24 + 8] = struct.pack("!d", time())
         return bytes(data[:amount])
@@ -564,13 +571,13 @@ class SpaceFS:
             self.flst = self.readtable()
             lst = self.flst[index]
         if size is None:
-            if len(lst) != 0:
-                s = (len(lst) - 1) * self.sectorsize
-                try:
-                    tlst = lst[-1].split(";")
-                    return s + int(tlst[2]) - int(tlst[1])
-                except AttributeError:
+            l = len(lst)
+            if l != 0:
+                s = (l - 1) * self.sectorsize
+                if type(lst[-1]) != str:
                     return s + self.sectorsize
+                tlst = lst[-1].split(";")
+                return s + int(tlst[2]) - int(tlst[1])
             return 0
         s = self.trunfile(filename)
         if size < s:
@@ -677,7 +684,9 @@ class SpaceFS:
             pass
         h = None
         odata = None
-        if (m != 2) & (start + len(data) > self.trunfile(filename)):
+        if m == 2:
+            m = 1
+        elif start + len(data) > self.trunfile(filename):
             tlst = self.table.split(".")
             try:
                 self.findnewblock(part=True)
@@ -696,8 +705,6 @@ class SpaceFS:
                     self.part[int(h.split(";")[0])] = [0, self.sectorsize]
                 tlst[index] = ",".join(tlst[index].split(",")[:-1])
                 self.table = ".".join(tlst)
-        elif m == 2:
-            m = 1
         while minblocks > len(lst):
             tlst = self.table.split(".")
             try:
@@ -788,10 +795,6 @@ class SpaceFS:
         st = start - (start // self.sectorsize * self.sectorsize)
         end = (start + len(data) + self.sectorsize - 1) // self.sectorsize
         if not T:
-            data = [data[: self.sectorsize - st]] + [
-                data[i : i + self.sectorsize]
-                for i in range(self.sectorsize - st, len(data), self.sectorsize)
-            ]
             for i in enumerate(self.flst[index][start // self.sectorsize : end]):
                 u = 0
                 if type(i[1]) == str:
@@ -843,6 +846,21 @@ class SpaceFS:
                             self.disksize
                             - (i[1] * self.sectorsize + self.sectorsize - u)
                         )
-                for o in range((len(data[i[0]]) + 16777215) // 16777216):
-                    self.disk.write(data[i[0]][o * 16777216 : o * 16777216 + 16777216])
+                if i[0] == 0:
+                    for o in range((self.sectorsize - st + 16777215) // 16777216):
+                        self.disk.write(
+                            data[: self.sectorsize - st][
+                                o * 16777216 : o * 16777216 + 16777216
+                            ]
+                        )
+                else:
+                    for o in range((self.sectorsize + 16777215) // 16777216):
+                        self.disk.write(
+                            data[
+                                i[0] * self.sectorsize
+                                - st : i[0] * self.sectorsize
+                                + self.sectorsize
+                                - st
+                            ][o * 16777216 : o * 16777216 + 16777216]
+                        )
         self.times[index * 24 + 8 : index * 24 + 16] = struct.pack("!d", time())
