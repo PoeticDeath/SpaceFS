@@ -542,14 +542,14 @@ class SpaceFS:
                         + self.sectorsize
                     )
                 )
+                sd = int(i[1].split(";")[2]) - int(i[1].split(";")[1])
                 data[
                     self.sectorsize * i[0]
                     + st : self.sectorsize * i[0]
-                    + int(i.split(";")[2])
-                    - int(i.split(";")[1])
+                    + sd
                     + st
                 ] = self.disk.read(
-                    min(int(i.split(";")[2]) - int(i.split(";")[1]), amount)
+                    min(sd, amount)
                 )
         self.times[index * 24 : index * 24 + 8] = struct.pack("!d", time())
         return bytes(data[:amount])
