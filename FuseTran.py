@@ -139,7 +139,7 @@ class FuseTran(Operations):
         if path[-1] != "/":
             path += "/"
         for i in list(self.s.filenamesdic.keys()) + list(self.s.symlinks.keys()):
-            if i.startswith(path):
+            if (i != "/") & (i.startswith(path)):
                 if path.count("/") == i.count("/"):
                     c = i[1:].split("/")[-1]
                     if c not in dirents:
