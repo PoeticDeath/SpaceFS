@@ -103,6 +103,8 @@ class FuseTran(Operations):
             except ValueError as e:
                 s = 0
                 dir_name = path
+                if dir_name == '/.':
+                    dir_name = '/'
                 while dir_name not in self.s.guids:
                     dir_name = "/".join(dir_name.split("/")[:-1])
                 gid = self.s.guids[dir_name][0]
