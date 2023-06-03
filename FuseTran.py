@@ -20,6 +20,10 @@ class FuseTran(Operations):
                 i.to_bytes(1, "big") + bytes(4) + b"\xff\xfe"
             )
         self.s = SpaceFS(disk)
+        if "/" not in self.s.filenamesdic:
+            self.s.createfile("/", 16877)
+        else:
+            print("Careful the disk was unmounted improperly.")
         self.rwlock = Lock()
         self.mount = mount
         self.fd = 0
@@ -98,18 +102,18 @@ class FuseTran(Operations):
                 ]
             except ValueError as e:
                 s = 0
-                if os.name == "nt":
-                    gid = uid = 545
-                else:
-                    gid = uid = 1000
+                dir_name = path
+                while dir_name not in self.s.guids:
+                    dir_name = "/".join(dir_name.split("/")[:-1])+"/"
+                gid = self.s.guids[dir_name][0]
+                uid = self.s.guids[dir_name][1]
                 flags = 0
                 mode = 16877
                 if (path != "/") & (path != "/."):
                     if not sym:
                         raise FuseOSError(errno.ENOENT) from e
                     mode = 33206
-            if bin(mode)[2:].zfill(14)[-14] == "1":
-                return {
+            return {
                     "st_blocks": (s + self.s.sectorsize - 1) // self.s.sectorsize,
                     "st_atime": t[0],
                     "st_mtime": t[1],
@@ -120,19 +124,7 @@ class FuseTran(Operations):
                     "st_gid": gid,
                     "st_uid": uid,
                     "st_flags": flags,
-                    "st_rdev": int.from_bytes(self.s.readfile(path, 0, s), "big"),
-                }
-            return {
-                "st_blocks": (s + self.s.sectorsize - 1) // self.s.sectorsize,
-                "st_atime": t[0],
-                "st_mtime": t[1],
-                "st_ctime": t[2],
-                "st_birthtime": t[2],
-                "st_size": s,
-                "st_mode": mode,
-                "st_gid": gid,
-                "st_uid": uid,
-                "st_flags": flags,
+                    "st_rdev": int.from_bytes(self.s.readfile(path, 0, s), "big") if bin(mode)[2:].zfill(32)[-14] == "1" else 0,
             }
 
     def readdir(self, path, fh):
@@ -315,6 +307,7 @@ class FuseTran(Operations):
 
     def destroy(self, path):
         with self.rwlock:
+            self.s.deletefile("/")
             self.s.simptable(F=True)
 
     def flush(self, path, fh):
