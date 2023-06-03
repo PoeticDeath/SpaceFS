@@ -382,17 +382,16 @@ class SpaceFS:
             filename = filename.replace(c[0], self.symlinks[c[0]], 1)
         if filename in self.filenamesdic:
             raise FileExistsError
-        if ("/" != filename) & (filename.startswith("/")):
+        if (filename != "/") & (filename.startswith("/")):
             dir_name = filename
             while dir_name not in self.guids:
                 dir_name = "/".join(dir_name.split("/")[:-1])
             gid = self.guids[dir_name][0]
             uid = self.guids[dir_name][1]
+        elif os.name == "nt":
+            gid = uid = 545
         else:
-            if os.name == "nt":
-                gid = uid = 545
-            else:
-                gid = uid = 1000
+            gid = uid = 1000
         if (
             len(self.part) + self.tablesectorcount
             >= self.disksize // self.sectorsize - 10
@@ -551,13 +550,8 @@ class SpaceFS:
                 )
                 sd = int(i[1].split(";")[2]) - int(i[1].split(";")[1])
                 data[
-                    self.sectorsize * i[0]
-                    + st : self.sectorsize * i[0]
-                    + sd
-                    + st
-                ] = self.disk.read(
-                    min(sd, amount)
-                )
+                    self.sectorsize * i[0] + st : self.sectorsize * i[0] + sd + st
+                ] = self.disk.read(min(sd, amount))
         self.times[index * 24 : index * 24 + 8] = struct.pack("!d", time())
         return bytes(data[:amount])
 

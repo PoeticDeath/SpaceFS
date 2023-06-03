@@ -104,7 +104,7 @@ class FuseTran(Operations):
                 s = 0
                 dir_name = path
                 while dir_name not in self.s.guids:
-                    dir_name = "/".join(dir_name.split("/")[:-1])+"/"
+                    dir_name = "/".join(dir_name.split("/")[:-1])
                 gid = self.s.guids[dir_name][0]
                 uid = self.s.guids[dir_name][1]
                 flags = 0
@@ -114,17 +114,19 @@ class FuseTran(Operations):
                         raise FuseOSError(errno.ENOENT) from e
                     mode = 33206
             return {
-                    "st_blocks": (s + self.s.sectorsize - 1) // self.s.sectorsize,
-                    "st_atime": t[0],
-                    "st_mtime": t[1],
-                    "st_ctime": t[2],
-                    "st_birthtime": t[2],
-                    "st_size": s,
-                    "st_mode": mode,
-                    "st_gid": gid,
-                    "st_uid": uid,
-                    "st_flags": flags,
-                    "st_rdev": int.from_bytes(self.s.readfile(path, 0, s), "big") if bin(mode)[2:].zfill(32)[-14] == "1" else 0,
+                "st_blocks": (s + self.s.sectorsize - 1) // self.s.sectorsize,
+                "st_atime": t[0],
+                "st_mtime": t[1],
+                "st_ctime": t[2],
+                "st_birthtime": t[2],
+                "st_size": s,
+                "st_mode": mode,
+                "st_gid": gid,
+                "st_uid": uid,
+                "st_flags": flags,
+                "st_rdev": int.from_bytes(self.s.readfile(path, 0, s), "big")
+                if bin(mode)[2:].zfill(32)[-14] == "1"
+                else 0,
             }
 
     def readdir(self, path, fh):
