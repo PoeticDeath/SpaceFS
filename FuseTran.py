@@ -66,7 +66,7 @@ class FuseTran(Operations):
                 i for i in self.s.symlinks if path.startswith(f"{i}/") | (path == i)
             ]:
                 path = path.replace(c[0], self.s.symlinks[c[0]], 1)
-            self.s.guids[path] = (gid, uid)
+            self.s.guids[path] = (self.s.guids[path][0] if gid < 0 else gid, self.s.guids[path][1] if uid < 0 else uid)
 
     def getxattr(self, path, name, position=0):
         raise FuseOSError(errno.ENOTSUP)
