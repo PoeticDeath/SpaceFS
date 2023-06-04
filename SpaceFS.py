@@ -382,7 +382,7 @@ class SpaceFS:
             filename = filename.replace(c[0], self.symlinks[c[0]], 1)
         if filename in self.filenamesdic:
             raise FileExistsError
-        if filename.startswith("/"):
+        if (filename != "/") & (filename.startswith("/")):
             dir_name = filename
             while dir_name not in self.guids:
                 dir_name = "/".join(dir_name.split("/")[:-1])
