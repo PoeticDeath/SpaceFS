@@ -123,11 +123,13 @@ class SpaceFSOperations(BaseFileSystemOperations):
             self.perms["/"] = SecurityDescriptor.from_string(
                 self.s.readfile("", 0, self.s.trunfile("")).decode()
             )
-        else:
-            print("Careful the disk was unmounted improperly.")
         self.s.winattrs["/"] = attrtoATTR(
             bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_DIRECTORY)[2:]
         )
+        if "?" not in self.s.filenamesdic:
+            self.s.createfile("?", 16877)
+        else:
+            print("Careful the disk was unmounted improperly.")
         if ":" not in self.s.filenamesdic:
             self.s.createfile(":", 448)
             self.s.writefile(":", 0, b"SpaceFS")
@@ -859,7 +861,7 @@ def main(path, mountpoint, sectorsize, label, prefix, verbose, debug):
     finally:
         print("Stopping FS")
         fs.stop()
-        fs.operations.s.deletefile("/")
+        fs.operations.s.deletefile("?")
         fs.operations.s.simptable(F=True)
         print("FS stopped")
 
