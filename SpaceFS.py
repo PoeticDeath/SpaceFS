@@ -385,9 +385,7 @@ class SpaceFS:
         if (filename != "/") & (filename.startswith("/")):
             dir_name = filename
             while dir_name not in self.guids:
-                dir_name = "/".join(dir_name.split("/")[:-1])
-                if dir_name == "":
-                    dir_name = "/"
+                dir_name = "/".join(dir_name.split("/")[:-1]) or "/"
             gid = self.guids[dir_name][0]
             uid = self.guids[dir_name][1]
         elif os.name == "nt":

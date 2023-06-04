@@ -109,9 +109,7 @@ class FuseTran(Operations):
                 s = 0
                 dir_name = path
                 while dir_name not in self.s.guids:
-                    dir_name = "/".join(dir_name.split("/")[:-1])
-                    if dir_name == "":
-                        dir_name = "/"
+                    dir_name = "/".join(dir_name.split("/")[:-1]) or "/"
                 gid = self.s.guids[dir_name][0]
                 uid = self.s.guids[dir_name][1]
                 flags = 0
