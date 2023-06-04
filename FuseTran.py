@@ -22,6 +22,8 @@ class FuseTran(Operations):
         self.s = SpaceFS(disk)
         if "/" not in self.s.filenamesdic:
             self.s.createfile("/", 16877)
+        if "?" not in self.s.filenamesdic:
+            self.s.createfile("?", 16877)
         else:
             print("Careful the disk was unmounted improperly.")
         self.rwlock = Lock()
@@ -107,7 +109,9 @@ class FuseTran(Operations):
                 s = 0
                 dir_name = path
                 while dir_name not in self.s.guids:
-                    dir_name = "/".join(dir_name.split("/")[:-2]) + "/"
+                    dir_name = "/".join(dir_name.split("/")[:-1])
+                    if dir_name == "":
+                        dir_name = "/"
                 gid = self.s.guids[dir_name][0]
                 uid = self.s.guids[dir_name][1]
                 flags = 0
@@ -312,7 +316,7 @@ class FuseTran(Operations):
 
     def destroy(self, path):
         with self.rwlock:
-            self.s.deletefile("/")
+            self.s.deletefile("?")
             self.s.simptable(F=True)
 
     def flush(self, path, fh):
