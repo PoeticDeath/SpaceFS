@@ -36,12 +36,15 @@ class RawDisk:
 
     def seek(self, loc):
         self.loc = loc
-        return self.disk.seek(loc // 512 * 512)
+        loc = loc // 512 * 512
+        self.disk.seek(loc)
+        return loc
 
     def read(self, amount):
-        data = bytearray()
-        for i in range((self.loc % 512 + amount + 511) // 512 * 512, 0, -16777216):
-            data.extend(self.disk.read(min(i, 16777216)))
+        cm = (self.loc % 512 + amount + 511) // 512 * 512
+        data = bytearray(cm)
+        for i in range(0, cm, 16777216):
+            data[i : i + 16777216] = self.disk.read(min(cm - i, 16777216))
         data = data[self.loc % 512 : self.loc % 512 + amount]
         self.seek(self.loc + amount)
         return data
@@ -51,7 +54,9 @@ class RawDisk:
         self.seek(self.loc // 512 * 512)
         p1 = self.read(loc % 512)
         self.seek(loc + len(buf))
-        p3 = self.read(512 - (loc + len(buf)) % 512)
+        p3 = b""
+        if (loc % 512 != 0) | (len(buf) % 512 != 0):
+            p3 = self.read(512 - (loc + len(buf)) % 512)
         self.seek(loc)
         bum = p1 + buf + p3
         for i in range(0, len(bum), 16777216):
@@ -126,15 +131,21 @@ class SpaceFS:
                         if i in p:
                             break
                     self.disksize = int(p.replace(i, "").strip())
-        if c != None:
+        if c is None:
+            self.disk = open(self.diskname, "rb+")
+            self.fdisk = open(self.diskname, "rb+")
+        else:
             self.rawdisk = open(self.diskname, "rb+", buffering=512)
             self.flushdisk = open(self.diskname, "rb+", buffering=512)
             self.disk = RawDisk(self.rawdisk)
             self.fdisk = RawDisk(self.flushdisk)
-        else:
-            self.disk = open(self.diskname, "rb+")
-            self.fdisk = open(self.diskname, "rb+")
         self.sectorsize = 2 ** (int.from_bytes(self.disk.read(1), "big") + 9)
+        if (c != None) & (self.sectorsize != 512):
+            self.rawdisk = open(self.diskname, "rb+", buffering=self.sectorsize)
+            self.flushdisk = open(self.diskname, "rb+", buffering=self.sectorsize)
+            self.disk = RawDisk(self.rawdisk)
+            self.fdisk = RawDisk(self.flushdisk)
+            self.disk.seek(1)
         self.tablesectorcount = int.from_bytes(self.disk.read(4), "big") + 2
         self.sectorcount = self.disksize // self.sectorsize - self.tablesectorcount
         s = self.disk.read(self.sectorsize * self.tablesectorcount - 5).split(b"\xfe")
