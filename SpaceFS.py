@@ -37,7 +37,8 @@ class RawDisk:
     def seek(self, loc):
         self.loc = loc
         loc = loc // 512 * 512
-        self.disk.seek(loc)
+        if self.disk.tell() != loc:
+            self.disk.seek(loc)
         return loc
 
     def read(self, amount):
@@ -52,15 +53,15 @@ class RawDisk:
     def write(self, buf):
         loc = self.loc
         self.seek(self.loc // 512 * 512)
-        p1 = self.read(loc % 512)
+        data = bytearray()
+        data.extend(self.read(loc % 512))
+        data.extend(buf)
         self.seek(loc + len(buf))
-        p3 = b""
         if (loc % 512 != 0) | (len(buf) % 512 != 0):
-            p3 = self.read(512 - (loc + len(buf)) % 512)
+            data.extend(self.read(512 - (loc + len(buf)) % 512))
         self.seek(loc)
-        bum = p1 + buf + p3
-        for i in range(0, len(bum), 16777216):
-            self.disk.write(bum[i : i + 16777216])
+        for i in range(0, len(data), 16777216):
+            self.disk.write(data[i : i + 16777216])
         self.seek(loc + len(buf))
         return len(buf)
 
