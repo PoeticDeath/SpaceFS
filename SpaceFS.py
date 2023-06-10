@@ -310,9 +310,9 @@ class SpaceFS:
                 lst += "."
                 continue
             old = i[0]
-            try:
+            if type(i[0]) == str:
                 rold = int(i[0].split(";")[0]) - 2
-            except AttributeError:
+            else:
                 rold = i[0] - 2
             if len(i) == 1:
                 lst += str(i[0])
@@ -328,14 +328,10 @@ class SpaceFS:
                     lst += f"{str(old)},{str(o)},"
                 rold = old
                 old = o
-            try:
+            if type(rold) == str:
                 rold = int(rold.split(";")[0])
-            except AttributeError:
-                pass
-            try:
+            if type(old) == str:
                 old = int(old.split(";")[0])
-            except AttributeError:
-                pass
             if rold + 1 == old == y:
                 lst += str(o)
             if lst[-1] == ",":
@@ -814,7 +810,7 @@ class SpaceFS:
                     u = int(i[1].split(";")[1])
                 if i[0] == 0:
                     if odata != None:
-                        try:
+                        if type(i[1]) == str:
                             self.disk.seek(
                                 self.disksize
                                 - (
@@ -823,13 +819,13 @@ class SpaceFS:
                                     - u
                                 )
                             )
-                        except AttributeError:
+                        else:
                             self.disk.seek(
                                 self.disksize
                                 - (i[1] * self.sectorsize + self.sectorsize - u)
                             )
                         self.disk.write(odata)
-                    try:
+                    if type(i[1]) == str:
                         self.disk.seek(
                             self.disksize
                             - (
@@ -839,13 +835,13 @@ class SpaceFS:
                                 - u
                             )
                         )
-                    except AttributeError:
+                    else:
                         self.disk.seek(
                             self.disksize
                             - (i[1] * self.sectorsize + self.sectorsize - st - u)
                         )
                 else:
-                    try:
+                    if type(i[1]) == str:
                         self.disk.seek(
                             self.disksize
                             - (
@@ -854,7 +850,7 @@ class SpaceFS:
                                 - u
                             )
                         )
-                    except AttributeError:
+                    else:
                         self.disk.seek(
                             self.disksize
                             - (i[1] * self.sectorsize + self.sectorsize - u)
