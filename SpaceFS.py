@@ -31,13 +31,9 @@ def isint(i):
 
 class RawDisk:
     def __init__(self, disk, highbufdisk=None):
-        self.disk = disk
-        self.lowbufdisk = disk
-        self.highbufdisk = None
-        if highbufdisk is not None:
-            self.highbufdisk = highbufdisk
-        self.dis = 0
-        self.loc = 0
+        self.disk = self.lowbufdisk = disk
+        self.highbufdisk = highbufdisk
+        self.dis = self.loc = 0
 
     def seek(self, loc):
         self.loc = loc
@@ -66,9 +62,10 @@ class RawDisk:
 
     def write(self, buf):
         loc = self.loc
-        self.seek(self.loc // 512 * 512)
         data = bytearray()
-        data.extend(self.read(loc % 512))
+        if loc % 512 != 0:
+            self.seek(self.loc // 512 * 512)
+            data.extend(self.read(loc % 512))
         data.extend(buf)
         if (loc % 512 != 0) | (len(buf) % 512 != 0):
             self.seek(loc + len(buf))
@@ -156,8 +153,12 @@ class SpaceFS:
             self.fdisk = RawDisk(self.lowflushdisk)
         self.sectorsize = 2 ** (int.from_bytes(self.disk.read(1), "big") + 9)
         if (c != None) & (self.sectorsize != 512):
-            self.highrawdisk = open(self.diskname, "rb+", buffering=self.sectorsize)
-            self.highflushdisk = open(self.diskname, "rb+", buffering=self.sectorsize)
+            self.highrawdisk = open(
+                self.diskname, "rb+", buffering=min(self.sectorsize, 67108864)
+            )
+            self.highflushdisk = open(
+                self.diskname, "rb+", buffering=min(self.sectorsize, 67108864)
+            )
             self.disk = RawDisk(self.lowrawdisk, self.highrawdisk)
             self.fdisk = RawDisk(self.lowflushdisk, self.highflushdisk)
             self.disk.seek(1)
@@ -862,8 +863,7 @@ class SpaceFS:
                     )
                 else:
                     self.disk.seek(
-                        self.disksize
-                        - (i[1] * self.sectorsize + self.sectorsize - u)
+                        self.disksize - (i[1] * self.sectorsize + self.sectorsize - u)
                     )
                 if i[0] == 0:
                     for o in range((self.sectorsize - st + 16777215) // 16777216):
