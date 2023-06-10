@@ -30,15 +30,29 @@ def isint(i):
 
 
 class RawDisk:
-    def __init__(self, disk):
+    def __init__(self, disk, highbufdisk=None):
         self.disk = disk
+        self.lowbufdisk = disk
+        self.highbufdisk = None
+        if highbufdisk is not None:
+            self.highbufdisk = highbufdisk
+        self.dis = 0
         self.loc = 0
 
     def seek(self, loc):
         self.loc = loc
         loc = loc // 512 * 512
         if self.disk.tell() != loc:
+            if self.dis == 1:
+                self.disk.flush()
+                self.disk = self.lowbufdisk
+                self.dis = 0
             self.disk.seek(loc)
+        elif (self.dis == 0) & (self.highbufdisk is not None):
+            self.disk.flush()
+            self.disk = self.highbufdisk
+            self.disk.seek(loc)
+            self.dis = 1
         return loc
 
     def read(self, amount):
@@ -56,8 +70,8 @@ class RawDisk:
         data = bytearray()
         data.extend(self.read(loc % 512))
         data.extend(buf)
-        self.seek(loc + len(buf))
         if (loc % 512 != 0) | (len(buf) % 512 != 0):
+            self.seek(loc + len(buf))
             data.extend(self.read(512 - (loc + len(buf)) % 512))
         self.seek(loc)
         for i in range(0, len(data), 16777216):
@@ -136,16 +150,16 @@ class SpaceFS:
             self.disk = open(self.diskname, "rb+")
             self.fdisk = open(self.diskname, "rb+")
         else:
-            self.rawdisk = open(self.diskname, "rb+", buffering=512)
-            self.flushdisk = open(self.diskname, "rb+", buffering=512)
-            self.disk = RawDisk(self.rawdisk)
-            self.fdisk = RawDisk(self.flushdisk)
+            self.lowrawdisk = open(self.diskname, "rb+", buffering=512)
+            self.lowflushdisk = open(self.diskname, "rb+", buffering=512)
+            self.disk = RawDisk(self.lowrawdisk)
+            self.fdisk = RawDisk(self.lowflushdisk)
         self.sectorsize = 2 ** (int.from_bytes(self.disk.read(1), "big") + 9)
         if (c != None) & (self.sectorsize != 512):
-            self.rawdisk = open(self.diskname, "rb+", buffering=self.sectorsize)
-            self.flushdisk = open(self.diskname, "rb+", buffering=self.sectorsize)
-            self.disk = RawDisk(self.rawdisk)
-            self.fdisk = RawDisk(self.flushdisk)
+            self.highrawdisk = open(self.diskname, "rb+", buffering=self.sectorsize)
+            self.highflushdisk = open(self.diskname, "rb+", buffering=self.sectorsize)
+            self.disk = RawDisk(self.lowrawdisk, self.highrawdisk)
+            self.fdisk = RawDisk(self.lowflushdisk, self.highflushdisk)
             self.disk.seek(1)
         self.tablesectorcount = int.from_bytes(self.disk.read(4), "big") + 2
         self.sectorcount = self.disksize // self.sectorsize - self.tablesectorcount
@@ -310,10 +324,7 @@ class SpaceFS:
                 lst += "."
                 continue
             old = i[0]
-            if type(i[0]) == str:
-                rold = int(i[0].split(";")[0]) - 2
-            else:
-                rold = i[0] - 2
+            rold = int(i[0].split(";")[0]) - 2 if type(i[0]) == str else i[0] - 2
             if len(i) == 1:
                 lst += str(i[0])
             for o in i[1:]:
@@ -840,21 +851,20 @@ class SpaceFS:
                             self.disksize
                             - (i[1] * self.sectorsize + self.sectorsize - st - u)
                         )
+                elif type(i[1]) == str:
+                    self.disk.seek(
+                        self.disksize
+                        - (
+                            int(i[1].split(";")[0]) * self.sectorsize
+                            + self.sectorsize
+                            - u
+                        )
+                    )
                 else:
-                    if type(i[1]) == str:
-                        self.disk.seek(
-                            self.disksize
-                            - (
-                                int(i[1].split(";")[0]) * self.sectorsize
-                                + self.sectorsize
-                                - u
-                            )
-                        )
-                    else:
-                        self.disk.seek(
-                            self.disksize
-                            - (i[1] * self.sectorsize + self.sectorsize - u)
-                        )
+                    self.disk.seek(
+                        self.disksize
+                        - (i[1] * self.sectorsize + self.sectorsize - u)
+                    )
                 if i[0] == 0:
                     for o in range((self.sectorsize - st + 16777215) // 16777216):
                         self.disk.write(
