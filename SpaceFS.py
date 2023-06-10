@@ -30,22 +30,28 @@ def isint(i):
 
 
 class RawDisk:
-    def __init__(self, disk, highbufdisk=None):
+    def __init__(self, disk, buffersize=512, highbufdisk=None):
         self.disk = self.lowbufdisk = disk
         self.highbufdisk = highbufdisk
+        self.buffersize = buffersize
         self.dis = self.loc = 0
 
     def seek(self, loc):
+        oldloc = self.loc // 512
         self.loc = loc
         loc = loc // 512 * 512
         if self.disk.tell() != loc:
-            if self.dis == 1:
-                self.disk.flush()
+            if (self.dis == 1) & (
+                self.disk.tell() // self.buffersize != loc // self.buffersize
+            ):
                 self.disk = self.lowbufdisk
                 self.dis = 0
             self.disk.seek(loc)
-        elif (self.dis == 0) & (self.highbufdisk is not None):
-            self.disk.flush()
+        elif (
+            (self.dis == 0)
+            & (self.highbufdisk is not None)
+            & ((oldloc == loc // 512) | (oldloc + 1 == loc // 512))
+        ):
             self.disk = self.highbufdisk
             self.disk.seek(loc)
             self.dis = 1
@@ -153,14 +159,11 @@ class SpaceFS:
             self.fdisk = RawDisk(self.lowflushdisk)
         self.sectorsize = 2 ** (int.from_bytes(self.disk.read(1), "big") + 9)
         if (c != None) & (self.sectorsize != 512):
-            self.highrawdisk = open(
-                self.diskname, "rb+", buffering=min(self.sectorsize, 67108864)
-            )
-            self.highflushdisk = open(
-                self.diskname, "rb+", buffering=min(self.sectorsize, 67108864)
-            )
-            self.disk = RawDisk(self.lowrawdisk, self.highrawdisk)
-            self.fdisk = RawDisk(self.lowflushdisk, self.highflushdisk)
+            buffersize = min(self.sectorsize, 67108864)
+            self.highrawdisk = open(self.diskname, "rb+", buffering=buffersize)
+            self.highflushdisk = open(self.diskname, "rb+", buffering=buffersize)
+            self.disk = RawDisk(self.lowrawdisk, buffersize, self.highrawdisk)
+            self.fdisk = RawDisk(self.lowflushdisk, buffersize, self.highflushdisk)
             self.disk.seek(1)
         self.tablesectorcount = int.from_bytes(self.disk.read(4), "big") + 2
         self.sectorcount = self.disksize // self.sectorsize - self.tablesectorcount
