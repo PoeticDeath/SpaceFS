@@ -14,6 +14,6 @@ As of Version 2.0.1:
 Storage Efficiency:  
 ![SpaceEff](https://user-images.githubusercontent.com/46275713/213942347-c400bc6a-6e8d-42a5-8748-a5be8d45655d.png)  
 SpaceFS:  
-![SpaceFS](https://github.com/PoeticDeath/SpaceFS/assets/46275713/5486dcc2-971d-454e-ae21-b7d43a1f9d5b)  
+![SpaceFS](https://github.com/PoeticDeath/SpaceFS/assets/46275713/7166a03e-2a55-485f-bd2a-a749fa2ab304)  
 NTFS:  
 ![NTFS](https://user-images.githubusercontent.com/46275713/218371590-5d0647e5-af09-47bf-87ca-533b2c29ab56.png)  
