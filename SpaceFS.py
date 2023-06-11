@@ -41,8 +41,10 @@ class RawDisk:
         self.loc = loc
         loc = loc // 512 * 512
         if self.disk.tell() != loc:
-            if (self.dis == 1) & (
-                self.disk.tell() // self.buffersize != loc // self.buffersize
+            if (
+                (self.dis == 1)
+                & (self.disk.tell() // self.buffersize != loc // self.buffersize)
+                & (oldloc - loc // 512 < 2048)
             ):
                 self.disk = self.lowbufdisk
                 self.dis = 0
@@ -59,9 +61,9 @@ class RawDisk:
 
     def read(self, amount):
         cm = (self.loc % 512 + amount + 511) // 512 * 512
-        data = bytearray(cm)
+        data = bytearray()
         for i in range(0, cm, 16777216):
-            data[i : i + 16777216] = self.disk.read(min(cm - i, 16777216))
+            data.extend(self.disk.read(min(cm - i, 16777216)))
         data = data[self.loc % 512 : self.loc % 512 + amount]
         self.seek(self.loc + amount)
         return data
