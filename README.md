@@ -10,10 +10,10 @@ The Fuse version has better space savings and compatiblilty between Linux and Wi
     WinFspSpaceFS.exe "C:\Space FS.bin" S: (-s BlockSize) (-h For additional help)  
   Linux:  
     ./SpaceFS /Space\ FS.bin /mnt/Space\ FS (NoWindow) (BlockSize)  
-As of Version 2.0.1:  
+As of Version 2.0.2:  
 Storage Efficiency:  
 ![SpaceEff](https://user-images.githubusercontent.com/46275713/213942347-c400bc6a-6e8d-42a5-8748-a5be8d45655d.png)  
 SpaceFS:  
-![SpaceFS](https://github.com/PoeticDeath/SpaceFS/assets/46275713/7166a03e-2a55-485f-bd2a-a749fa2ab304)  
+![SpaceFS](https://github.com/PoeticDeath/SpaceFS/assets/46275713/b4ac5dad-3e7a-48c5-9e04-7dcd1de68906)  
 NTFS:  
 ![NTFS](https://user-images.githubusercontent.com/46275713/218371590-5d0647e5-af09-47bf-87ca-533b2c29ab56.png)  
