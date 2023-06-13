@@ -60,24 +60,22 @@ class RawDisk:
         return loc
 
     def read(self, amount):
-        cm = (self.loc % 512 + amount + 511) // 512 * 512
-        data = bytearray()
-        for i in range(0, cm, 16777216):
-            data.extend(self.disk.read(min(cm - i, 16777216)))
-        data = data[self.loc % 512 : self.loc % 512 + amount]
+        data = self.disk.read((self.loc % 512 + amount + 511) // 512 * 512)[
+            self.loc % 512 : self.loc % 512 + amount
+        ]
         self.seek(self.loc + amount)
         return data
 
     def write(self, buf):
         loc = self.loc
-        data = bytearray()
+        data = b""
         if loc % 512 != 0:
             self.seek(self.loc // 512 * 512)
-            data.extend(self.read(loc % 512))
-        data.extend(buf)
+            data += self.read(loc % 512)
+        data += buf
         if (loc % 512 != 0) | (len(buf) % 512 != 0):
             self.seek(loc + len(buf))
-            data.extend(self.read(512 - (loc + len(buf)) % 512))
+            data += self.read(512 - (loc + len(buf)) % 512)
         self.seek(loc)
         for i in range(0, len(data), 16777216):
             self.disk.write(data[i : i + 16777216])
@@ -533,7 +531,8 @@ class SpaceFS:
         lst = self.flst[self.filenamesdic[filename]][start // self.sectorsize : end]
         if len(lst) == 0:
             return
-        data = bytearray(amount)
+        if amount >= 16777216:
+            data = bytearray(amount)
         i = lst[0]
         if type(i) == int:
             self.disk.seek(
@@ -552,18 +551,24 @@ class SpaceFS:
                 )
             )
             st = int(i.split(";")[2]) - int(i.split(";")[1])
-        data[:st] = self.disk.read(min(st, amount))
+        if amount >= 16777216:
+            data[:st] = self.disk.read(min(st, amount))
+        else:
+            data = self.disk.read(min(st, amount))
         for i in enumerate(lst[1:]):
             if type(i[1]) == int:
                 self.disk.seek(
                     self.disksize - (i[1] * self.sectorsize + self.sectorsize)
                 )
-                data[
-                    self.sectorsize * i[0]
-                    + st : self.sectorsize * i[0]
-                    + self.sectorsize
-                    + st
-                ] = self.disk.read(min(self.sectorsize, amount))
+                if amount >= 16777216:
+                    data[
+                        self.sectorsize * i[0]
+                        + st : self.sectorsize * i[0]
+                        + self.sectorsize
+                        + st
+                    ] = self.disk.read(min(self.sectorsize, amount))
+                else:
+                    data += self.disk.read(min(self.sectorsize, amount))
             else:
                 self.disk.seek(
                     self.disksize
@@ -574,9 +579,12 @@ class SpaceFS:
                     )
                 )
                 sd = int(i[1].split(";")[2]) - int(i[1].split(";")[1])
-                data[
-                    self.sectorsize * i[0] + st : self.sectorsize * i[0] + sd + st
-                ] = self.disk.read(min(sd, amount))
+                if amount >= 16777216:
+                    data[
+                        self.sectorsize * i[0] + st : self.sectorsize * i[0] + sd + st
+                    ] = self.disk.read(min(sd, amount))
+                else:
+                    data += self.disk.read(min(sd, amount))
         self.times[index * 24 : index * 24 + 8] = struct.pack("!d", time())
         return bytes(data[:amount])
 
