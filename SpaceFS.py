@@ -46,6 +46,7 @@ class RawDisk:
                 & (self.disk.tell() // self.buffersize != loc // self.buffersize)
                 & (oldloc - loc // 512 < 2048)
             ):
+                self.disk.flush()
                 self.disk = self.lowbufdisk
                 self.dis = 0
             self.disk.seek(loc)
@@ -54,6 +55,7 @@ class RawDisk:
             & (self.highbufdisk is not None)
             & ((oldloc == loc // 512) | (oldloc + 1 == loc // 512))
         ):
+            self.disk.flush()
             self.disk = self.highbufdisk
             self.disk.seek(loc)
             self.dis = 1
@@ -479,14 +481,16 @@ class SpaceFS:
             )
             + "."
         )
-        del self.filenamesdic[filename]
-        del self.guids[filename]
-        del self.modes[filename]
-        del self.winattrs[filename]
+        del (
+            self.filenamesdic[filename],
+            self.guids[filename],
+            self.modes[filename],
+            self.winattrs[filename],
+            self.times[index * 24 : index * 24 + 24],
+        )
         for i in self.filenamesdic:
             if self.filenamesdic[i] >= index:
                 self.filenamesdic[i.split("*")[0]] -= 1
-        del self.times[index * 24 : index * 24 + 24]
 
     def renamefile(self, oldfilename, newfilename):
         c = [i for i in self.symlinks if oldfilename.startswith(f"{i}/")]
@@ -506,14 +510,16 @@ class SpaceFS:
         if self.findnewblock() >= self.sectorcount + 1:
             raise IndexError
         oldindex = self.filenamesdic[oldfilename]
-        del self.filenamesdic[oldfilename]
         self.filenamesdic[newfilename] = oldindex
         self.guids[newfilename] = self.guids[oldfilename]
-        del self.guids[oldfilename]
         self.modes[newfilename] = self.modes[oldfilename]
-        del self.modes[oldfilename]
         self.winattrs[newfilename] = self.winattrs[oldfilename]
-        del self.winattrs[oldfilename]
+        del (
+            self.filenamesdic[oldfilename],
+            self.guids[oldfilename],
+            self.modes[oldfilename],
+            self.winattrs[oldfilename],
+        )
 
     def readfile(self, filename, start, amount):
         if c := [i for i in self.symlinks if filename.startswith(f"{i}/")]:

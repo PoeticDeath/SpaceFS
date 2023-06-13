@@ -708,8 +708,9 @@ class SpaceFSOperations(BaseFileSystemOperations):
             .replace("..\\", "..\\" * dir_name.count("/"))
         )
         if len(file_context) != len(file_name):
-            SN += "\\".join(file_context.split("/"))
-            PN += "\\".join(file_context.split("/"))
+            t = "\\".join(file_context.split("/"))
+            SN += t
+            PN += t
         dire = f"{dir_name}/"
         if "?" not in SN + PN:
             NSN = os.path.normpath(os.path.join(dire, SN))
@@ -719,6 +720,8 @@ class SpaceFSOperations(BaseFileSystemOperations):
             NPN = SN
         if (NSN == file_name) | (NPN == file_name):
             raise NTStatusReparsePointNotResolved()
+        NPNE = NPN.encode(_STRING_ENCODING)
+        NPNNSNE = (NPN + NSN).encode(_STRING_ENCODING)
         return (
             T
             + len(
@@ -726,13 +729,13 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 + PNO.to_bytes(4, _BYTE_ENCODING)
                 + PNL.to_bytes(2, _BYTE_ENCODING)
                 + F.to_bytes(4, _BYTE_ENCODING)
-                + (NPN + NSN).encode(_STRING_ENCODING)
+                + NPNNSNE
             ).to_bytes(4, _BYTE_ENCODING)
-            + len(NPN.encode(_STRING_ENCODING)).to_bytes(2, _BYTE_ENCODING)
+            + len(NPNE).to_bytes(2, _BYTE_ENCODING)
             + len(NSN.encode(_STRING_ENCODING)).to_bytes(4, _BYTE_ENCODING)
-            + len(NPN.encode(_STRING_ENCODING)).to_bytes(2, _BYTE_ENCODING)
+            + len(NPNE).to_bytes(2, _BYTE_ENCODING)
             + F.to_bytes(4, _BYTE_ENCODING)
-            + (NPN + NSN).encode(_STRING_ENCODING)
+            + NPNNSNE
         )
 
     @operation
@@ -753,13 +756,10 @@ class SpaceFSOperations(BaseFileSystemOperations):
 
     @operation
     def delete_reparse_point(self, file_context, file_name, buf):
-        if self.s.winattrs[file_context] & attrtoATTR(
-            bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT)[2:]
-        ):
+        t = attrtoATTR(bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT)[2:])
+        if self.s.winattrs[file_context] & t:
             self.s.trunfile(file_context, 0)
-            self.s.winattrs[file_context] ^= attrtoATTR(
-                bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_REPARSE_POINT)[2:]
-            )
+            self.s.winattrs[file_context] ^= t
         else:
             raise NTStatusNotAReparsePoint()
 
@@ -770,11 +770,12 @@ class SpaceFSOperations(BaseFileSystemOperations):
         for i in self.s.filenamesdic:
             if (file_context == i) | i.startswith(f"{file_context}:"):
                 o = i.replace(f"{file_context}:", "", 1) if file_context != i else ""
+                p = o.encode(_STRING_ENCODING)
                 buf.extend(
-                    (len(o.encode(_STRING_ENCODING)) + 24).to_bytes(8, _BYTE_ENCODING)
+                    (len(p) + 24).to_bytes(8, _BYTE_ENCODING)
                     + self.s.trunfile(i).to_bytes(8, _BYTE_ENCODING)
                     + self.allocsizes[i].to_bytes(8, _BYTE_ENCODING)
-                    + o.encode(_STRING_ENCODING)
+                    + p
                 )
         return bytes(buf)
 
