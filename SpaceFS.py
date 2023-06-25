@@ -228,7 +228,9 @@ class SpaceFS:
                             range(int(u[0].split(";")[0]) + 1, int(u[1].split(";")[0]))
                         )
                     )
-                    if ";" in u[1]:
+                    try:
+                        tmplstpart.append(int(u[1]))
+                    except ValueError:
                         tmplstpart.append(u[1])
                 except IndexError:
                     if ";" in u[0]:
@@ -307,11 +309,9 @@ class SpaceFS:
                     [
                         lst.add(i)
                         for i in set(
-                            range(int(p[0].split(";")[0]), int(p[1].split(";")[0]))
+                            range(int(p[0].split(";")[0]), int(p[1].split(";")[0]) + 1)
                         )
                     ]
-                    if ";" in p[1]:
-                        lst.add(int(p[1].split(";")[0]))
                 elif int(i.split(";")[0]) not in lst:
                     lst.add(int(i.split(";")[0]))
             self.missinglst = set(range(self.sectorcount)).difference(lst)
