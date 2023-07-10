@@ -816,7 +816,7 @@ def create_file_system(
         volume_creation_time=int(time() * 10000000 + 116444736000000000),
         volume_serial_number=0,
         file_info_timeout=1000,
-        case_sensitive_search=0,
+        case_sensitive_search=1,
         case_preserved_names=1,
         unicode_on_disk=1,
         persistent_acls=1,
