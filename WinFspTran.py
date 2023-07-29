@@ -127,7 +127,10 @@ class SpaceFSOperations(BaseFileSystemOperations):
             bin(FILE_ATTRIBUTE.FILE_ATTRIBUTE_DIRECTORY)[2:]
         )
         if "?" not in self.s.filenamesdic:
-            self.s.createfile("?", 16877)
+            try:
+                self.s.createfile("?", 16877)
+            except StopIteration:
+                pass
         else:
             print("Careful the disk was unmounted improperly.")
         if ":" not in self.s.filenamesdic:
@@ -862,7 +865,8 @@ def main(path, mountpoint, sectorsize, label, prefix, verbose, debug):
     finally:
         print("Stopping FS")
         fs.stop()
-        fs.operations.s.deletefile("?")
+        if "?" in fs.operations.s.filenamesdic:
+            fs.operations.s.deletefile("?")
         fs.operations.s.simptable(F=True)
         print("FS stopped")
 
