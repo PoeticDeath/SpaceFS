@@ -192,7 +192,7 @@ class SpaceFS:
         self.part = {}
         try:
             self.findnewblock(part=True)
-        except IndexError:
+        except StopIteration:
             pass
         self.flst = self.readtable()
         self.times = bytearray(s[: len(self.filenamesdic) * 24])
@@ -417,12 +417,7 @@ class SpaceFS:
             gid = uid = 545
         else:
             gid = uid = 1000
-        if (
-            len(self.part) + self.tablesectorcount
-            >= self.disksize // self.sectorsize - 10
-            and self.findnewblock() >= self.sectorcount + 1
-        ):
-            raise IndexError
+        self.findnewblock()
         self.guids[filename] = (gid, uid)
         self.modes[filename] = mode
         self.winattrs[filename] = 2048
@@ -507,8 +502,7 @@ class SpaceFS:
             raise FileNotFoundError
         if newfilename in self.filenamesdic:
             self.deletefile(newfilename)
-        if self.findnewblock() >= self.sectorcount + 1:
-            raise IndexError
+        self.findnewblock()
         oldindex = self.filenamesdic[oldfilename]
         self.filenamesdic[newfilename] = oldindex
         self.guids[newfilename] = self.guids[oldfilename]
@@ -702,11 +696,8 @@ class SpaceFS:
             pass
         if partfull:
             try:
-                d = self.findnewblock()
-            except IndexError:
-                return 0
-            if d > self.sectorcount:
                 self.findnewblock(part=True)
+            except StopIteration:
                 full = True
                 for i in self.part:
                     prt = self.part[i]
@@ -730,7 +721,7 @@ class SpaceFS:
             tlst = self.table.split(".")
             try:
                 self.findnewblock(part=True)
-            except IndexError:
+            except StopIteration:
                 return 0
             if ";" in tlst[index].split(",")[-1]:
                 h = self.flst[index].pop()
@@ -749,7 +740,7 @@ class SpaceFS:
             tlst = self.table.split(".")
             try:
                 block = self.findnewblock(pop=True)
-            except IndexError:
+            except StopIteration:
                 return 0
             if len(lst) == 0:
                 tlst[index] = str(block)
@@ -760,7 +751,10 @@ class SpaceFS:
             if c != 0:
                 m = 1
         if m == 1 and self.trunfile(filename) < start + len(data):
-            f = self.findnewblock(part=True)
+            try:
+                f = self.findnewblock(part=True)
+            except StopIteration:
+                return 0
             if c == 0:
                 try:
                     self.missinglst.remove(f)

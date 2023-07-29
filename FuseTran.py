@@ -238,11 +238,11 @@ class FuseTran(Operations):
                         if i.startswith(f"{old}/"):
                             try:
                                 self.s.renamefile(i, i.replace(old, new, 1))
-                            except IndexError as e:
+                            except StopIteration as e:
                                 raise FuseOSError(errno.ENOSPC) from e
             try:
                 self.s.renamefile(old, new)
-            except IndexError as exc:
+            except StopIteration as exc:
                 raise FuseOSError(errno.ENOSPC) from exc
 
     def link(self, target, name):
@@ -274,7 +274,7 @@ class FuseTran(Operations):
                 self.s.createfile(path, mode)
         except FileExistsError as e:
             raise FuseOSError(errno.EEXIST) from e
-        except IndexError as e:
+        except StopIteration as e:
             raise FuseOSError(errno.ENOSPC) from e
         self.fd += 1
         if fi is None:

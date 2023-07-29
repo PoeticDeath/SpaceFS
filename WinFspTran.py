@@ -284,7 +284,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                         self.perms[file_name.split(":")[0]].to_string().encode(),
                     )
             self.s.winattrs[file_name] |= attrtoATTR(bin(file_attributes)[2:])
-        except IndexError as e:
+        except StopIteration as e:
             raise NTStatusEndOfFile() from e
         self.allocsizes[file_name] = allocation_size
         self.opened.append(file_name)
@@ -332,7 +332,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             try:
                 self.s.renamefile(file_name, new_file_name)
                 self.s.renamefile(file_name[1:], new_file_name[1:])
-            except IndexError as e:
+            except StopIteration as e:
                 raise NTStatusEndOfFile() from e
         else:
             tmp = list(self.s.filenamesdic.keys())
@@ -360,7 +360,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                                 i.replace(file_name, new_file_name, 1)
                             ] = self.allocsizes[i]
                             del self.allocsizes[i]
-                        except IndexError as e:
+                        except StopIteration as e:
                             raise NTStatusEndOfFile() from e
             try:
                 self.s.renamefile(file_name, new_file_name)
@@ -372,7 +372,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 self.lowerfilenamesdic[new_file_name.lower()] = new_file_name
                 self.allocsizes[new_file_name] = self.allocsizes[file_name]
                 del self.allocsizes[file_name]
-            except IndexError as exc:
+            except StopIteration as exc:
                 raise NTStatusEndOfFile() from exc
 
     @operation
