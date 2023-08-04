@@ -137,7 +137,7 @@ class FuseTran(Operations):
     def readdir(self, path, fh):
         if c := [i for i in self.s.symlinks if path.startswith(f"{i}/") | (path == i)]:
             path = path.replace(c[0], self.s.symlinks[c[0]], 1)
-        dirents = [".", ".."]
+        dirents = [".", ".."] if path != "/" else []
         if path[-1] != "/":
             path += "/"
         for i in list(self.s.filenamesdic.keys()) + list(self.s.symlinks.keys()):

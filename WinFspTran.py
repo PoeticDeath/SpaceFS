@@ -789,9 +789,14 @@ class SpaceFSOperations(BaseFileSystemOperations):
         else:
             dirents = [{"file_name": "", **fileinfo}]
         for i in list(self.s.filenamesdic.keys()) + list(self.s.symlinks.keys()):
-            if i.startswith(file_context + ":"):
+            if i.startswith(f"{file_context}:"):
                 streaminfo = self.gfi(i)
-                dirents.append({"file_name": i.replace(file_context + ":", "", 1), **streaminfo})
+                dirents.append(
+                    {
+                        "file_name": i.replace(f"{file_context}:", "", 1),
+                        **streaminfo,
+                    }
+                )
         return sorted(dirents, key=lambda x: x["file_name"])
 
 
