@@ -516,16 +516,19 @@ class SpaceFSOperations(BaseFileSystemOperations):
             file_context = file_context.replace(c[0], self.s.symlinks[c[0]], 1)
         if file_context[-1] != "/":
             file_context += "/"
-        dirents = [
-            {
-                "file_name": ".",
-                **self.gfi("/" + "/".join(file_context.split("/")[1:-1])),
-            },
-            {
-                "file_name": "..",
-                **self.gfi("/" + "/".join(file_context.split("/")[1:-2])),
-            },
-        ]
+        if file_context != "/":
+            dirents = [
+                {
+                    "file_name": ".",
+                    **self.gfi("/" + "/".join(file_context.split("/")[1:-1])),
+                },
+                {
+                    "file_name": "..",
+                    **self.gfi("/" + "/".join(file_context.split("/")[1:-2])),
+                },
+            ]
+        else:
+            dirents = []
         for i in list(self.s.filenamesdic.keys()) + list(self.s.symlinks.keys()):
             if (i != "/") & (":" not in i) & (i.startswith(file_context)):
                 if file_context.count("/") == i.count("/"):
@@ -768,19 +771,28 @@ class SpaceFSOperations(BaseFileSystemOperations):
 
     @operation
     def get_stream_info(self, file_context, buffer, length, p_bytes_transferred):
+        if file_context not in self.s.filenamesdic:
+            try:
+                file_context = self.lowerfilenamesdic[file_context.lower()]
+            except KeyError:
+                pass
+        if c := [
+            i
+            for i in self.s.symlinks
+            if file_context.startswith(f"{i}/") | (file_context == i)
+        ]:
+            file_context = file_context.replace(c[0], self.s.symlinks[c[0]], 1)
         file_context = file_context.split(":")[0]
-        buf = bytearray()
-        for i in self.s.filenamesdic:
-            if (file_context == i) | i.startswith(f"{file_context}:"):
-                o = i.replace(f"{file_context}:", "", 1) if file_context != i else ""
-                p = o.encode(_STRING_ENCODING)
-                buf.extend(
-                    (len(p) + 24).to_bytes(8, _BYTE_ENCODING)
-                    + self.s.trunfile(i).to_bytes(8, _BYTE_ENCODING)
-                    + self.allocsizes[i].to_bytes(8, _BYTE_ENCODING)
-                    + p
-                )
-        return bytes(buf)
+        fileinfo = self.gfi(file_context)
+        if fileinfo["file_attributes"] & FILE_ATTRIBUTE.FILE_ATTRIBUTE_DIRECTORY:
+            dirents = []
+        else:
+            dirents = [{"file_name": "", **fileinfo}]
+        for i in list(self.s.filenamesdic.keys()) + list(self.s.symlinks.keys()):
+            if i.startswith(file_context + ":"):
+                streaminfo = self.gfi(i)
+                dirents.append({"file_name": i.replace(file_context + ":", "", 1), **streaminfo})
+        return sorted(dirents, key=lambda x: x["file_name"])
 
 
 def create_file_system(
