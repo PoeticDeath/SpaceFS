@@ -110,7 +110,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
         self.perms = dict(
             [
                 [file_name.split(":")[0], self.perm]
-                for file_name in self.s.filenamesdic
+                for file_name in self.s.filenamesdic.copy()
                 if (file_name.startswith("/")) & self.chk_or_del(file_name)
             ]
         )
