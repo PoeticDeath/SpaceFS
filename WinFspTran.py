@@ -189,7 +189,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                     ).decode()
                 )
                 return True
-            except (RuntimeError, UnicodeDecodeError):
+            except (RuntimeError, UnicodeDecodeError, OSError):
                 self.s.deletefile(file_name.split(":")[0][1:])
         return False
 
