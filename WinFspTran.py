@@ -100,7 +100,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             while sectorsize > 512:
                 i += 1
                 sectorsize = sectorsize >> 1
-            RawDisk(open(disk, "rb+")).write(
+            RawDisk(open(disk, "rb+"), open(disk, "rb+", buffering=0)).write(
                 i.to_bytes(1, "big") + bytes(4) + b"\xff\xfe"
             )
         self.s = SpaceFS(disk)
