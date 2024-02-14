@@ -63,6 +63,8 @@ if __name__ == "__main__":
         foldername = root[len(path) :].replace("\\", "/")
         if len(foldername) == 0:
             foldername += "/"
+        if foldername[0] != "/":
+            foldername = "/" + foldername
         s.createfile(foldername[1:], 448)
         s.writefile(foldername[1:], 0, get_sec(root).encode())
 
