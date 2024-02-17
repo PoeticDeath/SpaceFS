@@ -220,6 +220,7 @@ class SpaceFS:
             )
             self.modes[filename] = int.from_bytes(s[ofs + 5 : ofs + 7], "big")
             self.winattrs[filename] = int.from_bytes(s[ofs + 7 : ofs + 11], "big")
+        self.findtable = [self.table, 0, self.table.find(".") + 1]
         self.simptable()
 
     def readtable(self):
@@ -685,6 +686,32 @@ class SpaceFS:
             return 0
         self.times[index * 24 + 8 : index * 24 + 16] = struct.pack("!d", time())
 
+    def findloc(self, index):
+        if index > abs(index - self.findtable[1]):
+            if abs(index - (len(self.filenamesdic) - 1)) < abs(index - self.findtable[1]):
+                loc = self.table.rfind(".")
+                ti = len(self.filenamesdic) - 1
+            elif self.findtable[0][:self.findtable[2]] == self.table[:self.findtable[2]]:
+                loc = self.findtable[2]
+                ti = self.findtable[1]
+            else:
+                loc = self.table.find(".") + 1
+                ti = 0
+        else:
+            loc = self.table.find(".") + 1
+            ti = 0
+        while ti < index:
+            loc = self.table.find(".", loc + 1)
+            ti += 1
+        while ti > index:
+            loc = self.table.rfind(".", 0, loc)
+            ti -= 1
+        if index:
+            self.findtable = [self.table, index - 1, self.table.rfind(".", 0, loc)]
+        else:
+            self.findtable = [self.table, 0, loc + 1]
+        return loc - bool(not index)
+
     def writefile(self, filename, start, data, T=False):
         c = [i for i in self.symlinks if filename.startswith(f"{i}/")]
         if c:
@@ -730,12 +757,11 @@ class SpaceFS:
         if m == 2:
             m = 1
         elif start + len(data) > self.trunfile(filename):
-            tlst = self.table.split(".")
             try:
                 self.findnewblock(part=True)
             except StopIteration:
                 return 0
-            if ";" in tlst[index].split(",")[-1]:
+            if self.trunfile(filename) % self.sectorsize:
                 h = self.flst[index].pop()
                 try:
                     self.part[int(h.split(";")[0])].append(int(h.split(";")[1]))
@@ -746,19 +772,23 @@ class SpaceFS:
                     self.part[int(h.split(";")[0])].sort()
                 except KeyError:
                     self.part[int(h.split(";")[0])] = [0, self.sectorsize]
-                tlst[index] = ",".join(tlst[index].split(",")[:-1])
-                self.table = ".".join(tlst)
+                if len(self.flst[index]) > 0:
+                    self.table = self.table.replace(f",{h}", "")
+                else:
+                    self.table = self.table.replace(h, "")
+        if minblocks > len(lst) or (m == 1 and self.trunfile(filename) < start + len(data)):
+            loc = self.findloc(index)
         while minblocks > len(lst):
-            tlst = self.table.split(".")
             try:
                 block = self.findnewblock(pop=True)
             except StopIteration:
                 return 0
             if len(lst) == 0:
-                tlst[index] = str(block)
+                self.table = self.table[:loc] + str(block) + self.table[loc:]
+                loc += len(str(block))
             else:
-                tlst[index] += f",{str(block)}"
-            self.table = ".".join(tlst)
+                self.table = self.table[:loc] + f",{str(block)}" + self.table[loc:]
+                loc += len(str(block)) + 1
             self.flst[index].append(block)
             if c != 0:
                 m = 1
@@ -824,20 +854,16 @@ class SpaceFS:
                     pass
                 self.part[f] = [c, self.sectorsize]
                 f = [f, 0, c]
-            tlst = self.table.split(".")
-            if len(lst) == minblocks:
-                tlst[index] = ",".join(tlst[index].split(","))
             e = (
                 f[0]
                 if (f[1] == 0) & (f[2] == self.sectorsize)
                 else f"{str(f[0])};{str(f[1])};{str(f[2])}"
             )
             if len(lst) == 0:
-                tlst[index] = str(e)
+                self.table = self.table[:loc] + str(e) + self.table[loc:]
             else:
-                tlst[index] += f",{str(e)}"
+                self.table = self.table[:loc] + f",{str(e)}" + self.table[loc:]
             self.flst[index].append(e)
-            self.table = ".".join(tlst)
         st = start - (start // self.sectorsize * self.sectorsize)
         end = (start + len(data) + self.sectorsize - 1) // self.sectorsize
         if not T:
