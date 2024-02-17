@@ -79,6 +79,8 @@ if __name__ == "__main__":
         for file in files:
             rootfile = root + "\\" + file
             filename = root[len(path) :].replace("\\", "/") + "/" + file
+            if filename[0] != "/":
+                filename = "/" + filename
             s.createfile(filename[1:], 448)
             s.writefile(filename[1:], 0, get_sec(rootfile).encode())
 
