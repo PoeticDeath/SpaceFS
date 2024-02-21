@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python 3.12
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: "3.12"
     - name: Install dependencies
@@ -31,7 +31,7 @@ jobs:
         pyinstaller -F FuseTran.py
         mv /home/runner/work/SpaceFS/SpaceFS/dist/FuseTran /home/runner/work/SpaceFS/SpaceFS/dist/SpaceFS
     - name: Upload SpaceFS
-      uses: actions/upload-artifact@v3.1.3
+      uses: actions/upload-artifact@v4
       with:
         name: SpaceFS
         path: /home/runner/work/SpaceFS/SpaceFS/dist/SpaceFS
@@ -43,7 +43,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python 3.12
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: "3.12"
     - name: Install dependencies
@@ -69,7 +69,7 @@ jobs:
         start StartFUSE.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: Upload FUSESpaceFS
-      uses: actions/upload-artifact@v3.1.3
+      uses: actions/upload-artifact@v4
       with:
         name: FUSESpaceFS
         path: C:\Users\runneradmin\runneradmin\configurator\bin\FUSESpaceFS.exe
@@ -765,7 +765,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python 3.12
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: "3.12"
     - name: Install dependencies
@@ -791,7 +791,7 @@ jobs:
         start StartWinFsp.bat
         python -c "from time import sleep; from os.path import isdir; [sleep(2) for i in range(10) if not isdir('S:')]"
     - name: Upload WinFspSpaceFS
-      uses: actions/upload-artifact@v3.1.3
+      uses: actions/upload-artifact@v4
       with:
         name: WinFspSpaceFS
         path: C:\Users\runneradmin\runneradmin\configurator\bin\WinFspSpaceFS.exe
