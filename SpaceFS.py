@@ -663,19 +663,19 @@ class SpaceFS:
                 if type(lst[-1]) == int:
                     newmiss.append(lst[-1])
             lst = lst[: (size + self.sectorsize - 1) // self.sectorsize - 1]
-            if type(p) == int:
-                o = size % self.sectorsize
-                if o != 0:
+            o = size % self.sectorsize
+            if o != 0:
+                if type(p) == int:
                     lst.append(f"{str(p)};0;{str(o)}")
-            elif type(p) == str:
-                lst.append(
-                    ";".join(p.split(";")[:2])
-                    + ";"
-                    + str(
-                        int(p.split(";")[2])
-                        - (s % self.sectorsize - size % self.sectorsize)
+                elif type(p) == str:
+                    lst.append(
+                        ";".join(p.split(";")[:2])
+                        + ";"
+                        + str(
+                            int(p.split(";")[2])
+                            - (s % self.sectorsize - o)
+                        )
                     )
-                )
             self.flst[index] = lst
             nlst = ",".join([str(i) for i in lst])
             table = self.table.split(".")
