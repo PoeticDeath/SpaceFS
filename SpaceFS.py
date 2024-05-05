@@ -662,7 +662,7 @@ class SpaceFS:
             except UnboundLocalError:
                 if type(lst[-1]) == int:
                     newmiss.append(lst[-1])
-            lst = lst[: (size + self.sectorsize - 1) // self.sectorsize - 1]
+            lst = lst[: max((size + self.sectorsize - 1) // self.sectorsize - 1, 0)]
             o = size % self.sectorsize
             if o != 0:
                 if type(p) == int:
