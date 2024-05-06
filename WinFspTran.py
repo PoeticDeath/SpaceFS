@@ -9,6 +9,8 @@ import multiprocessing
 from pathlib import Path
 from functools import wraps
 
+from IDLEDebug import Debug
+
 import struct
 from time import sleep, time
 from SpaceFS import SpaceFS, RawDisk
@@ -853,6 +855,7 @@ def create_file_system(
 
 
 def main(path, mountpoint, sectorsize, label, prefix, verbose, debug):
+    global fs
     fs = create_file_system(path, mountpoint, sectorsize, label, prefix, verbose, debug)
     try:
         print("Starting FS")
@@ -860,7 +863,7 @@ def main(path, mountpoint, sectorsize, label, prefix, verbose, debug):
         print("FS started, keep it running forever")
         while True:
             result = input(
-                "Toggle read-only flag (r) Toggle Verbose (v) Change MountPoint (m) Quit (q)?: "
+                "Toggle read-only flag (r) Toggle Verbose (v) Change MountPoint (m) IDLE Debug (d) Quit (q)?: "
             ).lower()
             if result == "r":
                 if fs.operations.read_only == True:
@@ -877,6 +880,10 @@ def main(path, mountpoint, sectorsize, label, prefix, verbose, debug):
             elif result == "m":
                 fs.mountpoint = input("New MountPoint: ")
                 fs.restart()
+            elif result == "d":
+                t = Debug()
+                while t.is_alive():
+                    sleep(1)
             elif result == "q":
                 break
     finally:
