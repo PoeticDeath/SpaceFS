@@ -102,62 +102,69 @@ class SpaceFS:
     def __init__(self, disk):
         c = None
         self.diskname = disk
-        self.disksize = os.path.getsize(self.diskname)
-        if self.disksize == 0:
-            try:
-                self.disksize = shutil.disk_usage(self.diskname)[0]
-            except OSError:
-                import wmi
-
-                c = wmi.WMI()
+        if os.name == "nt":
+            self.disksize = os.path.getsize(self.diskname)
+            if self.disksize == 0:
                 try:
-                    [drive] = c.Win32_DiskDrive(Index=int(self.diskname[17:]))
-                    self.disksize = int(drive.size)
-                except ValueError:
-                    for i in (
-                        os.popen(
-                            'powershell -Command "get-partition | fl -Property AccessPaths,DiskNumber,PartitionNumber"'
+                    self.disksize = shutil.disk_usage(self.diskname)[0]
+                except OSError:
+                    import wmi
+
+                    c = wmi.WMI()
+                    try:
+                        [drive] = c.Win32_DiskDrive(Index=int(self.diskname[17:]))
+                        self.disksize = int(drive.size)
+                    except ValueError:
+                        for i in (
+                            os.popen(
+                                'powershell -Command "get-partition | fl -Property AccessPaths,DiskNumber,PartitionNumber"'
+                            )
+                            .read()
+                            .split("\n\n")[1:-2]
+                        ):
+                            if self.diskname in i:
+                                break
+                        i = (
+                            "\n".join(i.split("\n")[1:])
+                            .replace("Number      : ", " #")
+                            .replace("\nPartitionNumber : ", ", Partition #")
+                            .split("#")
                         )
-                        .read()
-                        .split("\n\n")[1:-2]
-                    ):
-                        if self.diskname in i:
-                            break
-                    i = (
-                        "\n".join(i.split("\n")[1:])
-                        .replace("Number      : ", " #")
-                        .replace("\nPartitionNumber : ", ", Partition #")
-                        .split("#")
-                    )
-                    disk = i[1].split(",")[0]
-                    diskstyle = {}
-                    for o in (
+                        disk = i[1].split(",")[0]
+                        diskstyle = {}
+                        for o in (
+                            os.popen(
+                                'powershell -Command "get-disk | fl -Property Number,PartitionStyle"'
+                            )
+                            .read()
+                            .split("\n\n")[1:-2]
+                        ):
+                            o = o.split(":")
+                            diskstyle[o[1].split("\n")[0].strip()] = o[2].strip()
+                        if diskstyle[disk] == "MBR":
+                            i[2] = str(int(i[2]) - 1)
+                        elif diskstyle[disk] == "GPT":
+                            i[2] = str(int(i[2]) - 2)
+                        else:
+                            print("Unsupported Disk Format!")
+                            exit()
+                        i = "#".join(i)
+                        for p in (
                         os.popen(
-                            'powershell -Command "get-disk | fl -Property Number,PartitionStyle"'
-                        )
-                        .read()
-                        .split("\n\n")[1:-2]
-                    ):
-                        o = o.split(":")
-                        diskstyle[o[1].split("\n")[0].strip()] = o[2].strip()
-                    if diskstyle[disk] == "MBR":
-                        i[2] = str(int(i[2]) - 1)
-                    elif diskstyle[disk] == "GPT":
-                        i[2] = str(int(i[2]) - 2)
-                    else:
-                        print("Unsupported Disk Format!")
-                        exit()
-                    i = "#".join(i)
-                    for p in (
-                        os.popen(
-                            'powershell -Command "wmic partition get DeviceID,Size"'
-                        )
-                        .read()
-                        .split("\n\n")[1:-2]
-                    ):
-                        if i in p:
-                            break
-                    self.disksize = int(p.replace(i, "").strip())
+                                'powershell -Command "wmic partition get DeviceID,Size"'
+                            )
+                            .read()
+                            .split("\n\n")[1:-2]
+                        ):
+                            if i in p:
+                                break
+                        self.disksize = int(p.replace(i, "").strip())
+        else:
+                fd = os.open(self.diskname, os.O_RDONLY)
+                try:
+                    self.disksize = os.lseek(fd, 0, os.SEEK_END)
+                finally:
+                    os.close(fd)
         if c is None:
             self.disk = open(self.diskname, "rb+")
             self.fdisk = open(self.diskname, "rb+")
