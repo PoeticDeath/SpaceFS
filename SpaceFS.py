@@ -871,6 +871,19 @@ class SpaceFS:
             else:
                 self.table = self.table[:loc] + f",{str(e)}" + self.table[loc:]
             self.flst[index].append(e)
+        if h != None and odata == None:
+            u = int(h.split(";")[1])
+            self.disk.seek(
+                self.disksize
+                - (
+                    int(h.split(";")[0]) * self.sectorsize
+                    + self.sectorsize
+                    - u
+                )
+            )
+            odata = self.disk.read(
+                int(h.split(";")[2]) - int(h.split(";")[1])
+            )
         st = start - (start // self.sectorsize * self.sectorsize)
         end = (start + len(data) + self.sectorsize - 1) // self.sectorsize
         if not T:

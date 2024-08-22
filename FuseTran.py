@@ -379,6 +379,8 @@ def main():
             allow_other=True,
             big_writes=True,
             fsname="SpaceFS",
+            dev=True,
+            suid=True,
         )
 
 
