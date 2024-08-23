@@ -2,6 +2,7 @@
 import os
 import errno
 import struct
+import multiprocessing
 from sys import argv
 from time import sleep, time
 from contextlib import nullcontext
@@ -35,9 +36,30 @@ class FuseTran(Operations):
         Thread(target=self.autosimp, daemon=True).start()
 
     def autosimp(self):
+        ofc = len(self.s.filenamesdic)
+        omc = len(self.s.missinglst)
         while True:
-            with self.rwlock:
-                self.s.simptable()
+            if (abs(len(self.s.filenamesdic) - ofc) > 10000) | (
+                abs(len(self.s.missinglst) - omc) > 10
+            ):
+                with multiprocessing.Pool(1) as P:
+                    S = P.map(
+                        self.s.smptable,
+                        [
+                            [
+                                self.s.readtable(),
+                                self.s.filenamesdic,
+                                self.s.guids,
+                                self.s.modes,
+                                self.s.winattrs,
+                                self.s.symlinks,
+                                self.s.times,
+                            ]
+                        ],
+                    )[0]
+                    self.s.simptable(elst=S[0], filenames=S[1])
+                ofc = len(self.s.filenamesdic)
+                omc = len(self.s.missinglst)
             sleep(60)
 
     # Filesystem methods
