@@ -86,14 +86,14 @@ class FuseTran(Operations):
         raise FuseOSError(errno.ENOTSUP)
 
     def getattr(self, path, fh=None, sym=False):
-        if c := [i for i in self.s.symlinks if path.startswith(f"{i}/")]:
-            path = path.replace(c[0], self.s.symlinks[c[0]], 1)
-        if path in self.s.symlinks:
-            attrs = self.getattr(self.s.symlinks[path], fh, True)
-            attrs["st_mode"] = (0o120000 | 0o777)
-            attrs["st_nlink"] = 1
-            return attrs
         with self.rwlock:
+            if c := [i for i in self.s.symlinks if path.startswith(f"{i}/")]:
+                path = path.replace(c[0], self.s.symlinks[c[0]], 1)
+            if path in self.s.symlinks:
+                attrs = self.getattr(self.s.symlinks[path], fh, True)
+                attrs["st_mode"] = (0o120000 | 0o777)
+                attrs["st_nlink"] = 1
+                return attrs
             ti = time()
             t = [ti] * 3
             try:
