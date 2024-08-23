@@ -4,6 +4,7 @@ import errno
 import struct
 from sys import argv
 from time import sleep, time
+from contextlib import nullcontext
 from threading import Thread, Lock
 from SpaceFS import SpaceFS, RawDisk
 from refuse.high import FUSE, FuseOSError, Operations
@@ -86,7 +87,7 @@ class FuseTran(Operations):
         raise FuseOSError(errno.ENOTSUP)
 
     def getattr(self, path, fh=None, sym=False):
-        with self.rwlock:
+        with self.rwlock if not sym else nullcontext():
             if c := [i for i in self.s.symlinks if path.startswith(f"{i}/")]:
                 path = path.replace(c[0], self.s.symlinks[c[0]], 1)
             if path in self.s.symlinks:
