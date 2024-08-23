@@ -198,7 +198,7 @@ class SpaceFS:
             filename = i[1].decode().split("*")
             self.filenamesdic[filename[0]] = i[0]
             for o in filename[1:]:
-                self.symlinks[o] = filename[0]
+                self.symlinks[o] = "/".join(o.split("/")[:-1]) + "/" + os.path.relpath(filename[0], "/".join(o.split("/")[:-1]) + "/")
         if self.table[-1] == len(self.table[-1]) * "0":
             self.table[-1] = ""
         self.table = ".".join(self.table)
@@ -390,7 +390,7 @@ class SpaceFS:
                 + winattrs[i].to_bytes(4, "big")
             )
             for p in symlinks:
-                if symlinks[p] == i.split("*")[0]:
+                if os.path.normpath(symlinks[p]) == i.split("*")[0]:
                     i += f"*{p}"
             filenames.extend(i.encode() + b"\xff")
         filenames.extend(b"\xfe" + times + guidsmodes)

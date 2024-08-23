@@ -164,7 +164,7 @@ class FuseTran(Operations):
         yield from dirents
 
     def readlink(self, path):
-        return self.s.symlinks[path] if path in self.s.symlinks else path
+        return self.s.symlinks[path][len("/".join(path.split("/")[:-1]) + "/"):] if path in self.s.symlinks else path
 
     def mknod(self, path, mode, dev):
         with self.rwlock:
@@ -214,19 +214,7 @@ class FuseTran(Operations):
 
     def symlink(self, name, target):
         with self.rwlock:
-            c = (
-                os.path.normpath(
-                    self.mount + "/".join(name.split("/")[:-1]) + "/" + target
-                )
-                .replace(self.mount, "", 1)
-                .replace("\\", "/")
-            )
-            if os.path.exists(c):
-                self.s.symlinks[name] = c
-            else:
-                if target[0] != "/":
-                    target = f"/{target}"
-                self.s.symlinks[name] = target
+            self.s.symlinks[name] = str("/".join(name.split("/")[:-1]) + "/" + target).replace(self.mount + "/", "")
 
     def rename(self, old, new):
         with self.rwlock:
