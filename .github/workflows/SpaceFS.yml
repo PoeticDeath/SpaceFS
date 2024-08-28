@@ -773,7 +773,7 @@ jobs:
         choco install winfsp -y --version=2.0.23075
         python -m pip install --upgrade pip
         pip install wheel
-        pip install pyinstaller==5.13.2 wmi
+        pip install pyinstaller==5.13.2 wmi setuptools==73.0.1
         pip install https://github.com/PoeticDeath/winfspy/archive/refs/heads/master.zip
     - name: Download winfsp-test
       uses: engineerd/configurator@v0.0.10
