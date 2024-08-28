@@ -378,6 +378,15 @@ class SpaceFS:
         filenames = bytearray(b"\xff")
         guidsmodes = bytearray()
 
+        syms = {}
+        for i in symlinks:
+            name = os.path.normpath(symlinks[i])
+            if name in filenamesdic:
+                try:
+                    syms[name] += [i]
+                except KeyError:
+                    syms[name] = [i]
+
         def s(filename):
             return filenamesdic[filename]
 
@@ -389,9 +398,11 @@ class SpaceFS:
                 + modes[i].to_bytes(2, "big")
                 + winattrs[i].to_bytes(4, "big")
             )
-            for p in symlinks:
-                if os.path.normpath(symlinks[p]) == i.split("*")[0]:
+            try:
+                for p in syms[i.split("*")[0]]:
                     i += f"*{p}"
+            except KeyError:
+                pass
             filenames.extend(i.encode() + b"\xff")
         filenames.extend(b"\xfe" + times + guidsmodes)
         return elst, filenames
