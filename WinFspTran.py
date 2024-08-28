@@ -322,7 +322,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             raise NTStatusMediaWriteProtected()
         file_name = file_name.replace("\\", "/")
         new_file_name = new_file_name.replace("\\", "/")
-        if c := [i for i in self.s.symlinks if file_name.startswith(f"{i}/")]:
+        if c := ["/".join(file_name.split("/")[:len(file_name.split("/")) - i]) for i in range(1, len(file_name.split("/")) - 1) if "/".join(file_name.split("/")[:len(file_name.split("/")) - i]) in self.s.symlinks]:
             file_name = file_name.replace(c[0], self.s.symlinks[c[0]], 1)
             new_file_name = new_file_name.replace(c[0], self.s.symlinks[c[0]], 1)
         if (
@@ -510,11 +510,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
             raise NTStatusDirectoryNotEmpty()
 
     def readdir(self, file_context, marker):
-        if c := [
-            i
-            for i in self.s.symlinks
-            if file_context.startswith(f"{i}/") | (file_context == i)
-        ]:
+        if c := ["/".join(file_context.split("/")[:len(file_context.split("/")) - i]) for i in range(len(file_context.split("/")) - 1) if "/".join(file_context.split("/")[:len(file_context.split("/")) - i]) in self.s.symlinks]:
             file_context = file_context.replace(c[0], self.s.symlinks[c[0]], 1)
         if file_context[-1] != "/":
             file_context += "/"
@@ -778,11 +774,7 @@ class SpaceFSOperations(BaseFileSystemOperations):
                 file_context = self.lowerfilenamesdic[file_context.lower()]
             except KeyError:
                 pass
-        if c := [
-            i
-            for i in self.s.symlinks
-            if file_context.startswith(f"{i}/") | (file_context == i)
-        ]:
+        if c := ["/".join(file_context.split("/")[:len(file_context.split("/")) - i]) for i in range(len(file_context.split("/")) - 1) if "/".join(file_context.split("/")[:len(file_context.split("/")) - i]) in self.s.symlinks]:
             file_context = file_context.replace(c[0], self.s.symlinks[c[0]], 1)
         file_context = file_context.split(":")[0]
         fileinfo = self.gfi(file_context)
