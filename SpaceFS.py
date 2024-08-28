@@ -423,7 +423,7 @@ class SpaceFS:
         self.oldsimptable = self.table
 
     def createfile(self, filename, mode):
-        if c := [i for i in self.symlinks if filename.startswith(f"{i}/")]:
+        if c := ["/".join(filename.split("/")[:len(filename.split("/")) - i]) for i in range(1, len(filename.split("/")) - 1) if "/".join(filename.split("/")[:len(filename.split("/")) - i]) in self.symlinks]:
             filename = filename.replace(c[0], self.symlinks[c[0]], 1)
         if filename in self.filenamesdic:
             raise FileExistsError
@@ -452,7 +452,7 @@ class SpaceFS:
             self.simptable()
 
     def deletefile(self, filename, block=False):
-        if c := [i for i in self.symlinks if filename.startswith(f"{i}/")]:
+        if c := ["/".join(filename.split("/")[:len(filename.split("/")) - i]) for i in range(1, len(filename.split("/")) - 1) if "/".join(filename.split("/")[:len(filename.split("/")) - i]) in self.symlinks]:
             filename = filename.replace(c[0], self.symlinks[c[0]], 1)
         if (filename in self.symlinks) & (block == False):
             del self.symlinks[filename]
@@ -508,7 +508,7 @@ class SpaceFS:
                 self.filenamesdic[i.split("*")[0]] -= 1
 
     def renamefile(self, oldfilename, newfilename):
-        c = [i for i in self.symlinks if oldfilename.startswith(f"{i}/")]
+        c = ["/".join(oldfilename.split("/")[:len(oldfilename.split("/")) - i]) for i in range(1, len(oldfilename.split("/")) - 1) if "/".join(oldfilename.split("/")[:len(oldfilename.split("/")) - i]) in self.symlinks]
         if oldfilename in self.symlinks:
             self.symlinks[newfilename] = self.symlinks[oldfilename]
             del self.symlinks[oldfilename]
@@ -536,7 +536,7 @@ class SpaceFS:
         )
 
     def readfile(self, filename, start, amount):
-        if c := [i for i in self.symlinks if filename.startswith(f"{i}/")]:
+        if c := ["/".join(filename.split("/")[:len(filename.split("/")) - i]) for i in range(1, len(filename.split("/")) - 1) if "/".join(filename.split("/")[:len(filename.split("/")) - i]) in self.symlinks]:
             filename = filename.replace(c[0], self.symlinks[c[0]], 1)
         if filename in self.symlinks:
             filename = self.symlinks[filename]
@@ -609,7 +609,7 @@ class SpaceFS:
         return bytes(data[:amount])
 
     def trunfile(self, filename, size=None):
-        if c := [i for i in self.symlinks if filename.startswith(f"{i}/")]:
+        if c := ["/".join(filename.split("/")[:len(filename.split("/")) - i]) for i in range(1, len(filename.split("/")) - 1) if "/".join(filename.split("/")[:len(filename.split("/")) - i]) in self.symlinks]:
             filename = filename.replace(c[0], self.symlinks[c[0]], 1)
         if filename in self.symlinks:
             filename = self.symlinks[filename]
@@ -720,7 +720,7 @@ class SpaceFS:
         return loc - bool(not index)
 
     def writefile(self, filename, start, data, T=False):
-        c = [i for i in self.symlinks if filename.startswith(f"{i}/")]
+        c = ["/".join(filename.split("/")[:len(filename.split("/")) - i]) for i in range(1, len(filename.split("/")) - 1) if "/".join(filename.split("/")[:len(filename.split("/")) - i]) in self.symlinks]
         if c:
             filename = filename.replace(c[0], self.symlinks[c[0]], 1)
         if filename in self.symlinks:

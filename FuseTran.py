@@ -77,9 +77,7 @@ class FuseTran(Operations):
 
     def chmod(self, path, mode):
         with self.rwlock:
-            if c := [
-                i for i in self.s.symlinks if path.startswith(f"{i}/") | (path == i)
-            ]:
+            if c := ["/".join(path.split("/")[:len(path.split("/")) - i]) for i in range(len(path.split("/")) - 1) if "/".join(path.split("/")[:len(path.split("/")) - i]) in self.s.symlinks]:
                 path = path.replace(c[0], self.s.symlinks[c[0]], 1)
             self.s.modes[path] &= 0o770000
             self.s.modes[path] |= mode
@@ -87,9 +85,7 @@ class FuseTran(Operations):
 
     def chown(self, path, uid, gid):
         with self.rwlock:
-            if c := [
-                i for i in self.s.symlinks if path.startswith(f"{i}/") | (path == i)
-            ]:
+            if c := ["/".join(path.split("/")[:len(path.split("/")) - i]) for i in range(len(path.split("/")) - 1) if "/".join(path.split("/")[:len(path.split("/")) - i]) in self.s.symlinks]:
                 path = path.replace(c[0], self.s.symlinks[c[0]], 1)
             self.s.guids[path] = (
                 self.s.guids[path][0] if gid < 0 else gid,
@@ -110,7 +106,7 @@ class FuseTran(Operations):
 
     def getattr(self, path, fh=None, sym=False):
         with self.rwlock if not sym else nullcontext():
-            if c := [i for i in self.s.symlinks if path.startswith(f"{i}/")]:
+            if c := ["/".join(path.split("/")[:len(path.split("/")) - i]) for i in range(1, len(path.split("/")) - 1) if "/".join(path.split("/")[:len(path.split("/")) - i]) in self.s.symlinks]:
                 path = path.replace(c[0], self.s.symlinks[c[0]], 1)
             if path in self.s.symlinks:
                 attrs = self.getattr(self.s.symlinks[path], fh, True)
@@ -161,7 +157,7 @@ class FuseTran(Operations):
             }
 
     def readdir(self, path, fh):
-        if c := [i for i in list(self.s.symlinks.keys()) if path.startswith(f"{i}/") | (path == i)]:
+        if c := ["/".join(path.split("/")[:len(path.split("/")) - i]) for i in range(len(path.split("/")) - 1) if "/".join(path.split("/")[:len(path.split("/")) - i]) in self.s.symlinks]:
             path = path.replace(c[0], self.s.symlinks[c[0]], 1)
         dirents = [".", ".."] if path != "/" else []
         if path[-1] != "/":
@@ -196,7 +192,7 @@ class FuseTran(Operations):
 
     def rmdir(self, path):
         with self.rwlock:
-            if c := [i for i in self.s.symlinks if path.startswith(f"{i}/")]:
+            if c := ["/".join(path.split("/")[:len(path.split("/")) - i]) for i in range(1, len(path.split("/")) - 1) if "/".join(path.split("/")[:len(path.split("/")) - i]) in self.s.symlinks]:
                 path = path.replace(c[0], self.s.symlinks[c[0]], 1)
             if path not in self.s.filenamesdic:
                 raise FuseOSError(errno.ENOENT)
@@ -206,7 +202,7 @@ class FuseTran(Operations):
 
     def mkdir(self, path, mode):
         with self.rwlock:
-            if c := [i for i in self.s.symlinks if path.startswith(f"{i}/")]:
+            if c := ["/".join(path.split("/")[:len(path.split("/")) - i]) for i in range(1, len(path.split("/")) - 1) if "/".join(path.split("/")[:len(path.split("/")) - i]) in self.s.symlinks]:
                 path = path.replace(c[0], self.s.symlinks[c[0]], 1)
             try:
                 self.s.createfile(path, 16877)
@@ -240,7 +236,7 @@ class FuseTran(Operations):
 
     def rename(self, old, new):
         with self.rwlock:
-            if c := [i for i in self.s.symlinks if old.startswith(f"{i}/")]:
+            if c := ["/".join(old.split("/")[:len(old.split("/")) - i]) for i in range(1, len(old.split("/")) - 1) if "/".join(old.split("/")[:len(old.split("/")) - i]) in self.s.symlinks]:
                 old = old.replace(c[0], self.s.symlinks[c[0]], 1)
                 new = new.replace(c[0], self.s.symlinks[c[0]], 1)
             if old not in self.s.symlinks:
