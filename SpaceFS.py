@@ -381,6 +381,11 @@ class SpaceFS:
         syms = {}
         for i in symlinks:
             name = os.path.normpath(symlinks[i])
+            while name in symlinks:
+                oldname = name
+                name = symlinks[name]
+                if oldname == name:
+                    break
             if name in filenamesdic:
                 try:
                     syms[name] += [i]
