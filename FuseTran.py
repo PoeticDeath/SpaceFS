@@ -22,6 +22,9 @@ class FuseTran(Operations):
                 i.to_bytes(1, "big") + bytes(4) + b"\xff\xfe"
             )
         self.s = SpaceFS(disk)
+        if "" not in self.s.filenamesdic:
+            self.s.createfile("", 448)
+            self.s.writefile("", 0, b"O:WDG:WDD:P(A;;FA;;;WD)")
         if "/" not in self.s.filenamesdic:
             self.s.createfile("/", 16877)
         if "?" not in self.s.filenamesdic:
@@ -396,3 +399,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
